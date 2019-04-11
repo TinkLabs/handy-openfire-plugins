@@ -1,2 +1,2 @@
 # openfire-plugins
-plugins for openfire(Concierge Chat backen server）
+plugins for openfire(Concierge Chat backen services）
