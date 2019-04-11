@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hi.handy</groupId>
+  <artifactId>openfireplugins</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0</version>
+  <modules>
+    <module>history</module>
+  </modules>
+
+  <properties>
+    <openfire.version>4.3.2</openfire.version>
+    <log4j.version>2.11.1</log4j.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <assembly.descriptor.version>4.2.0</assembly.descriptor.version>
+  </properties>
+
+  <repositories>
+    <!-- Where we obtain dependencies. -->
+    <repository>
+      <id>igniterealtime</id>
+      <name>Ignite Realtime Repository</name>
+      <url>https://igniterealtime.org/archiva/repository/maven/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <!-- Typically used to retrieve Maven plugins used by this project from. This
+         apparently is also used to obtain the dependencies _used by_ plugins
+         (eg: openfire-plugin-assembly-descriptor) -->
+    <pluginRepository>
+      <id>igniterealtime</id>
+      <name>Ignite Realtime Repository</name>
+      <url>https://igniterealtime.org/archiva/repository/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <!--xmpp-->
+      <dependency>
+        <groupId>org.igniterealtime.openfire</groupId>
+        <artifactId>xmppserver</artifactId>
+        <version>${openfire.version}</version>
+      </dependency>
+
+      <!--log-->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+
+
+
+</project>
