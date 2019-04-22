@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+   <class>com.hi.handy.auth.plugin.AuthPlugin</class>
+   <name>Auth Plugin</name>
+   <description>auth for client</description>
+   <author>Hans</author>
+   <version>1.1.0</version>
+   <date>2019-04-16</date>
+   <minServerVersion>4.3.2</minServerVersion>
+   <!--<adminconsole>-->
+      <!--<tab id="tab-server">-->
+         <!--<sidebar id="sidebar-server-settings">-->
+            <!--<item id="example-plugin-page" name="Example Plugin Properties" url="exampleplugin-page.jsp" description="Settings for Example Plugin" />-->
+         <!--</sidebar>-->
+      <!--</tab>-->
+   <!--</adminconsole>-->
+</plugin>
