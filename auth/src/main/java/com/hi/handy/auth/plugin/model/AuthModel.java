@@ -7,6 +7,8 @@ public class AuthModel {
   private String userName;
   private String password;
   private String email;
+  private String agent;
+  private String agentJID;
   private List<ChatRoomModel> chatRooms;
 
   public String getUserName() {
@@ -40,5 +42,21 @@ public class AuthModel {
 
   public void setChatRooms(List<ChatRoomModel> chatRooms) {
     this.chatRooms = chatRooms;
+  }
+
+  public String getAgent() {
+    return agent;
+  }
+
+  public void setAgent(String agent) {
+    this.agent = agent;
+  }
+
+  public String getAgentJID() {
+    return agentJID;
+  }
+
+  public void setAgentJID(String agentJID) {
+    this.agentJID = agentJID;
   }
 }

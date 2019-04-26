@@ -2,21 +2,23 @@ package com.hi.handy.auth.plugin.parameter;
 
 public class AuthParameter extends BaseParameter {
 
-  private String hotelId;
+  private Long hotelId;
   private String hotelName;
   private String roomId;
   private String roomNum;
   private String userName;
   private String password;
   private String email;
-  private String zone;
+  private Long zoneId;
+  private String zoneName;
   private String barcode;
 
-  public String getHotelId() {
+
+  public Long getHotelId() {
     return hotelId;
   }
 
-  public void setHotelId(String hotelId) {
+  public void setHotelId(Long hotelId) {
     this.hotelId = hotelId;
   }
 
@@ -76,11 +78,19 @@ public class AuthParameter extends BaseParameter {
     this.barcode = barcode;
   }
 
-  public String getZone() {
-    return zone;
+  public Long getZoneId() {
+    return zoneId;
   }
 
-  public void setZone(String zone) {
-    this.zone = zone;
+  public void setZoneId(Long zoneId) {
+    this.zoneId = zoneId;
+  }
+
+  public String getZoneName() {
+    return zoneName;
+  }
+
+  public void setZoneName(String zoneName) {
+    this.zoneName = zoneName;
   }
 }

@@ -8,6 +8,7 @@ public class ChatRoomModel {
   }
 
   private String roomName;
+  private String roomJID;
   private String hotelId;
   private String hotelName;
   private String hotelRoomNum;
@@ -51,5 +52,13 @@ public class ChatRoomModel {
 
   public void setRoomType(RoomType roomType) {
     this.roomType = roomType;
+  }
+
+  public String getRoomJID() {
+    return roomJID;
+  }
+
+  public void setRoomJID(String roomJID) {
+    this.roomJID = roomJID;
   }
 }
