@@ -3,7 +3,6 @@ package com.hi.handy.auth.plugin.service;
 import com.hi.handy.auth.plugin.dao.HdUserPropertyDao;
 import com.hi.handy.auth.plugin.dao.OfOfflineDao;
 import com.hi.handy.auth.plugin.entity.HdUserPropertyEntity;
-import com.hi.handy.auth.plugin.entity.OfOfflineEntity;
 import com.hi.handy.auth.plugin.exception.BusinessException;
 import com.hi.handy.auth.plugin.exception.ExceptionConst;
 import com.hi.handy.auth.plugin.model.HotelIdAndRoomNum;
@@ -12,10 +11,11 @@ import com.hi.handy.auth.plugin.model.OfOfflineMessageModel;
 import com.hi.handy.auth.plugin.parameter.BaseParameter.UserType;
 import com.hi.handy.auth.plugin.parameter.MessageParameter;
 import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.openfire.user.UserNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessageService {
   public static final MessageService INSTANCE = new MessageService();
@@ -62,7 +62,7 @@ public class MessageService {
          messageModels.add(messageModel);
        }
     }
-    return messageModels;
+    return messageModels.stream().sorted(Comparator.comparing(MessageModel::getCreateDate).reversed()).collect(Collectors.toList());
   }
 
   private List<MessageModel> getAgentAdminMessageList(HdUserPropertyEntity hdUserPropertyEntity){
