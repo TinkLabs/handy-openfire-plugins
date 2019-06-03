@@ -1,22 +1,15 @@
 package com.hi.handy.auth.plugin.dao;
 
 import com.hi.handy.auth.plugin.entity.HdUserPropertyEntity;
-import com.hi.handy.auth.plugin.entity.UserRoomEntity;
 import com.hi.handy.auth.plugin.exception.BusinessException;
 import com.hi.handy.auth.plugin.exception.ExceptionConst;
-import com.hi.handy.auth.plugin.model.HotelIdAndRoomNum;
 import com.hi.handy.auth.plugin.parameter.AuthParameter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.database.DbConnectionManager;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HdUserPropertyDao extends BaseDao {
 
@@ -47,8 +40,6 @@ public class HdUserPropertyDao extends BaseDao {
                   + "AND p.type = 'AGENT' AND p.zoneId = ?";
   private static final String SEARCH_BY_NAME_SQL =
           "SELECT * FROM hdUserProperty WHERE userName = ?";
-  private static final String SEARCH_HOTELID_AND_ROOMNUM_BY_AGENTNAME_SQL =
-          "SELECT roomNum,hotelId FROM hdUserProperty WHERE userName = ? OR parentZoneId = ?  GROUP BY roomNum,hotelId";
 
   public Long countByUserName(String userName) {
     Connection con = null;
@@ -244,32 +235,6 @@ public class HdUserPropertyDao extends BaseDao {
         result.setRoomAmount(rs.getLong(8));
         result.setCreationDate(rs.getTimestamp(9));
         result.setModificationDamodificationDate(rs.getTimestamp(10));
-      }
-    } catch (Exception e) {
-      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
-    } finally {
-      DbConnectionManager.closeConnection(rs, pstmt, con);
-    }
-    return result;
-  }
-
-  public List<HotelIdAndRoomNum> searchHotelIdAndRoomNumByAgentName(String userName,Long zoneId){
-    List<HotelIdAndRoomNum> result = new ArrayList<HotelIdAndRoomNum>();
-    Connection con = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    try {
-      con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(SEARCH_HOTELID_AND_ROOMNUM_BY_AGENTNAME_SQL);
-      pstmt.setString(1, userName);
-      pstmt.setLong(2, zoneId);
-
-      rs = pstmt.executeQuery();
-      while (rs.next()) {
-        HotelIdAndRoomNum hotelIdAndRoomNum = new HotelIdAndRoomNum();
-        hotelIdAndRoomNum.setRoomNum(rs.getString(1));
-        hotelIdAndRoomNum.setHotelId(rs.getInt(2));
-        result.add(hotelIdAndRoomNum);
       }
     } catch (Exception e) {
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());

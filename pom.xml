@@ -11,6 +11,8 @@
   <modules>
     <module>history</module>
     <module>auth</module>
+    <module>handy-message</module>
+    <module>handy-message-api</module>
   </modules>
 
   <properties>
