@@ -2,7 +2,7 @@
 
 <plugin>
    <class>com.hi.handy.message.plugin.MessagePlugin</class>
-   <name>message Plugin</name>
+   <name>handy-message-plugin</name>
    <description>record all message to local</description>
    <author>Dave</author>
    <version>1.0.0</version>

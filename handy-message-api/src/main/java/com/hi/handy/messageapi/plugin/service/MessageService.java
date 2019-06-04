@@ -39,29 +39,33 @@ public class MessageService {
     if(hdUserPropertyEntity == null) return null;
     String type = hdUserPropertyEntity.getType();
     if (type.equals(UserType.AGENT.name())) {
-      return getAgentMessageList(hdUserPropertyEntity,parameter);
+      return getAgentChatListByPaging(hdUserPropertyEntity,parameter);
     } else if (type.equals(UserType.AGENT_ADMIN.name())) {
-      return getAgentMessageList(hdUserPropertyEntity,parameter);
-    } else if (type.equals(UserType.HOTEL.name())) {
-      return getGuestMessageList(hdUserPropertyEntity);
+      return null;
+    } else if (type.equals(UserType.GUEST.name())) {
+      return getGuestChatListByPaging(hdUserPropertyEntity,parameter);
     }else{
       return null;
     }
   }
 
-  public MessageHistoryModel history(MessageParameter parameter) {
+  public MessageHistoryModel historyList(MessageParameter parameter) {
     checkParameter(parameter);
     String userName = parameter.getUserName();
     HdUserPropertyEntity hdUserPropertyEntity = HdUserPropertyDao.getInstance().searchByName(userName);
     if(hdUserPropertyEntity == null) return null;
     String type = hdUserPropertyEntity.getType();
     if (type.equals(UserType.AGENT.name())) {
-      return getAgentMessageHistory(hdUserPropertyEntity);
+      return getAgentHistoryList(hdUserPropertyEntity.getHotelId(),hdUserPropertyEntity.getRoomNum());
+    }else if (type.equals(UserType.AGENT_ADMIN.name())) {
+
+    }else if (type.equals(UserType.GUEST.name())) {
+      return getGuestHistoryList(hdUserPropertyEntity.getHotelId(),hdUserPropertyEntity.getRoomNum());
     }
     return null;
   }
 
-  private List<MessageModel> getAgentMessageList(HdUserPropertyEntity hdUserPropertyEntity,MessageParameter parameter){
+  private List<MessageModel> getAgentChatListByPaging(HdUserPropertyEntity hdUserPropertyEntity,MessageParameter parameter){
     List<MessageModel> messageModels = new ArrayList<MessageModel>();
     List<HotelIdAndRoomNum> hotelIdAndRoomNums = HdUserPropertyDao.getInstance().searchHotelIdAndRoomNumByAgentName(hdUserPropertyEntity.getUserName(),hdUserPropertyEntity.getZoneId());
     for(HotelIdAndRoomNum hotelIdAndRoomNum:hotelIdAndRoomNums ){
@@ -81,26 +85,25 @@ public class MessageService {
     return messageModels.stream().sorted(Comparator.comparing(MessageModel::getCreateDate).reversed()).collect(Collectors.toList());
   }
 
-  private MessageHistoryModel getAgentMessageHistory(HdUserPropertyEntity hdUserPropertyEntity){
-    AgentMessageRecordEntity agentMessageRecordEntity = queryAgentMessageRecord(hdUserPropertyEntity.getHotelId(),hdUserPropertyEntity.getRoomNum());
-    MessageHistoryModel messageHistoryModel = new MessageHistoryModel();
-    messageHistoryModel.setReadCount(agentMessageRecordEntity.getReadCount());
-    List<MessageStanzaAndCreationDate> hdMessageEntityList = queryMessageListByHotelIdAndRoomNum(hdUserPropertyEntity.getHotelId(),hdUserPropertyEntity.getRoomNum());
-    messageHistoryModel.setMessageStanzaAndCreationDates(hdMessageEntityList);
-    return messageHistoryModel;
-  }
-
-  private List<MessageModel> getAgentAdminMessageList(HdUserPropertyEntity hdUserPropertyEntity){
-    return null;
-  }
-
-  private List<MessageModel> getGuestMessageList(HdUserPropertyEntity hdUserPropertyEntity){
+  private List<MessageModel> getGuestChatListByPaging(HdUserPropertyEntity hdUserPropertyEntity,MessageParameter parameter){
     // 查询所有此区域中的agent 对其讲的话
     return null;
   }
 
-  private List<MessageModel> getHotelMessageList(HdUserPropertyEntity hdUserPropertyEntity){
-    return null;
+  private MessageHistoryModel getAgentHistoryList(Long hotelId,String roomNum){
+    AgentMessageRecordEntity agentMessageRecordEntity = queryAgentMessageRecord(hotelId,roomNum);
+    MessageHistoryModel messageHistoryModel = new MessageHistoryModel();
+    messageHistoryModel.setReadCount(agentMessageRecordEntity.getReadCount());
+    List<MessageStanzaAndCreationDate> hdMessageEntityList = queryMessageListByHotelIdAndRoomNum(hotelId,roomNum);
+    messageHistoryModel.setMessageStanzaAndCreationDates(hdMessageEntityList);
+    return messageHistoryModel;
+  }
+
+  private MessageHistoryModel getGuestHistoryList(Long hotelId,String roomNum){
+    List<MessageStanzaAndCreationDate> hdMessageEntityList = queryMessageListByHotelIdAndRoomNum(hotelId,roomNum);
+    MessageHistoryModel messageHistoryModel = new MessageHistoryModel();
+    messageHistoryModel.setMessageStanzaAndCreationDates(hdMessageEntityList);
+    return messageHistoryModel;
   }
 
   private void checkParameter(MessageParameter parameter) {

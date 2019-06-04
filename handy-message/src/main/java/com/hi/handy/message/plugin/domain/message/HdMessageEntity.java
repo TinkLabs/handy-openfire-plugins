@@ -8,7 +8,7 @@ public class HdMessageEntity extends BaseEntity {
     private Long hotelId;
     private String hotelName;
     private String roomNum;
-    private Long messageID;
+    private String messageId;
     private String fromUser;
     private String toUser;
     private String fromJID;
@@ -48,12 +48,12 @@ public class HdMessageEntity extends BaseEntity {
         this.roomNum = roomNum;
     }
 
-    public Long getMessageID() {
-        return messageID;
+    public String getMessageId() {
+        return messageId;
     }
 
-    public void setMessageID(Long messageID) {
-        this.messageID = messageID;
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getFromUser() {

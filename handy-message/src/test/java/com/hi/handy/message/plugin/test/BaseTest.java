@@ -1,4 +1,4 @@
-package com.hi.handy.message.plugin;
+package com.hi.handy.message.plugin.test;
 
 import org.jivesoftware.database.DbConnectionManager;
 import org.jivesoftware.database.DefaultConnectionProvider;

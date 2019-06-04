@@ -52,7 +52,7 @@ public class HdUserPropertyDao extends BaseDao {
       }
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("message save error", ex);
+      LOGGER.error("userProperty searchByName error", ex);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
     }

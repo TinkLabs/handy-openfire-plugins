@@ -23,25 +23,30 @@ public class HdMessageDao extends BaseDao {
   }
 
   private static final String CREATE_HISTORY_SQL =
-          "INSERT INTO hdHistory (fromUser, toUser, fromJID, toJID, creationDate, stanza) " +
-                  "VALUES (?, ?, ?, ?, ?, ?)";
+          "INSERT INTO hdMessage (id,hotelId,hotelName,roomNum,messageId,fromUser, toUser, fromJID, toJID, creationDate, stanza) " +
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-  public void save(HdMessageEntity hdMessageEntity) {
+  public void create(HdMessageEntity hdMessageEntity) {
     Connection con = null;
     PreparedStatement statement = null;
     try {
       con = DbConnectionManager.getConnection();
       statement = con.prepareStatement(CREATE_HISTORY_SQL);
-      statement.setString(1, hdMessageEntity.getFromUser());
-      statement.setString(2, hdMessageEntity.getToUser());
-      statement.setString(3, hdMessageEntity.getFromJID());
-      statement.setString(4, hdMessageEntity.getToJID());
-      statement.setString(5, hdMessageEntity.getCreationDate());
-      statement.setString(6, hdMessageEntity.getStanza());
+      statement.setString(1, hdMessageEntity.getId());
+      statement.setLong(2, hdMessageEntity.getHotelId());
+      statement.setString(3, hdMessageEntity.getHotelName());
+      statement.setString(4, hdMessageEntity.getRoomNum());
+      statement.setString(5, hdMessageEntity.getMessageId());
+      statement.setString(6, hdMessageEntity.getFromUser());
+      statement.setString(7, hdMessageEntity.getToUser());
+      statement.setString(8, hdMessageEntity.getFromJID());
+      statement.setString(9, hdMessageEntity.getToJID());
+      statement.setString(10, hdMessageEntity.getCreationDate());
+      statement.setString(11, hdMessageEntity.getStanza());
       statement.executeUpdate();
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("message save error", ex);
+      LOGGER.error("message create error", ex);
     } finally {
       DbConnectionManager.closeConnection(statement, con);
     }
