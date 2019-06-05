@@ -2,13 +2,24 @@ package com.hi.handy.messageapi.plugin.domain.agentmessagerecord;
 
 import com.hi.handy.messageapi.plugin.domain.BaseEntity;
 
+import java.sql.Timestamp;
+
 public class AgentMessageRecordEntity extends BaseEntity {
 
+  private String userName;
   private Long hotelId;
   private String hotelName;
   private String roomNum;
   private Long readCount;
-  private String updateDate;
+  private Timestamp updateDate;
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
   public Long getHotelId() {
     return hotelId;
@@ -34,11 +45,11 @@ public class AgentMessageRecordEntity extends BaseEntity {
     this.roomNum = roomNum;
   }
 
-  public String getUpdateDate() {
+  public Timestamp getUpdateDate() {
     return updateDate;
   }
 
-  public void setUpdateDate(String updateDate) {
+  public void setUpdateDate(Timestamp updateDate) {
     this.updateDate = updateDate;
   }
 

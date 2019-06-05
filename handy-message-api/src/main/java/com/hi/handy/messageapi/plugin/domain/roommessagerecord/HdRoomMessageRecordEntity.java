@@ -2,6 +2,8 @@ package com.hi.handy.messageapi.plugin.domain.roommessagerecord;
 
 import com.hi.handy.messageapi.plugin.domain.BaseEntity;
 
+import java.sql.Timestamp;
+
 public class HdRoomMessageRecordEntity extends BaseEntity {
 
     private String id;
@@ -10,7 +12,7 @@ public class HdRoomMessageRecordEntity extends BaseEntity {
     private String roomNum;
     private String messageId;
     private Long amount;
-    private String updateDate;
+    private Timestamp updateDate;
 
     public String getId() {
         return id;
@@ -52,11 +54,11 @@ public class HdRoomMessageRecordEntity extends BaseEntity {
         this.messageId = messageId;
     }
 
-    public String getUpdateDate() {
+    public Timestamp getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(Timestamp updateDate) {
         this.updateDate = updateDate;
     }
 

@@ -19,7 +19,7 @@ public class HdMessageDaoTest extends BaseTest {
         hdMessageEntity.setFromJID("dfas");
         hdMessageEntity.setToUser("user2");
         hdMessageEntity.setToJID("fadsfas");
-        hdMessageEntity.setCreationDate(String.valueOf(System.currentTimeMillis()));
+        hdMessageEntity.setCreationDate(new java.sql.Timestamp(System.currentTimeMillis()));
         hdMessageEntity.setStanza("dsfasdfas");
         HdMessageDao.getInstance().create(hdMessageEntity);
     }

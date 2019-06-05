@@ -41,7 +41,7 @@ public class HdMessageDao extends BaseDao {
       statement.setString(7, hdMessageEntity.getToUser());
       statement.setString(8, hdMessageEntity.getFromJID());
       statement.setString(9, hdMessageEntity.getToJID());
-      statement.setString(10, hdMessageEntity.getCreationDate());
+      statement.setTimestamp(10, hdMessageEntity.getCreationDate());
       statement.setString(11, hdMessageEntity.getStanza());
       statement.executeUpdate();
     } catch (Exception ex) {

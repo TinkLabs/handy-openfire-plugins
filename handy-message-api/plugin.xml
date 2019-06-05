@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin>
-   <class>com.hi.handy.messageapi.plugin.MessgeApiPlugin</class>
-   <name>MessageApi Plugin</name>
-   <description>Message Api</description>
+   <class>com.hi.handy.messageapi.plugin.MessageApiPlugin</class>
+   <name>handy-messageapi-plugin</name>
+   <description>handy message api</description>
    <author>Dave</author>
-   <version>1.1.0</version>
+   <version>1.0.0</version>
    <date>2019-06-03</date>
    <minServerVersion>4.3.2</minServerVersion>
    <!--<adminconsole>-->

@@ -20,7 +20,7 @@ public class HdRoomMessageRecordDaoTest extends BaseTest {
         hdRoomMessageRecordEntity.setRoomNum("301");
         hdRoomMessageRecordEntity.setAmount(0l);
         hdRoomMessageRecordEntity.setMessageId("ewr234523eqwerq");
-        hdRoomMessageRecordEntity.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+        hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
         HdRoomMessageRecordDao.getInstance().create(hdRoomMessageRecordEntity);
     }
 
@@ -39,7 +39,7 @@ public class HdRoomMessageRecordDaoTest extends BaseTest {
         HdRoomMessageRecordEntity hdRoomMessageRecordEntity=HdRoomMessageRecordDao.getInstance().findByHotelIdAndNum(hotelId,roomNum);
         hdRoomMessageRecordEntity.setAmount(hdRoomMessageRecordEntity.getAmount() + 1);
         hdRoomMessageRecordEntity.setMessageId("43524352");
-        hdRoomMessageRecordEntity.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+        hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
         HdRoomMessageRecordDao.getInstance().updateByHotelIdAndNum(hdRoomMessageRecordEntity);
     }
 }

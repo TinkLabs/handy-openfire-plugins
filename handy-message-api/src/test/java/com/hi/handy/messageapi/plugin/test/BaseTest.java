@@ -1,13 +1,14 @@
-package com.hi.handy.auth.plugin;
+package com.hi.handy.messageapi.plugin.test;
 
 import org.jivesoftware.database.DbConnectionManager;
 import org.jivesoftware.database.DefaultConnectionProvider;
-import org.junit.BeforeClass;
+import org.junit.Before;
 
+@SuppressWarnings("Duplicates")
 public class BaseTest {
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
         DefaultConnectionProvider conProvider = new DefaultConnectionProvider();
         conProvider.setDriver("com.mysql.jdbc.Driver");
         conProvider.setConnectionTimeout(1.0);

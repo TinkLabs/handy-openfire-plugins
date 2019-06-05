@@ -2,9 +2,9 @@ package com.hi.handy.messageapi.plugin.parameter;
 
 public class MessageParameter extends BaseParameter {
 
-    public Integer pageIndex;
-    public Integer pageSize;
-    public String userName;
+    private Integer pageIndex;
+    private Integer pageSize;
+    private String userName;
 
     public Integer getPageIndex() {
         return pageIndex;
@@ -28,5 +28,15 @@ public class MessageParameter extends BaseParameter {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageParameter{" +
+                "messageType=" + getMessageType() +
+                ", pageIndex=" + pageIndex +
+                ", pageSize=" + pageSize +
+                ", userName='" + userName + '\'' +
+                '}';
     }
 }

@@ -2,6 +2,8 @@ package com.hi.handy.message.plugin.domain.message;
 
 import com.hi.handy.message.plugin.domain.BaseEntity;
 
+import java.sql.Timestamp;
+
 public class HdMessageEntity extends BaseEntity {
 
     private String id;
@@ -13,7 +15,7 @@ public class HdMessageEntity extends BaseEntity {
     private String toUser;
     private String fromJID;
     private String toJID;
-    private String creationDate;
+    private Timestamp creationDate;
     private String stanza;
 
     public String getId() {
@@ -88,11 +90,11 @@ public class HdMessageEntity extends BaseEntity {
         this.toJID = toJID;
     }
 
-    public String getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 

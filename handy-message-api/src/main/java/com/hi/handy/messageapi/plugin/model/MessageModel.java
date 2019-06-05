@@ -1,12 +1,14 @@
 package com.hi.handy.messageapi.plugin.model;
 
+import java.sql.Timestamp;
+
 public class MessageModel{
 
     private String hotelName;
     private String roomNum;
     private Long count;
     private String content;
-    private String createDate;
+    private Timestamp createDate;
 
     public String getHotelName() {
         return hotelName;
@@ -40,11 +42,11 @@ public class MessageModel{
         this.content = content;
     }
 
-    public String getCreateDate() {
+    public Timestamp getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 }

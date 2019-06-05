@@ -41,7 +41,7 @@ public class HdRoomMessageRecordDao extends BaseDao {
       statement.setString(4, hdRoomMessageRecordEntity.getRoomNum());
       statement.setString(5, hdRoomMessageRecordEntity.getMessageId());
       statement.setLong(6, hdRoomMessageRecordEntity.getAmount());
-      statement.setString(7, hdRoomMessageRecordEntity.getUpdateDate());
+      statement.setTimestamp(7, hdRoomMessageRecordEntity.getUpdateDate());
       statement.executeUpdate();
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -71,7 +71,7 @@ public class HdRoomMessageRecordDao extends BaseDao {
         result.setRoomNum(rs.getString(4));
         result.setMessageId(rs.getString(5));
         result.setAmount(rs.getLong(6));
-        result.setUpdateDate(rs.getString(7));
+        result.setUpdateDate(rs.getTimestamp(7));
       }
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -91,7 +91,7 @@ public class HdRoomMessageRecordDao extends BaseDao {
       pstmt = con.prepareStatement(UPDATE_SQL);
       pstmt.setString(i++, hdRoomMessageRecordEntity.getMessageId());
       pstmt.setLong(i++, hdRoomMessageRecordEntity.getAmount());
-      pstmt.setString(i++, hdRoomMessageRecordEntity.getUpdateDate());
+      pstmt.setTimestamp(i++, hdRoomMessageRecordEntity.getUpdateDate());
       pstmt.setString(i++, hdRoomMessageRecordEntity.getId());
       LOGGER.info("roomMessageRecord updateByHotelIdAndNum PreparedStatement", pstmt);
       pstmt.executeUpdate();

@@ -1,4 +1,4 @@
-package com.hi.handy.auth.plugin.util;
+package com.hi.handy.messageapi.plugin.test.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

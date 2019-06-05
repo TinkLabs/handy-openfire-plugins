@@ -33,10 +33,10 @@ public class HdMessageDao extends BaseDao {
                   "VALUES (?, ?, ?, ?, ?, ?)";
 
   private static final String SEARCH_BY_ID_SQL =
-          "SELECT * FROM hdMessage WHERE id = ?";
+          "SELECT stanza FROM hdMessage WHERE id = ?";
 
   private static final String SEARCH_BY_HOTELID_AND_ROOMNUM_SQL =
-          "SELECT stanza,creationDate FROM hdMessage WHERE hotelId = ? AND roomNum = ?";
+          "SELECT stanza,creationDate FROM hdMessage WHERE hotelId = ? AND roomNum = ? ORDER BY creationDate ASC LIMIT ?,?";
 
   public String findStanzaById(String id){
     String stanza = "";
@@ -54,14 +54,15 @@ public class HdMessageDao extends BaseDao {
     } catch (Exception ex) {
       ex.printStackTrace();
       LOGGER.error("findStanzaById error", ex);
+      throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
     return stanza;
   }
 
-  public List<MessageStanzaAndCreationDate> findByHotelIdAndNum(Long hotelId, String roomNum){
-    List<MessageStanzaAndCreationDate> result = new ArrayList<MessageStanzaAndCreationDate>();
+  public List<MessageStanzaAndCreationDate> findByHotelIdAndNum(Long hotelId, String roomNum,Integer pageIndex,Integer pageSize){
+    List<MessageStanzaAndCreationDate> result = new ArrayList();
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -70,16 +71,19 @@ public class HdMessageDao extends BaseDao {
       pstmt = con.prepareStatement(SEARCH_BY_HOTELID_AND_ROOMNUM_SQL);
       pstmt.setLong(1, hotelId);
       pstmt.setString(2, roomNum);
-
+      pstmt.setInt(3, pageIndex-1);
+      pstmt.setInt(4, pageSize);
       rs = pstmt.executeQuery();
       while (rs.next()) {
         MessageStanzaAndCreationDate messageStanzaAndCreationDate = new MessageStanzaAndCreationDate();
-        messageStanzaAndCreationDate.setStanza(rs.getString(2));
-        messageStanzaAndCreationDate.setCreationDate(rs.getString(3));
+        messageStanzaAndCreationDate.setStanza(rs.getString(1));
+        messageStanzaAndCreationDate.setCreationDate(rs.getString(2));
         result.add(messageStanzaAndCreationDate);
       }
-    } catch (Exception e) {
-      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      LOGGER.error("findByHotelIdAndNum error", ex);
+      throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }

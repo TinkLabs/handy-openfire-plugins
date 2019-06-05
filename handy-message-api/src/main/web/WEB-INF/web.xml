@@ -5,11 +5,11 @@
 	      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
   <servlet>
-    <servlet-name>authServlet</servlet-name>
-    <servlet-class>com.hi.handy.messageapi.plugin.MessageServlet</servlet-class>
+    <servlet-name>messageApiServlet</servlet-name>
+    <servlet-class>com.hi.handy.messageapi.plugin.MessageApiServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>authServlet</servlet-name>
-    <url-pattern>/register</url-pattern>
+    <servlet-name>messageApiServlet</servlet-name>
+    <url-pattern>/api</url-pattern>
   </servlet-mapping>
 </web-app>

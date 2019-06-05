@@ -16,9 +16,16 @@ public class BaseParameter {
     GUEST
   }
 
+  public enum MessageType {
+    HISTORY,
+    LIST
+  }
+
   private AuthType AuthType;
 
   private UserType userType;
+
+  private MessageType messageType;
 
 
   public BaseParameter.AuthType getAuthType() {
@@ -35,5 +42,13 @@ public class BaseParameter {
 
   public void setUserType(UserType userType) {
     this.userType = userType;
+  }
+
+  public MessageType getMessageType() {
+    return messageType;
+  }
+
+  public void setMessageType(MessageType messageType) {
+    this.messageType = messageType;
   }
 }

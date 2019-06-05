@@ -63,7 +63,7 @@ public class MessageService {
         hdMessageEntity.setFromJID(packet.getTo().toBareJID());
         hdMessageEntity.setToUser(packet.getFrom().getNode());
         hdMessageEntity.setToJID(packet.getFrom().toBareJID());
-        hdMessageEntity.setCreationDate(String.valueOf(System.currentTimeMillis()));
+        hdMessageEntity.setCreationDate(new java.sql.Timestamp(System.currentTimeMillis()));
         hdMessageEntity.setStanza(stanza);
         HdMessageDao.getInstance().create(hdMessageEntity);
     }
@@ -71,7 +71,7 @@ public class MessageService {
     private void updateRoomMessageRecord(HdRoomMessageRecordEntity hdRoomMessageRecordEntity) {
         LOGGER.info("MessagePlugin MessageService updateRoomMessageRecord");
         hdRoomMessageRecordEntity.setAmount(hdRoomMessageRecordEntity.getAmount() + 1);
-        hdRoomMessageRecordEntity.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+        hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
         HdRoomMessageRecordDao.getInstance().updateByHotelIdAndNum(hdRoomMessageRecordEntity);
     }
 
@@ -84,7 +84,7 @@ public class MessageService {
         hdRoomMessageRecordEntity.setRoomNum(roomNum);
         hdRoomMessageRecordEntity.setAmount(0l);
         hdRoomMessageRecordEntity.setMessageId(messageId);
-        hdRoomMessageRecordEntity.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+        hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
         HdRoomMessageRecordDao.getInstance().create(hdRoomMessageRecordEntity);
     }
 }

@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
 import com.hi.handy.messageapi.plugin.exception.ExceptionConst;
 import com.hi.handy.messageapi.plugin.model.BaseResultModel;
-import com.hi.handy.messageapi.plugin.model.MessageModel;
 import com.hi.handy.messageapi.plugin.parameter.MessageParameter;
 import com.hi.handy.messageapi.plugin.service.MessageService;
 import org.jivesoftware.admin.AuthCheckFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,11 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
-public class MessageServlet extends HttpServlet {
-
-  private static final String SERVICE_URL = "message/list";
+public class MessageApiServlet extends HttpServlet {
+  private static final Logger LOGGER = LoggerFactory.getLogger(MessageApiServlet.class);
+  private static final String SERVICE_URL = "handy-message-api/api";
 
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -38,7 +38,8 @@ public class MessageServlet extends HttpServlet {
     ObjectMapper mapper = new ObjectMapper();
     try {
       MessageParameter parameter = mapper.readValue(req.getInputStream(), MessageParameter.class);
-      List<MessageModel> result = MessageService.getInstance().chatListByPaging(parameter);
+      LOGGER.info("doPost parameter"+parameter.getMessageType());
+      Object result = MessageService.getInstance().list(parameter);
       resultModel.setData(result);
     } catch (BusinessException be) {
       be.printStackTrace();
