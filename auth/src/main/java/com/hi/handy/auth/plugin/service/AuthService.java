@@ -9,25 +9,34 @@ import com.hi.handy.auth.plugin.model.AuthModel;
 import com.hi.handy.auth.plugin.model.ChatRoomModel;
 import com.hi.handy.auth.plugin.model.ChatRoomModel.RoomType;
 import com.hi.handy.auth.plugin.parameter.AuthParameter;
-import com.hi.handy.auth.plugin.parameter.BaseParameter.AuthType;
-import com.hi.handy.auth.plugin.parameter.BaseParameter.UserType;
+import com.hi.handy.auth.plugin.parameter.AuthParameter.AuthType;
+import com.hi.handy.auth.plugin.parameter.AuthParameter.UserType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.directwebremoting.annotations.Auth;
 import org.jivesoftware.openfire.SessionManager;
 import org.jivesoftware.openfire.XMPPServer;
+import org.jivesoftware.openfire.group.Group;
+import org.jivesoftware.openfire.group.GroupAlreadyExistsException;
+import org.jivesoftware.openfire.group.GroupManager;
+import org.jivesoftware.openfire.group.GroupNotFoundException;
 import org.jivesoftware.openfire.muc.MUCRoom;
 import org.jivesoftware.openfire.session.ClientSession;
 import org.jivesoftware.openfire.user.User;
 import org.jivesoftware.openfire.user.UserAlreadyExistsException;
 import org.jivesoftware.openfire.user.UserManager;
 import org.jivesoftware.openfire.user.UserNotFoundException;
+import org.jivesoftware.openfire.vcard.VCardManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xmpp.packet.JID;
 
 public class AuthService {
 
+  public static final Logger log = LoggerFactory.getLogger(AuthService.class);
   private static final String DEFAULT_SERVICE_NAME = "conference";
   private static final String GUEST_PASSWORD_SUFFIX = "_openfire";
   private static final String GUEST_ROOM_SUFFIX = "-room-guest";
@@ -116,7 +125,6 @@ public class AuthService {
     } else {
       HdUserPropertyDao.getInstance().updateUserProperty(agentUserName, parameter);
     }
-
     // 创建用户
     String password = parameter.getPassword().trim();
     user = userManager.createUser(agentUserName, password, parameter.getUserName(),
@@ -126,6 +134,16 @@ public class AuthService {
     AuthModel result = new AuthModel();
     result.setUserName(user.getUsername());
     result.setEmail(user.getEmail());
+    //新注册的agent需要加入到zone下面的group
+    GroupManager groupManager = GroupManager.getInstance();
+    if(groupManager.isSearchSupported()){
+      Collection<Group> groups = groupManager.search("zone"+parameter.getZoneId()+"-");
+      log.info("zone:"+parameter.getZoneId()+" groupSize:"+groups.size()+"");
+      for (Group group : groups) {
+        JID jid = new JID(agentUserName);
+        group.getMembers().add(jid);
+      }
+    }
 
     return result;
   }
@@ -160,6 +178,39 @@ public class AuthService {
     ChatRoomModel chatRoomModel = findAgentRoom(chatRooms);
     // 分配agent
     String agent = distributeAgent(parameter.getZoneId(), guestUserName, chatRoomModel);
+    //创建组（group）,小组的成员是某个房间的guest和所属zone下面的agent,group的name是zoneid+hotelid+roomid+deviceuserid？
+    String  groupName = "zone"+parameter.getZoneId()+"-hotel"+parameter.getHotelId()+"-room"+parameter.getRoomNum();
+
+    GroupManager groupManager = GroupManager.getInstance();
+    boolean isGroupExist = false;
+    Group group = null;
+    try {
+      group = groupManager.getGroup(groupName,true);
+    } catch (GroupNotFoundException e) {
+      e.printStackTrace();
+    }
+    if(group!=null){
+      isGroupExist = true;
+    }
+    if(!isGroupExist){
+      try {
+        group = groupManager.createGroup(groupName);
+      } catch (GroupAlreadyExistsException e) {
+        e.printStackTrace();
+        throw new BusinessException(ExceptionConst.BUSINESS_ERROR,
+                "create group fail groupAlreadyExists! groupname:"+groupName);
+      }
+    }
+    //将当前的的guest 加入到group
+    JID userJid = new JID(user.getUsername());
+    group.getMembers().add(userJid);
+    //将该zone下的agent加入到group中
+    List<String> agentUserNames = HdUserPropertyDao.getInstance().searchByZone(parameter.getZoneId());
+    for (String agentUserName : agentUserNames) {
+      JID jid = new JID(agentUserName);
+      group.getMembers().add(jid);
+    }
+
 
     // 返回账号信息 和 chat room
     AuthModel result = new AuthModel();

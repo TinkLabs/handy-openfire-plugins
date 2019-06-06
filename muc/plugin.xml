@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin>
-   <class>com.hi.handy.auth.plugin.AuthPlugin</class>
-   <name>Auth Plugin</name>
-   <description>auth for client</description>
-   <author>Hans</author>
-   <version>1.1.0</version>
-   <date>16/04/2019</date>
-   <minServerVersion>4.3.2</minServerVersion>
-   <databaseKey>auth</databaseKey>
-   <databaseVersion>0</databaseVersion>
+   <class>com.hi.handy.muc.plugin.MUCPlugin</class>
+   <name>MUC Plugin</name>
+   <description>save MUC info</description>
+   <author>Xiutao</author>
+   <version>1.0.0</version>
+   <date>2019-05-30</date>
+   <minServerVersion>4.2.0</minServerVersion>
    <!--<adminconsole>-->
       <!--<tab id="tab-server">-->
          <!--<sidebar id="sidebar-server-settings">-->

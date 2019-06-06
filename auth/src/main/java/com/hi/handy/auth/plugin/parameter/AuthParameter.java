@@ -1,6 +1,8 @@
 package com.hi.handy.auth.plugin.parameter;
 
-public class AuthParameter extends BaseParameter {
+import java.io.Serializable;
+
+public class AuthParameter implements Serializable {
 
   private Long hotelId;
   private String hotelName;
@@ -12,6 +14,41 @@ public class AuthParameter extends BaseParameter {
   private Long zoneId;
   private String zoneName;
   private String barcode;
+
+  public enum AuthType {
+    AGENT_CHAT_ROOM,
+    AGENT_REGISTER,
+    AGENT_MODIFY,
+    GUEST
+  }
+
+  public enum UserType {
+    AGENT,
+    AGENT_ADMIN,
+    HOTEL,
+    GUEST
+  }
+
+  private AuthType AuthType;
+
+  private UserType userType;
+
+
+  public AuthType getAuthType() {
+    return AuthType;
+  }
+
+  public void setAuthType(AuthType authType) {
+    AuthType = authType;
+  }
+
+  public UserType getUserType() {
+    return userType;
+  }
+
+  public void setUserType(UserType userType) {
+    this.userType = userType;
+  }
 
 
   public Long getHotelId() {

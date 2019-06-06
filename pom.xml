@@ -11,6 +11,7 @@
   <modules>
     <module>history</module>
     <module>auth</module>
+    <module>muc</module>
   </modules>
 
   <properties>
