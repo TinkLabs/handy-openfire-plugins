@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+   <class>com.hi.handy.authapi.plugin.AuthApiPlugin</class>
+   <name>handy-authapi-plugin</name>
+   <description>handy auth api</description>
+   <author>Dave</author>
+   <version>1.0.0</version>
+   <date>2019-06-06</date>
+   <minServerVersion>4.3.2</minServerVersion>
+   <adminconsole>
+      <tab id="tab-server">
+         <sidebar id="sidebar-server-settings">
+            <item id="auth-api"
+                  name="Handy Auth API"
+                  url="auth-api.jsp"
+                  description="Handy Auth API" />
+         </sidebar>
+      </tab>
+   </adminconsole>
+</plugin>

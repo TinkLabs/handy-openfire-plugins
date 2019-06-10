@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+   <class>com.hi.handy.message.plugin.MessagePlugin</class>
+   <name>handy-message-plugin</name>
+   <description>record all message to local</description>
+   <author>Dave</author>
+   <version>1.0.0</version>
+   <date>2019-05-31</date>
+   <minServerVersion>4.3.2</minServerVersion>
+   <minJavaVersion>1.8</minJavaVersion>
+
+   <adminconsole>
+      <tab id="tab-server">
+         <sidebar id="sidebar-server-settings">
+            <item id="message-props-edit-form"
+                  name="Handy Message"
+                  url="message-props-edit-form.jsp"
+                  description="Settings for Handy Message Plugin" />
+         </sidebar>
+      </tab>
+   </adminconsole>
+</plugin>
