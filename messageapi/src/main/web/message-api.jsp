@@ -10,11 +10,11 @@
 <html>
 <head>
     <title>Handy Message API</title>
-    <meta name="pageID" content="message-props-edit-form"/>
+    <meta name="pageID" content="message-api"/>
 </head>
 <body>
 <p>
-    get message data
+    message-api
 </p>
 
 <div class="jive-contentBoxHeader">1 get history message list</div>
@@ -94,6 +94,8 @@ result:
         </tbody>
     </table>
 </div>
+
+<br>
 
 </body>
 </html>

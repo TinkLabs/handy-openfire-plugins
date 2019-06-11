@@ -470,7 +470,6 @@ public class AuthService {
         return room;
     }
 
-
     private String getRoomNameByGuestName(RoomType roomType, String guestUserName) {
         if (roomType == RoomType.AGENT) {
             return guestUserName.toLowerCase() + GUEST_ROOM_SUFFIX;
