@@ -112,4 +112,31 @@ public class MUCDao {
             DbConnectionManager.closeConnection(statement,dbConnection);
         }
     }
+
+    /**
+     * 根据用户名获取zoneid
+     * @param userName
+     * @return
+     */
+    public static Long getUserZoneId(String userName){
+        Connection dbConnection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Long result = null;
+        try {
+            dbConnection = DbConnectionManager.getConnection();
+            String sql = "SELECT zoneid FROM hdUserProperty WHERE username = ?";
+            statement = dbConnection.prepareStatement(sql);
+            statement.setString(1,userName);
+            resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                result = resultSet.getLong(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DbConnectionManager.closeConnection(statement,dbConnection);
+        }
+        return result;
+    }
 }

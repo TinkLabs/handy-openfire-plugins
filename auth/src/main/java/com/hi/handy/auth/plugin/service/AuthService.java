@@ -134,14 +134,42 @@ public class AuthService {
     AuthModel result = new AuthModel();
     result.setUserName(user.getUsername());
     result.setEmail(user.getEmail());
-    //新注册的agent需要加入到zone下面的group
+    //新注册的agent需要加入到zone下面的group，没有的话则创建新的group,groupname: zone-zoneid,eg:zone-12
     GroupManager groupManager = GroupManager.getInstance();
     if(groupManager.isSearchSupported()){
-      Collection<Group> groups = groupManager.search("zone"+parameter.getZoneId()+"-");
-      log.info("zone:"+parameter.getZoneId()+" groupSize:"+groups.size()+"");
-      for (Group group : groups) {
-        JID jid = new JID(agentUserName);
-        group.getMembers().add(jid);
+      if(null!=parameter.getZoneId()){
+        Group existGroup = null;
+        try {
+          existGroup = groupManager.getGroup("zone-"+parameter.getZoneId(),true);
+        } catch (GroupNotFoundException e) {
+          e.printStackTrace();
+          log.warn("not found group: zone-"+parameter.getZoneId()+", will create new group");
+        }
+        if(null!=existGroup){
+          //加入已有的group
+          log.info("agent join existGroup:"+existGroup.getName()+" zone:"+parameter.getZoneId());
+          JID jid = new JID(agentUserName);
+          existGroup.getMembers().add(jid);
+        }else {
+          //创建新的group
+          Group newGroup = null;
+          try {
+            newGroup = groupManager.createGroup("zone-"+parameter.getZoneId());
+          } catch (GroupAlreadyExistsException e) {
+              e.printStackTrace();
+              log.error("create new group fail, GroupAlreadyExists group: zone-"+parameter.getZoneId());
+              throw new BusinessException(ExceptionConst.BUSINESS_ERROR,"create new group fail, GroupAlreadyExists group: zone-"+parameter.getZoneId());
+          }
+          newGroup.setDescription("zoneId:"+parameter.getZoneId()+"'s group");
+          //sharedRoster.showInRoster 允许的值：onlyGroup，nobody，everybody。 onlyGroup和everybody的时候最好设置sharedRoster.displayName
+          newGroup.getProperties().put("sharedRoster.showInRoster", "everybody");
+          newGroup.getProperties().put("sharedRoster.displayName", "zone-"+parameter.getZoneId());
+          newGroup.getProperties().put("sharedRoster.groupList", "");
+          JID jid = new JID(agentUserName);
+          newGroup.getMembers().add(jid);
+        }
+      }else {
+        throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "zoneId is needed");
       }
     }
 
@@ -178,40 +206,6 @@ public class AuthService {
     ChatRoomModel chatRoomModel = findAgentRoom(chatRooms);
     // 分配agent
     String agent = distributeAgent(parameter.getZoneId(), guestUserName, chatRoomModel);
-    //创建组（group）,小组的成员是某个房间的guest和所属zone下面的agent,group的name是zoneid+hotelid+roomid+deviceuserid？
-    String  groupName = "zone"+parameter.getZoneId()+"-hotel"+parameter.getHotelId()+"-room"+parameter.getRoomNum();
-
-    GroupManager groupManager = GroupManager.getInstance();
-    boolean isGroupExist = false;
-    Group group = null;
-    try {
-      group = groupManager.getGroup(groupName,true);
-    } catch (GroupNotFoundException e) {
-      e.printStackTrace();
-    }
-    if(group!=null){
-      isGroupExist = true;
-    }
-    if(!isGroupExist){
-      try {
-        group = groupManager.createGroup(groupName);
-      } catch (GroupAlreadyExistsException e) {
-        e.printStackTrace();
-        throw new BusinessException(ExceptionConst.BUSINESS_ERROR,
-                "create group fail groupAlreadyExists! groupname:"+groupName);
-      }
-    }
-    //将当前的的guest 加入到group
-    JID userJid = new JID(user.getUsername());
-    group.getMembers().add(userJid);
-    //将该zone下的agent加入到group中
-    List<String> agentUserNames = HdUserPropertyDao.getInstance().searchByZone(parameter.getZoneId());
-    for (String agentUserName : agentUserNames) {
-      JID jid = new JID(agentUserName);
-      group.getMembers().add(jid);
-    }
-
-
     // 返回账号信息 和 chat room
     AuthModel result = new AuthModel();
     result.setUserName(user.getUsername());

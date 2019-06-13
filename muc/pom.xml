@@ -11,7 +11,7 @@
 
     <artifactId>muc</artifactId>
     <description>
-        为了解决当用户重新登录，不会自动加入聊天室的问题
+        将guest/agent的消息转发到相应的group
     </description>
     <properties>
         <lombok.version>1.16.18</lombok.version>

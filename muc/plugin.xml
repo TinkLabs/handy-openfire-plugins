@@ -3,7 +3,7 @@
 <plugin>
    <class>com.hi.handy.muc.plugin.MUCPlugin</class>
    <name>MUC Plugin</name>
-   <description>save MUC info</description>
+   <description>forward guest/agent message to group</description>
    <author>Xiutao</author>
    <version>1.0.0</version>
    <date>2019-05-30</date>
