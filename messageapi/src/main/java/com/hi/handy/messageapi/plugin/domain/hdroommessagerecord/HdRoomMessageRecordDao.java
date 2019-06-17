@@ -1,4 +1,4 @@
-package com.hi.handy.messageapi.plugin.domain.roommessagerecord;
+package com.hi.handy.messageapi.plugin.domain.hdroommessagerecord;
 
 import com.hi.handy.messageapi.plugin.domain.BaseDao;
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
@@ -22,37 +22,28 @@ public class HdRoomMessageRecordDao extends BaseDao {
     return INSTANCE;
   }
 
-  private static final String SEARCH_BY_HOTELID_AND_ROOMNUM_SQL =
-          "SELECT * FROM hdRoomMessageRecord WHERE hotelId = ? AND roomNum = ?";
+  private static final String SEARCH_BY_ROOMNAME_SQL = "SELECT amount FROM hdRoomMessageRecord WHERE roomName = ? ";
 
-  public HdRoomMessageRecordEntity findByHotelIdAndNum(Long hotelId, String roomNum){
-    HdRoomMessageRecordEntity result = null;
+  public Long findByRoomName(String roomName){
+    Long readCount = 0l;
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     try {
       con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(SEARCH_BY_HOTELID_AND_ROOMNUM_SQL);
-      pstmt.setLong(1, hotelId);
-      pstmt.setString(2, roomNum);
+      pstmt = con.prepareStatement(SEARCH_BY_ROOMNAME_SQL);
+      pstmt.setString(1, roomName);
       rs = pstmt.executeQuery();
       while (rs.next()) {
-        result = new HdRoomMessageRecordEntity();
-        result.setId(rs.getString(1));
-        result.setHotelId(rs.getInt(2));
-        result.setHotelName(rs.getString(3));
-        result.setRoomNum(rs.getString(4));
-        result.setMessageId(rs.getString(5));
-        result.setAmount(rs.getLong(6));
-        result.setUpdateDate(rs.getTimestamp(7));
+        readCount = rs.getLong(1);
       }
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("findByHotelIdAndNum error", ex);
+      LOGGER.error("findByRoomName error", ex);
       throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
-    return result;
+    return readCount;
   }
 }

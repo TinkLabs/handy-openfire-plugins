@@ -3,18 +3,13 @@ package com.hi.handy.authapi.plugin.parameter;
 public class BaseParameter {
 
   public enum AuthType {
-    AGENT_LOGIN,
-    AGENT_REGISTER,
-    AGENT_CHAT_ROOM,
-    AGENT_MODIFY,
+    GUEST_ENTRY_HOTELCHATROOM,
     GUEST_LOGIN,
-    GUEST_REGISTER
+    AGENT_LOGIN
   }
 
   public enum UserType {
     AGENT,
-    AGENT_ADMIN,
-    HOTEL,
     GUEST
   }
 

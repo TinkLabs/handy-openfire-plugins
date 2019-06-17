@@ -6,7 +6,7 @@ public class AuthParameter extends BaseParameter {
   private String hotelName;
   private String roomId;
   private String roomNum;
-  private String userName;
+  private String displayName;
   private String password;
   private String email;
   private Long zoneId;
@@ -46,12 +46,12 @@ public class AuthParameter extends BaseParameter {
     this.roomNum = roomNum;
   }
 
-  public String getUserName() {
-    return userName;
+  public String getDisplayName() {
+    return displayName;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
   }
 
   public String getPassword() {

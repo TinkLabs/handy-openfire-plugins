@@ -1,11 +1,10 @@
 package com.hi.handy.message.plugin.service;
 
-import com.hi.handy.message.plugin.domain.hduserproperty.HdUserPropertyDao;
-import com.hi.handy.message.plugin.domain.hduserproperty.HdUserPropertyEntity;
-import com.hi.handy.message.plugin.domain.message.HdMessageDao;
-import com.hi.handy.message.plugin.domain.message.HdMessageEntity;
-import com.hi.handy.message.plugin.domain.roommessagerecord.HdRoomMessageRecordDao;
-import com.hi.handy.message.plugin.domain.roommessagerecord.HdRoomMessageRecordEntity;
+import com.hi.handy.message.plugin.domain.hdmessage.HdMessageDao;
+import com.hi.handy.message.plugin.domain.hdmessage.HdMessageEntity;
+import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordDao;
+import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmpp.packet.Message;
@@ -25,66 +24,81 @@ public class MessageService {
     }
 
     public void save(Packet packet) {
-        LOGGER.info("MessagePlugin MessageService save start");
+        LOGGER.info("save");
+        LOGGER.info("packet",packet);
         try {
             Message message = (Message) packet;
-            HdUserPropertyEntity hdUserProperty = HdUserPropertyDao.getInstance().searchByName(packet.getTo().getNode());
-            LOGGER.info("MessagePlugin MessageService save hdUserProperty:"+hdUserProperty);
-            if (hdUserProperty != null) {
-                String id = UUID.randomUUID().toString();
-                createMessage(packet, id,message.getID(), message.getElement().asXML(), hdUserProperty.getHotelId(), hdUserProperty.getHotelName(), hdUserProperty.getRoomNum());
-                HdRoomMessageRecordEntity roomMessageRecord = HdRoomMessageRecordDao.getInstance().findByHotelIdAndNum(hdUserProperty.getHotelId(), hdUserProperty.getRoomNum());
+            String roomType = getRoomeType(packet.getFrom().getNode());
+            if(StringUtils.isNoneBlank(roomType) && ("room-vip".equals(roomType)||"room-hotel".equals(roomType))) {
+                String[] roomInfoArray = packet.getFrom().getNode().split("#");
+                String[] getRoomInfoDetailArray = roomInfoArray[1].split("-");
+                Long zoneId = Long.valueOf(getRoomInfoDetailArray[0]);
+                Long hotelId = Long.valueOf(getRoomInfoDetailArray[1]);
+                String hotelName = getRoomInfoDetailArray[2];
+                String roomNum = getRoomInfoDetailArray[3];
+
+                String deviceUserId = roomInfoArray[2];
+                String roomName = packet.getFrom().getNode();
+
+                createOrUpdateMessage(packet, message.getID(), message.getElement().asXML(), zoneId, hotelId, hotelName, roomNum, deviceUserId);
+                HdRoomMessageRecordEntity roomMessageRecord = HdRoomMessageRecordDao.getInstance().findByRoomName(roomName);
                 if (roomMessageRecord == null) {
-                    createRoomMessageRecord(id, hdUserProperty.getHotelId(), hdUserProperty.getHotelName(), hdUserProperty.getRoomNum());
+                    createRoomMessageRecord(roomName);
                 } else {
-                    roomMessageRecord.setMessageId(id);
                     updateRoomMessageRecord(roomMessageRecord);
                 }
-                LOGGER.info("MessagePlugin MessageService save success");
-            } else {
-                LOGGER.info(packet.getFrom().getNode() + "is not register");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            LOGGER.error("message save error", ex);
-            LOGGER.debug("MessagePlugin MessageService save failed");
         }
     }
 
-    private void createMessage(Packet packet,String id, String messageId, String stanza, Long hotelId, String hotelName, String roomNum) {
-        LOGGER.info("MessagePlugin MessageService createMessage:");
-        HdMessageEntity hdMessageEntity = new HdMessageEntity();
-        hdMessageEntity.setId(id);
-        hdMessageEntity.setMessageId(messageId);
-        hdMessageEntity.setHotelId(hotelId);
-        hdMessageEntity.setHotelName(hotelName);
-        hdMessageEntity.setRoomNum(roomNum);
-        hdMessageEntity.setFromUser(packet.getTo().getNode());
-        hdMessageEntity.setFromJID(packet.getTo().toBareJID());
-        hdMessageEntity.setToUser(packet.getFrom().getNode());
-        hdMessageEntity.setToJID(packet.getFrom().toBareJID());
-        hdMessageEntity.setCreationDate(new java.sql.Timestamp(System.currentTimeMillis()));
-        hdMessageEntity.setStanza(stanza);
-        HdMessageDao.getInstance().create(hdMessageEntity);
+    private void createOrUpdateMessage(Packet packet,String messageId,String stanza,Long zoneId,Long hotelId,String hotelName,String roomNum, String deviceUserId) {
+        LOGGER.info("createOrUpdateMessage");
+        String systemId = HdMessageDao.getInstance().findBytoJID(packet.getFrom().toBareJID());
+        if(StringUtils.isNoneBlank(systemId)){
+            HdMessageDao.getInstance().updateStanzaById(systemId,stanza,new java.sql.Timestamp(System.currentTimeMillis()));
+        }else{
+            HdMessageEntity hdMessageEntity = new HdMessageEntity();
+            hdMessageEntity.setId(UUID.randomUUID().toString());
+            hdMessageEntity.setMessageId(messageId);
+            hdMessageEntity.setZoneId(zoneId);
+            hdMessageEntity.setHotelId(hotelId);
+            hdMessageEntity.setHotelName(hotelName);
+            hdMessageEntity.setRoomNum(roomNum);
+            hdMessageEntity.setDeviceUserId(deviceUserId);
+            hdMessageEntity.setFromUser(packet.getTo().getNode());
+            hdMessageEntity.setFromJID(packet.getTo().toBareJID());
+            hdMessageEntity.setToUser(packet.getFrom().getNode());
+            hdMessageEntity.setToJID(packet.getFrom().toBareJID());
+            hdMessageEntity.setCreationDate(new java.sql.Timestamp(System.currentTimeMillis()));
+            hdMessageEntity.setStanza(stanza);
+            HdMessageDao.getInstance().create(hdMessageEntity);
+        }
+
     }
 
     private void updateRoomMessageRecord(HdRoomMessageRecordEntity hdRoomMessageRecordEntity) {
-        LOGGER.info("MessagePlugin MessageService updateRoomMessageRecord");
-        hdRoomMessageRecordEntity.setAmount(hdRoomMessageRecordEntity.getAmount() + 1);
-        hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
-        HdRoomMessageRecordDao.getInstance().updateByHotelIdAndNum(hdRoomMessageRecordEntity);
+        LOGGER.info("updateRoomMessageRecord");
+        HdRoomMessageRecordDao.getInstance().updateAmountAndUpdateDateById(hdRoomMessageRecordEntity.getId(),hdRoomMessageRecordEntity.getAmount()+1,new java.sql.Timestamp(System.currentTimeMillis()));
     }
 
-    private void createRoomMessageRecord(String messageId, Long hotelId, String hotelName, String roomNum) {
-        LOGGER.info("MessagePlugin MessageService createRoomMessageRecord");
+    private void createRoomMessageRecord(String roomName) {
+        LOGGER.info("createRoomMessageRecord");
         HdRoomMessageRecordEntity hdRoomMessageRecordEntity = new HdRoomMessageRecordEntity();
         hdRoomMessageRecordEntity.setId(UUID.randomUUID().toString());
-        hdRoomMessageRecordEntity.setHotelId(hotelId);
-        hdRoomMessageRecordEntity.setHotelName(hotelName);
-        hdRoomMessageRecordEntity.setRoomNum(roomNum);
+        hdRoomMessageRecordEntity.setRoomName(roomName);
         hdRoomMessageRecordEntity.setAmount(1l);
-        hdRoomMessageRecordEntity.setMessageId(messageId);
         hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
         HdRoomMessageRecordDao.getInstance().create(hdRoomMessageRecordEntity);
+    }
+
+    private String getRoomeType(String fromUser){
+        try {
+            String[] splitkByOne = fromUser.split("#");
+            return splitkByOne[0];
+        }catch (Exception ex){
+            return null;
+        }
     }
 }

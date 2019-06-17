@@ -35,9 +35,7 @@ public enum AuthType {
 
 public enum UserType {
     AGENT,        // 0
-    AGENT_ADMIN,  // 1
-    HOTEL,        // 2
-    GUEST         // 3
+    GUEST         // 1
   }
                 </pre>
             </td>
@@ -48,24 +46,7 @@ public enum UserType {
 
 <br>
 
-<div class="jive-contentBoxHeader">测试步骤</div>
-<div class="jive-contentBox">
-    <table cellpadding="3" cellspacing="0" border="0" width="100%">
-        <tbody>
-        <tr>
-            <td>
-                <pre>
-1 agent 登录  ——> 2 guest 注册 ——> 3 guest 登录 ——> 4 agent 获取房间列表
-                </pre>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<br>
-
-<div class="jive-contentBoxHeader">1 guest register</div>
+<div class="jive-contentBoxHeader">1 guest entry into hotel chat room</div>
 <div class="jive-contentBox">
     <table cellpadding="3" cellspacing="0" border="0" width="100%">
         <tbody>
@@ -76,10 +57,13 @@ method:post
 url:http://127.0.0.1:9090/plugins/authapi/api
 paramter:
 {
-	"authType":5,
-	"email":"xiaoming2000@tinklabs.com",
-	"password":"12345678",
-	"userType":3
+	"authType":0,
+	"barcode": "4352346234523",
+	"hotelId":2,
+	"hotelName":"酒店2",
+	"roomNum": "302",
+	"zoneId": 1,
+	"zoneName": "香港"
 }
 result:
 {
@@ -87,12 +71,17 @@ result:
     "code": null,
     "message": null,
     "data": {
-        "userName": null,
-        "password": null,
-        "email": "xiaoming6@tinklabs.com",
-        "agent": null,
-        "agentJID": null,
-        "chatRooms": null
+        "userName": "4352346234523",
+        "displayName": "guest",
+        "email": "4352346234523@tinklabs.com",
+        "chatRoom": {
+            "name": null,
+            "status": false,
+            "icon": null,
+            "roomName": "room-hotel#1-2-酒店2-302#4352346234523",
+            "roomJID": null,
+            "roomType": "HOTEL"
+        }
     }
 }
                 </pre>
@@ -104,7 +93,7 @@ result:
 
 <br>
 
-<div class="jive-contentBoxHeader">2 guest login</div>
+<div class="jive-contentBoxHeader">2 guest login in to vip chat room</div>
 <div class="jive-contentBox">
     <table cellpadding="3" cellspacing="0" border="0" width="100%">
         <tbody>
@@ -115,13 +104,15 @@ method:post
 url:http://127.0.0.1:9090/plugins/authapi/api
 paramter:
 {
-	"authType":4,
-	"email":"xiaoming1000@tinklabs.com",
-	"password":"12345678",
-	"hotelId":1,
-	"hotelName":"酒店1",
-	"roomNum": "305",
-	"zoneId": 1
+	"authType":1,
+	"displayName":"dave",
+	"email":"dave@tinklabs.com",
+	"barcode": "999999999",
+	"hotelId":3,
+	"hotelName":"酒店3",
+	"roomNum": "303",
+	"zoneId": 3,
+	"zoneName": "新加坡"
 }
 result:
 {
@@ -129,21 +120,17 @@ result:
     "code": null,
     "message": null,
     "data": {
-        "userName": "xiaoming1000-tinklabs.com",
-        "password": "xiaoming1000-tinklabs.com_openfire",
-        "email": "xiaoming1000@tinklabs.com",
-        "agent": "agent2000-tinklabs.com",
-        "agentJID": "agent2000-tinklabs.com@conference.192.168.100.66",
-        "chatRooms": [
-            {
-                "roomName": "xiaoming1000-tinklabs.com-room-guest",
-                "roomJID": null,
-                "hotelId": null,
-                "hotelName": null,
-                "hotelRoomNum": null,
-                "roomType": "AGENT"
-            }
-        ]
+        "userName": "dave-tinklabs.com",
+        "displayName": "dave",
+        "email": "dave@tinklabs.com",
+        "chatRoom": {
+            "name": null,
+            "status": false,
+            "icon": null,
+            "roomName": "room-vip#3-3-酒店3-303#dave-tinklabs.com",
+            "roomJID": null,
+            "roomType": "VIP"
+        }
     }
 }
                 </pre>
@@ -166,11 +153,9 @@ method:post
 url:http://127.0.0.1:9090/plugins/authapi/api
 paramter:
 {
-	"authType":0,
-	"email":"agent2000@tinklabs.com",
-	"password":"12345678",
-	"userType": 0,
-	"zoneId":1
+	"authType":2,
+	"email":"agent@tinklabs.com",
+	"password":"12345678"
 }
 result:
 {
@@ -178,12 +163,10 @@ result:
     "code": null,
     "message": null,
     "data": {
-        "userName": "agent2000-tinklabs.com",
-        "password": null,
-        "email": "agent2000@tinklabs.com",
-        "agent": null,
-        "agentJID": null,
-        "chatRooms": null
+        "userName": "agent-tinklabs.com",
+        "displayName": "",
+        "email": "agent@tinklabs.com",
+        "chatRoom": null
     }
 }
                 </pre>

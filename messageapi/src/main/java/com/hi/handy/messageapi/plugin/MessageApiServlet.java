@@ -29,8 +29,9 @@ public class MessageApiServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-          throws IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    resp.setHeader("Access-Control-Allow-Origin","*");
+    resp.setHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE");
     req.setCharacterEncoding("utf-8");
     resp.setCharacterEncoding("utf-8");
     resp.setContentType("application/json; charset=utf-8");
@@ -38,7 +39,6 @@ public class MessageApiServlet extends HttpServlet {
     ObjectMapper mapper = new ObjectMapper();
     try {
       MessageParameter parameter = mapper.readValue(req.getInputStream(), MessageParameter.class);
-      LOGGER.info("doPost parameter"+parameter.getMessageType());
       Object result = MessageService.getInstance().list(parameter);
       resultModel.setData(result);
     } catch (BusinessException be) {

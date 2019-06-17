@@ -1,4 +1,4 @@
-package com.hi.handy.message.plugin.domain.message;
+package com.hi.handy.message.plugin.domain.hdmessage;
 
 import com.hi.handy.message.plugin.domain.BaseEntity;
 
@@ -7,10 +7,12 @@ import java.sql.Timestamp;
 public class HdMessageEntity extends BaseEntity {
 
     private String id;
+    private String messageId;
+    private Long zoneId;
     private Long hotelId;
     private String hotelName;
     private String roomNum;
-    private String messageId;
+    private String deviceUserId;
     private String fromUser;
     private String toUser;
     private String fromJID;
@@ -24,6 +26,14 @@ public class HdMessageEntity extends BaseEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getDeviceUserId() {
+        return deviceUserId;
+    }
+
+    public void setDeviceUserId(String deviceUserId) {
+        this.deviceUserId = deviceUserId;
     }
 
     public Long getHotelId() {
@@ -104,5 +114,13 @@ public class HdMessageEntity extends BaseEntity {
 
     public void setStanza(String stanza) {
         this.stanza = stanza;
+    }
+
+    public Long getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(Long zoneId) {
+        this.zoneId = zoneId;
     }
 }

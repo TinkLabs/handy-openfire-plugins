@@ -1,31 +1,6 @@
 package com.hi.handy.authapi.plugin.model;
 
-import java.util.List;
-
 public class AuthModel {
-
-  private String userName;
-  private String password;
-  private String email;
-  private String agent;
-  private String agentJID;
-  private List<ChatRoomModel> chatRooms;
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
 
   public String getEmail() {
     return email;
@@ -35,28 +10,32 @@ public class AuthModel {
     this.email = email;
   }
 
-
-  public List<ChatRoomModel> getChatRooms() {
-    return chatRooms;
+  public ChatRoomModel getChatRoom() {
+    return chatRoom;
   }
 
-  public void setChatRooms(List<ChatRoomModel> chatRooms) {
-    this.chatRooms = chatRooms;
+  public void setChatRoom(ChatRoomModel chatRoom) {
+    this.chatRoom = chatRoom;
   }
 
-  public String getAgent() {
-    return agent;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setAgent(String agent) {
-    this.agent = agent;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
-  public String getAgentJID() {
-    return agentJID;
+  public String getDisplayName() {
+    return displayName;
   }
 
-  public void setAgentJID(String agentJID) {
-    this.agentJID = agentJID;
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
   }
+
+  private String userName;
+  private String displayName;
+  private String email;
+  private ChatRoomModel chatRoom;
 }

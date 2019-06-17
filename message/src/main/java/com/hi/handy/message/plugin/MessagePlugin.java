@@ -62,6 +62,7 @@ public class MessagePlugin implements Plugin, PacketInterceptor {
       LOGGER.info("MessagePlugin is enabled============");
       // incoming表示本条消息刚进入openFire。processed为false，表示本条消息没有被openFire处理过
       if (incoming && processed == false && packet instanceof Message) {
+        LOGGER.info("MessagePlugin interceptPacket packet:" + packet);
         CompletableFuture.runAsync(() -> recordMessage(packet));
       }
     }else{
@@ -71,7 +72,6 @@ public class MessagePlugin implements Plugin, PacketInterceptor {
 
   private void recordMessage(Packet packet) {
       Message message = (Message) packet;
-      LOGGER.info("MessagePlugin interceptPacket packet:" + packet);
       LOGGER.info("MessagePlugin interceptPacket message:" + message);
       if (!shouldStoreMessage(message)) {
         return;

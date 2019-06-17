@@ -1,7 +1,7 @@
 package com.hi.handy.message.plugin.test.dao;
 
-import com.hi.handy.message.plugin.domain.message.HdMessageDao;
-import com.hi.handy.message.plugin.domain.message.HdMessageEntity;
+import com.hi.handy.message.plugin.domain.hdmessage.HdMessageDao;
+import com.hi.handy.message.plugin.domain.hdmessage.HdMessageEntity;
 import com.hi.handy.message.plugin.test.BaseTest;
 import org.junit.Test;
 

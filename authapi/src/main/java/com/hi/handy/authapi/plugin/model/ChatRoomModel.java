@@ -3,48 +3,16 @@ package com.hi.handy.authapi.plugin.model;
 public class ChatRoomModel {
 
   public enum RoomType {
-    AGENT,
+    VIP,
     HOTEL
   }
 
+  private String name;
+  private Boolean status;
+  private String icon;
   private String roomName;
   private String roomJID;
-  private String hotelId;
-  private String hotelName;
-  private String hotelRoomNum;
-  private RoomType roomType = RoomType.AGENT;
-
-  public String getRoomName() {
-    return roomName;
-  }
-
-  public void setRoomName(String roomName) {
-    this.roomName = roomName;
-  }
-
-  public String getHotelId() {
-    return hotelId;
-  }
-
-  public void setHotelId(String hotelId) {
-    this.hotelId = hotelId;
-  }
-
-  public String getHotelName() {
-    return hotelName;
-  }
-
-  public void setHotelName(String hotelName) {
-    this.hotelName = hotelName;
-  }
-
-  public String getHotelRoomNum() {
-    return hotelRoomNum;
-  }
-
-  public void setHotelRoomNum(String hotelRoomNum) {
-    this.hotelRoomNum = hotelRoomNum;
-  }
+  private RoomType roomType = RoomType.VIP;
 
   public RoomType getRoomType() {
     return roomType;
@@ -52,6 +20,38 @@ public class ChatRoomModel {
 
   public void setRoomType(RoomType roomType) {
     this.roomType = roomType;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Boolean getStatus() {
+    return status;
+  }
+
+  public void setStatus(Boolean status) {
+    this.status = status;
+  }
+
+  public String getIcon() {
+    return icon;
+  }
+
+  public void setIcon(String icon) {
+    this.icon = icon;
+  }
+
+  public String getRoomName() {
+    return roomName;
+  }
+
+  public void setRoomName(String roomName) {
+    this.roomName = roomName;
   }
 
   public String getRoomJID() {

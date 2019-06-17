@@ -1,7 +1,7 @@
-package com.hi.handy.messageapi.plugin.domain.agentmessagerecord;
+package com.hi.handy.messageapi.plugin.domain.hdagentmessagerecord;
 
 import com.hi.handy.messageapi.plugin.domain.BaseDao;
-import com.hi.handy.messageapi.plugin.domain.message.HdMessageDao;
+import com.hi.handy.messageapi.plugin.domain.hdmessage.HdMessageDao;
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
 import com.hi.handy.messageapi.plugin.exception.ExceptionConst;
 import org.jivesoftware.database.DbConnectionManager;
@@ -23,27 +23,25 @@ public class AgentMessageRecordDao extends BaseDao {
     return INSTANCE;
   }
 
-  private static final String SEARCH_BY_HOTELID_AND_ROOMNUM_SQL =
-          "SELECT readCount FROM hdAgentMessageRecord WHERE hotelId = ? AND roomNum = ? AND userName = ?";
+  private static final String SEARCH_BY_ROOMNAME_SQL = "SELECT readCount FROM hdAgentMessageRecord WHERE userName = ? AND roomName = ? ";
 
-  public Long findByHotelIdAndNum(String userName,Long hotelId, String roomNum){
+  public Long findByAgentNameAndRoomName(String agentName,String roomName){
     Long readCount = 0l;
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     try {
       con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(SEARCH_BY_HOTELID_AND_ROOMNUM_SQL);
-      pstmt.setLong(1, hotelId);
-      pstmt.setString(2, roomNum);
-      pstmt.setString(3, userName);
+      pstmt = con.prepareStatement(SEARCH_BY_ROOMNAME_SQL);
+      pstmt.setString(1, agentName);
+      pstmt.setString(2, roomName);
       rs = pstmt.executeQuery();
       while (rs.next()) {
         readCount = rs.getLong(1);
       }
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("findByHotelIdAndNum error", ex);
+      LOGGER.error("findByRoomName error", ex);
       throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
