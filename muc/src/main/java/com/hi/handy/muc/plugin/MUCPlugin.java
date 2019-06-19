@@ -37,11 +37,12 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
 
     public void initializePlugin(PluginManager pluginManager, File file) {
         log.info("loading muc plugin>>>>>");
-        /*IQHandler handler = new MUCPersistenceHandler();
+        IQHandler handler = new MUCPersistenceHandler();
         IQRouter iqRouter = XMPPServer.getInstance().getIQRouter();
         iqRouter.addHandler(handler);
 
-        MUCEventDispatcher.addListener(new CustomMUCEventListener());*/
+        //持久化聊天室成员
+        MUCEventDispatcher.addListener(new CustomMUCEventListener());
         //将当前消息拦截器加入
         interceptorManager = InterceptorManager.getInstance();
         interceptorManager.addInterceptor(this);
@@ -67,29 +68,47 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
         if (incoming && !processed && packet instanceof Message) {
             Message message = (Message) packet;
             if (null!=message.getBody()){
-                log.info("session:"+(session!=null?session.toString():"")+" 消息类型："+message.getType()+" 消息内容："+message.toXML()+" 消息类型(文/语/图)："+message.getElement().attributeValue("messageType")+" From:"+message.getFrom().toString()+" to:"+message.getTo().toString());
                 //只处理有内容的消息
+                log.info("session:"+(session!=null?session.toString():"")+" 消息类型："+message.getType()+" 消息内容："+message.toXML()+" 消息类型(文/语/图)："+message.getElement().attributeValue("messageType")+" From:"+message.getFrom().toString()+" to:"+message.getTo().toString());
                 String fromUserName = message.getFrom().getNode();
                 Long zoneId = MUCDao.getUserZoneId(fromUserName);
                 GroupManager groupManager = GroupManager.getInstance();
+                if(message.getTo().equals(message.getFrom())){
+                    PacketRejectedException rejectedException =  new PacketRejectedException();
+                    log.info("self message");
+                    rejectedException.setRejectionMessage("self message...");
+                    throw rejectedException;
+                }
                 if(null!=session&&session.getAddress().equals(message.getFrom())){
                     log.info("session address: "+session.getAddress()+" session streamId:"+session.getStreamID());
                     String domain =message.getFrom().getDomain();
                     Group group = null;
+
+                    if(Message.Type.groupchat ==(message.getType())){
+                        message.getElement().addAttribute("chatroom",message.getTo().toString());
+                    }
+
                     if(null!=zoneId){
                         String groupName = "zone-"+zoneId;
                         try {
+                            //已经确认：一个agent group可能会对应多个zone，但是一个zone只会有一个agent group 管理。
+                            //TODO group 的名字
                             group = groupManager.getGroup(groupName,true);
                         } catch (GroupNotFoundException e) {
                             e.printStackTrace();
                         }
                         if(null!=group){
+                            //TODO 处理的时候如果是来自groupchat。转发的时候要自定义加一个chatroom="xxx@con.10.xxxx"
                             XMPPServer xmppServer = XMPPServer.getInstance();
                             PacketRouter packetRouter = xmppServer.getPacketRouter();
                             Message broadCast = new Message();
                             broadCast.setFrom(fromUserName+"@"+domain);
                             broadCast.setTo(groupName+"@broadcast."+domain);
                             broadCast.setBody(message.getBody());
+                            if(Message.Type.groupchat ==(message.getType())){
+                                broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
+//                                broadCast.setFrom(message.getTo());
+                            }
                             packetRouter.route(broadCast);
                         }
                         log.info("有body 的消息："+ message.toXML());
