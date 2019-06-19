@@ -58,7 +58,6 @@ public class AuthApiServlet extends HttpServlet {
 
   private void outputResult(BaseResultModel result, PrintWriter writer, ObjectMapper mapper) {
     // TODO
-
     if (mapper == null) {
       mapper = new ObjectMapper();
     }

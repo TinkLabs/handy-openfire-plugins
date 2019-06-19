@@ -5,7 +5,8 @@ public class BaseParameter {
   public enum AuthType {
     GUEST_ENTRY_HOTELCHATROOM,
     GUEST_LOGIN,
-    AGENT_LOGIN
+    AGENT_LOGIN,
+    AGENT_LOGOUT
   }
 
   public enum UserType {

@@ -1,5 +1,6 @@
 package com.hi.handy.authapi.plugin.dao;
 
+import com.hi.handy.authapi.plugin.entity.AgentStatus;
 import com.hi.handy.authapi.plugin.entity.HdUserPropertyEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
@@ -24,6 +25,7 @@ public class HdUserPropertyDao extends BaseDao {
   private static final String CREATE_SQL                  = "INSERT INTO hdUserProperty (userName, displayName, password, zoneId, zoneName, hotelId, hotelName, roomNum, type, creationDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   private static final String UPDATE_ALL_SQL              = "UPDATE hdUserProperty t SET zoneId = ?, zoneName = ?, hotelId = ?, hotelName = ?, roomNum = ?,displayName = ? WHERE userName = ?";
   private static final String SEARCH_BY_NAME_SQL          = "SELECT * FROM hdUserProperty WHERE userName = ?";
+  private static final String UPDATE_STATUS_SQL           = "UPDATE hdUserProperty t SET status = ? WHERE userName = ?";
 
   public Long countByUserName(String userName) {
     Connection con = null;
@@ -149,6 +151,7 @@ public class HdUserPropertyDao extends BaseDao {
         result.setType(rs.getString(9));
         result.setCreationDate(rs.getTimestamp(10));
         result.setModificationDamodificationDate(rs.getTimestamp(11));
+        result.setStatus(rs.getString(12));
       }
     } catch (Exception e) {
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
@@ -156,5 +159,45 @@ public class HdUserPropertyDao extends BaseDao {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
     return result;
+  }
+
+  public void updateStatus(String userName, String status) {
+
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    try {
+      int i = 1;
+      con = DbConnectionManager.getConnection();
+      pstmt = con.prepareStatement(UPDATE_STATUS_SQL);
+      pstmt.setString(i++, status);
+      pstmt.setString(i++, userName);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
+    } finally {
+      DbConnectionManager.closeConnection(pstmt, con);
+    }
+  }
+
+  public Long searchLoginCount(String userNames, AgentStatus agentStatus){
+    String sql = "SELECT count(1) FROM hdUserProperty WHERE userName in (" + userNames + ") AND status = '"+agentStatus.name()+"'";
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    Long count = null;
+    try {
+      con = DbConnectionManager.getConnection();
+      pstmt = con.prepareStatement(sql);
+      System.out.println(pstmt);
+      rs = pstmt.executeQuery();
+      if (rs.next()) {
+        count = rs.getLong(1);
+      }
+    } catch (Exception e) {
+      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
+    } finally {
+      DbConnectionManager.closeConnection(rs, pstmt, con);
+    }
+    return count;
   }
 }

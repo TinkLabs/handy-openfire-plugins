@@ -1,2 +1,5 @@
 # openfire-plugins
 plugins for openfire(Concierge Chat backen services）
+
+
+这里我摘的是PresenceRouter里面的消息处理函数，我们可以看到消息在被处理之前和处理之后都被拦截了一次，因此在处理之前processed=false,处理之后就为processed=true;由于这是服务器收消息，因此incoming都为true，同样在消息往客户端传送的时候也会被拦截两次，incoming=false。最后通过InterceptorManager.getInstance().addInterceptor将拦截器加到openfire中，就可以生效了

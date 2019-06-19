@@ -4,9 +4,13 @@ import com.hi.handy.message.plugin.domain.hdmessage.HdMessageDao;
 import com.hi.handy.message.plugin.domain.hdmessage.HdMessageEntity;
 import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordDao;
 import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordEntity;
+import com.hi.handy.message.plugin.domain.hduserproperty.HdUserPropertyDao;
 import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.openfire.XMPPServer;
+import org.jivesoftware.openfire.user.UserManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 import org.xmpp.packet.Packet;
 
@@ -23,13 +27,24 @@ public class MessageService {
         return INSTANCE;
     }
 
-    public void save(Packet packet) {
+    public void recordMessage(Packet packet) {
+        Message message = (Message) packet;
+        LOGGER.info("MessagePlugin interceptPacket message:" + message);
+        if (!shouldStoreMessage(message)) {
+            return;
+        }
+        LOGGER.info("MessagePlugin interceptPacket shouldStoreMessage pass");
+        save(packet);
+    }
+
+    private void save(Packet packet) {
         LOGGER.info("save");
         LOGGER.info("packet",packet);
         try {
             Message message = (Message) packet;
             String roomType = getRoomeType(packet.getFrom().getNode());
-            if(StringUtils.isNoneBlank(roomType) && ("room-vip".equals(roomType)||"room-hotel".equals(roomType))) {
+
+            if(StringUtils.isNoneBlank(roomType) && ("room-vip".equals(roomType)||"room-hotel".equals(roomType)) && userisExist(packet.getTo().getNode())) {
                 String[] roomInfoArray = packet.getFrom().getNode().split("#");
                 String[] getRoomInfoDetailArray = roomInfoArray[1].split("-");
                 Long zoneId = Long.valueOf(getRoomInfoDetailArray[0]);
@@ -100,5 +115,39 @@ public class MessageService {
         }catch (Exception ex){
             return null;
         }
+    }
+
+    private Boolean userisExist(String userName){
+        Long count = HdUserPropertyDao.getInstance().countByUserName(userName);
+        if(count!=null&&(count.longValue()>0)){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean shouldStoreMessage(Message message) {
+        if (message.getType() != Message.Type.groupchat) {
+            return false;
+        }
+        if (StringUtils.isBlank(message.getBody())) {
+            return false;
+        }
+        JID recipient = message.getTo();
+        String username = recipient.getNode();
+
+        if (username == null || !UserManager.getInstance().isRegisteredUser(recipient)) {
+            return false;
+        }
+        JID sender = message.getTo();
+        String senderUser = sender.getNode();
+
+        if (senderUser == null || !UserManager.getInstance().isRegisteredUser(sender)) {
+            return false;
+        }
+
+        if (!XMPPServer.getInstance().getServerInfo().getXMPPDomain().equals(recipient.getDomain())) {
+            return false;
+        }
+        return true;
     }
 }

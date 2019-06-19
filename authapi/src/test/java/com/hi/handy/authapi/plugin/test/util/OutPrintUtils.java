@@ -1,4 +1,4 @@
-package com.hi.handy.message.plugin.test.util;
+package com.hi.handy.authapi.plugin.test.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

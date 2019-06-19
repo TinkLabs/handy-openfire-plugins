@@ -33,7 +33,9 @@ public class AuthService {
             result = GuestService.getInstance().guestGetHotelChatRoom(parameter);
         } else if (type == AuthType.AGENT_LOGIN) {
             result = AgentService.getInstance().agentLogin(parameter);
-        } else{
+        } else if (type == AuthType.AGENT_LOGOUT) {
+            result = AgentService.getInstance().agentLogout(parameter);
+        }else{
             throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "unknow authType");
         }
         return result;

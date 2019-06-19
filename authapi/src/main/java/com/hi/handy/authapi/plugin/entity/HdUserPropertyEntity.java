@@ -15,6 +15,7 @@ public class HdUserPropertyEntity extends BaseEntity {
     private String type;
     private Timestamp creationDate;
     private Timestamp modificationDamodificationDate;
+    private String status;
 
     public String getUserName() {
         return userName;
@@ -102,5 +103,13 @@ public class HdUserPropertyEntity extends BaseEntity {
 
     public void setModificationDamodificationDate(Timestamp modificationDamodificationDate) {
         this.modificationDamodificationDate = modificationDamodificationDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

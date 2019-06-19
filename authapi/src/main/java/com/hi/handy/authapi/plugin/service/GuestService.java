@@ -1,6 +1,8 @@
 package com.hi.handy.authapi.plugin.service;
 
-import com.hi.handy.authapi.plugin.dao.*;
+import com.hi.handy.authapi.plugin.dao.HdGroupDao;
+import com.hi.handy.authapi.plugin.dao.HdGroupRelationDao;
+import com.hi.handy.authapi.plugin.dao.HdUserPropertyDao;
 import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
@@ -9,10 +11,8 @@ import com.hi.handy.authapi.plugin.model.ChatRoomModel;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import com.hi.handy.authapi.plugin.parameter.BaseParameter;
 import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.openfire.SessionManager;
 import org.jivesoftware.openfire.XMPPServer;
 import org.jivesoftware.openfire.muc.MUCRoom;
-import org.jivesoftware.openfire.session.ClientSession;
 import org.jivesoftware.openfire.user.User;
 import org.jivesoftware.openfire.user.UserAlreadyExistsException;
 import org.jivesoftware.openfire.user.UserManager;
@@ -22,9 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.xmpp.packet.JID;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public class GuestService extends BaseService{
 
@@ -104,10 +102,11 @@ public class GuestService extends BaseService{
         }
 
         // the chat is online
-        Boolean isOnline = groupIsOnline(groupId);
+        Boolean isOnline = groupIsOnline(groupId)>0?true:false;
 
         // return user info and chat room
         ChatRoomModel chatRoomModel = new ChatRoomModel();
+        chatRoomModel.setId(hdGroupEntity.getId());
         chatRoomModel.setName(hdGroupEntity.getName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
         chatRoomModel.setStatus(isOnline);
@@ -179,9 +178,10 @@ public class GuestService extends BaseService{
             hdGroupEntity = HdGroupDao.getInstance().searchById(groupId);
         }
         // the chat is online
-        Boolean isOnline = groupIsOnline(groupId);
+        Boolean isOnline = groupIsOnline(groupId)>0?true:false;
         // return user info and chat room
         ChatRoomModel chatRoomModel = new ChatRoomModel();
+        chatRoomModel.setId(hdGroupEntity.getId());
         chatRoomModel.setName(hdGroupEntity.getName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
         chatRoomModel.setStatus(isOnline);
@@ -285,30 +285,5 @@ public class GuestService extends BaseService{
         chatRoomModel.setRoomName(agentChatRoom.getName());
         chatRoomModel.setRoomType(roomType);
         return chatRoomModel;
-    }
-
-    private List<String> findOnlineUsers(List<String> users) {
-        List<String> onlineUsers = new ArrayList<String>(users.size());
-        for (String user : users) {
-            Collection<ClientSession> clientSessions = SessionManager.getInstance().getSessions(user);
-            if (!clientSessions.isEmpty()) {
-                onlineUsers.add(user);
-            }
-        }
-        return onlineUsers;
-    }
-
-    private Boolean groupIsOnline(String groupId){
-        List<String> userNames = queryGroupAgentByGroupId(groupId);
-        List<String> onlineUsers = findOnlineUsers(userNames);
-        if(onlineUsers!=null&&onlineUsers.size()>0){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    private List<String> queryGroupAgentByGroupId(String groupId){
-        return HdGroupAgentDao.getInstance().searchByGroupId(groupId);
     }
 }
