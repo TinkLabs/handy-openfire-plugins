@@ -11,10 +11,11 @@
   <modules>
     <module>history</module>
     <module>auth</module>
+    <module>muc</module>
     <module>message</module>
     <module>messageapi</module>
     <module>authapi</module>
-      <module>group</module>
+    <module>group</module>
   </modules>
 
   <properties>

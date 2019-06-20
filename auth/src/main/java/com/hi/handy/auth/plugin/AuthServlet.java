@@ -15,8 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jivesoftware.admin.AuthCheckFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthServlet extends HttpServlet {
+  public static final Logger log = LoggerFactory.getLogger(AuthServlet.class);
 
   private static final String SERVICE_URL = "auth/register";
 
@@ -44,11 +47,13 @@ public class AuthServlet extends HttpServlet {
       resultModel.setSuccess(false);
       resultModel.setCode(be.getCode());
       resultModel.setMessage(be.getMessage());
+      log.error("auth servlet error",be);
     } catch (Exception e) {
       e.printStackTrace();
       resultModel.setSuccess(false);
       resultModel.setCode(ExceptionConst.SYSTEM_ERROR);
       resultModel.setMessage(e.getMessage());
+      log.error("auth servlet error",e);
     }
     outputResult(resultModel, resp.getWriter(), mapper);
   }
