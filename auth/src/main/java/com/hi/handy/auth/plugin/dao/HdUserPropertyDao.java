@@ -1,17 +1,15 @@
 package com.hi.handy.auth.plugin.dao;
 
+import com.hi.handy.auth.plugin.entity.HdUserPropertyEntity;
 import com.hi.handy.auth.plugin.exception.BusinessException;
 import com.hi.handy.auth.plugin.exception.ExceptionConst;
 import com.hi.handy.auth.plugin.parameter.AuthParameter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.database.DbConnectionManager;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HdUserPropertyDao extends BaseDao {
 
@@ -25,22 +23,23 @@ public class HdUserPropertyDao extends BaseDao {
   }
 
   private static final String CREATE_SQL =
-      "INSERT INTO hdUserProperty (userName, zoneId, zoneName, hotelId, hotelName, roomNum, type, "
-          + "roomAmount, creationDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+          "INSERT INTO hdUserProperty (userName, zoneId, zoneName, hotelId, hotelName, roomNum, type, "
+                  + "roomAmount, creationDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
   private static final String UPDATE_SQL =
-      "UPDATE hdUserProperty t SET zoneId = ?, zoneName = ? "
-          + "WHERE userName = ?";
+          "UPDATE hdUserProperty t SET zoneId = ?, zoneName = ? "
+                  + "WHERE userName = ?";
   private static final String UPDATE_ALL_SQL =
-      "UPDATE hdUserProperty t SET zoneId = ?, zoneName = ?, hotelId = ?, hotelName = ?, "
-          + " roomNum = ? WHERE userName = ?";
+          "UPDATE hdUserProperty t SET zoneId = ?, zoneName = ?, hotelId = ?, hotelName = ?, "
+                  + " roomNum = ? WHERE userName = ?";
   private static final String ROOM_AMOUNT_PLUS_ONE_SQL =
-      "UPDATE hdUserProperty set roomAmount = roomAmount+1 where userName = ?";
+          "UPDATE hdUserProperty set roomAmount = roomAmount+1 where userName = ?";
   private static final String COUNT_SQL =
-      "SELECT count(1) FROM hdUserProperty WHERE userName = ?";
+          "SELECT count(1) FROM hdUserProperty WHERE userName = ?";
   private static final String SEARCH_AGENT_SQL =
-      "SELECT p.userName FROM hdUserProperty p, ofUser u WHERE p.userName = u.userName "
-          + "AND p.type = 'AGENT' AND p.zoneId = ?";
-
+          "SELECT p.userName FROM hdUserProperty p, ofUser u WHERE p.userName = u.userName "
+                  + "AND p.type = 'AGENT' AND p.zoneId = ?";
+  private static final String SEARCH_BY_NAME_SQL =
+          "SELECT * FROM hdUserProperty WHERE userName = ?";
 
   public Long countByUserName(String userName) {
     Connection con = null;
@@ -57,7 +56,7 @@ public class HdUserPropertyDao extends BaseDao {
       }
     } catch (Exception e) {
       throw new BusinessException(ExceptionConst.DB_ERROR,
-          "Unable to count UserProperty for userName " + userName, e);
+              "Unable to count UserProperty for userName " + userName, e);
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
@@ -193,7 +192,7 @@ public class HdUserPropertyDao extends BaseDao {
     }
 
     String sql = new StringBuilder("SELECT userName FROM hdUserProperty WHERE userName in (")
-        .append(in_sql).append(") order by roomAmount ASC LIMIT 1").toString();
+            .append(in_sql).append(") order by roomAmount ASC LIMIT 1").toString();
 
     Connection con = null;
     PreparedStatement pstmt = null;
@@ -205,6 +204,37 @@ public class HdUserPropertyDao extends BaseDao {
       while (rs.next()) {
         result = rs.getString(1);
         return result;
+      }
+    } catch (Exception e) {
+      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
+    } finally {
+      DbConnectionManager.closeConnection(rs, pstmt, con);
+    }
+    return result;
+  }
+
+  public HdUserPropertyEntity searchByName(String userName) {
+    HdUserPropertyEntity result = null;
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    try {
+      con = DbConnectionManager.getConnection();
+      pstmt = con.prepareStatement(SEARCH_BY_NAME_SQL);
+      pstmt.setString(1, userName);
+      rs = pstmt.executeQuery();
+      while (rs.next()) {
+        result = new HdUserPropertyEntity();
+        result.setUserName(rs.getString(1));
+        result.setZoneId(rs.getLong(2));
+        result.setZoneName(rs.getString(3));
+        result.setHotelId(rs.getLong(4));
+        result.setHotelName(rs.getString(5));
+        result.setRoomNum(rs.getString(6));
+        result.setType(rs.getString(7));
+        result.setRoomAmount(rs.getLong(8));
+        result.setCreationDate(rs.getTimestamp(9));
+        result.setModificationDamodificationDate(rs.getTimestamp(10));
       }
     } catch (Exception e) {
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());

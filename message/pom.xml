@@ -9,13 +9,18 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>auth</artifactId>
-
+  <artifactId>message</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>org.igniterealtime.openfire</groupId>
       <artifactId>xmppserver</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.12</version>
       <scope>provided</scope>
     </dependency>
 
@@ -40,13 +45,14 @@
       <scope>provided</scope>
     </dependency>
 
-    <!--servlet-->
+    <!--junit-->
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-      <scope>provided</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
     </dependency>
+
     <!--json-->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -59,13 +65,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <!--junit-->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -152,6 +151,7 @@
       </plugin>
     </plugins>
   </build>
+
 
 
 </project>
