@@ -3,7 +3,9 @@ package com.hi.handy.authapi.plugin.service;
 import com.hi.handy.authapi.plugin.dao.HdGroupAgentDao;
 import com.hi.handy.authapi.plugin.dao.HdUserPropertyDao;
 import com.hi.handy.authapi.plugin.entity.AgentStatus;
+import com.hi.handy.authapi.plugin.utils.Base64Utils;
 import com.hi.handy.authapi.plugin.utils.MD5Utils;
+import org.jivesoftware.openfire.XMPPServer;
 
 import java.util.List;
 
@@ -18,8 +20,16 @@ public class BaseService {
     protected static final String ROOMINFO_SUFFIX = "#";
     protected static final String HOTEL_CHAT_ROOM_GUEST_DEFAULT_DISPLAY_NAME = "guest";
 
-    protected String generatePassword(String code) {
+    protected String md5EncodePassword(String code) {
         return MD5Utils.MD5Encode(code,"utf8");
+    }
+
+    protected String encodePassword(String password){
+        return Base64Utils.encode(password.getBytes());
+    }
+
+    protected String getDomain(){
+        return XMPPServer.getInstance().getServerInfo().getXMPPDomain();
     }
 
     protected String joinListForInSqlString(List<String> ids){

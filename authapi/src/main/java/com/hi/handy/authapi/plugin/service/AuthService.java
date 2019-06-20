@@ -22,7 +22,7 @@ public class AuthService {
         return INSTANCE;
     }
 
-    public AuthModel auth(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
+    public Object auth(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
         LOGGER.info("auth");
         LOGGER.info("parameter",parameter);
         AuthModel result = null;

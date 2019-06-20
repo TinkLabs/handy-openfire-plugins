@@ -23,7 +23,7 @@ public class HdGroupDao extends BaseDao {
   private static final String SEARCH_BY_ID_SQL =  "SELECT * FROM hdGroup WHERE id = ?";
 
   public HdGroupEntity searchById(String id) {
-    HdGroupEntity userRoom = null;
+    HdGroupEntity hdGroupEntity = new HdGroupEntity();
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -33,18 +33,18 @@ public class HdGroupDao extends BaseDao {
       pstmt.setString(1, id);
       rs = pstmt.executeQuery();
       while (rs.next()) {
-        userRoom = new HdGroupEntity();
-        userRoom.setId(rs.getString(1));
-        userRoom.setName(rs.getString(2));
-        userRoom.setIcon(rs.getString(3));
-        userRoom.setType(rs.getString(4));
-        userRoom.setCreateDate(rs.getTimestamp(5));
+        hdGroupEntity.setId(rs.getString(1));
+        hdGroupEntity.setName(rs.getString(2));
+        hdGroupEntity.setIcon(rs.getString(3));
+        hdGroupEntity.setType(rs.getString(4));
+        hdGroupEntity.setWelcomeMessage(rs.getString(5));
+        hdGroupEntity.setCreateDate(rs.getTimestamp(6));
       }
     } catch (Exception e) {
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
-    return userRoom;
+    return hdGroupEntity;
   }
 }

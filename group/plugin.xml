@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+   <class>com.hi.handy.group.plugin.GroupPlugin</class>
+   <name>handy-agentgroup-plugin</name>
+   <description>set agent group</description>
+   <author>Dave</author>
+   <version>1.0.0</version>
+   <date>2019-06-19</date>
+   <minServerVersion>4.3.2</minServerVersion>
+   <minJavaVersion>1.8</minJavaVersion>
+
+   <adminconsole>
+      <tab id="tab-server">
+         <sidebar id="sidebar-server-settings">
+            <item id="agent-group"
+                  name="Handy Agent Group"
+                  url="agent-group.jsp"
+                  description="Settings for Handy Agent Group Plugin" />
+         </sidebar>
+      </tab>
+   </adminconsole>
+</plugin>

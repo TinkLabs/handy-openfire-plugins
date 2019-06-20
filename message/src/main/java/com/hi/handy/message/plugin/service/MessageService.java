@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 import org.xmpp.packet.Packet;
+import org.xmpp.packet.PacketExtension;
 
 import java.util.UUID;
 
@@ -29,11 +30,10 @@ public class MessageService {
 
     public void recordMessage(Packet packet) {
         Message message = (Message) packet;
-        LOGGER.info("MessagePlugin interceptPacket message:" + message);
-        if (!shouldStoreMessage(message)) {
+        if (!shouldStoreMessage(message,packet)) {
             return;
         }
-        LOGGER.info("MessagePlugin interceptPacket shouldStoreMessage pass");
+        LOGGER.info("recordMessage:" + message);
         save(packet);
     }
 
@@ -125,23 +125,22 @@ public class MessageService {
         return false;
     }
 
-    private boolean shouldStoreMessage(Message message) {
+    private boolean shouldStoreMessage(Message message,Packet packet) {
         if (message.getType() != Message.Type.groupchat) {
             return false;
         }
         if (StringUtils.isBlank(message.getBody())) {
             return false;
         }
-        JID recipient = message.getTo();
+        JID recipient = message.getFrom();
         String username = recipient.getNode();
 
         if (username == null || !UserManager.getInstance().isRegisteredUser(recipient)) {
             return false;
         }
-        JID sender = message.getTo();
-        String senderUser = sender.getNode();
 
-        if (senderUser == null || !UserManager.getInstance().isRegisteredUser(sender)) {
+        PacketExtension packetExtension = packet.getExtension("stanza-id","urn:xmpp:sid:0");
+        if(packetExtension!=null){
             return false;
         }
 

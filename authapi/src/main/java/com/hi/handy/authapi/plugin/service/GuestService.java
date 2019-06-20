@@ -3,11 +3,13 @@ package com.hi.handy.authapi.plugin.service;
 import com.hi.handy.authapi.plugin.dao.HdGroupDao;
 import com.hi.handy.authapi.plugin.dao.HdGroupRelationDao;
 import com.hi.handy.authapi.plugin.dao.HdUserPropertyDao;
+import com.hi.handy.authapi.plugin.entity.GroupType;
 import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
 import com.hi.handy.authapi.plugin.model.AuthModel;
 import com.hi.handy.authapi.plugin.model.ChatRoomModel;
+import com.hi.handy.authapi.plugin.model.GuestInfoModel;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import com.hi.handy.authapi.plugin.parameter.BaseParameter;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +38,7 @@ public class GuestService extends BaseService{
 
     public static final GuestService INSTANCE = new GuestService();
 
-    public AuthModel guestLogin(AuthParameter parameter) throws UserNotFoundException, UserAlreadyExistsException {
+    public GuestInfoModel guestLogin(AuthParameter parameter) throws UserNotFoundException, UserAlreadyExistsException {
         LOGGER.info("guestLogin");
         LOGGER.info("parameter",parameter);
         if (parameter.getAuthType() != BaseParameter.AuthType.GUEST_LOGIN) {
@@ -80,8 +82,8 @@ public class GuestService extends BaseService{
         // find openfire user by email,if user is not exist then create
         UserManager userManager = UserManager.getInstance();
         User user;
+        String password = md5EncodePassword(guestUserName);
         if (!userManager.isRegisteredUser(guestUserName)) {
-            String password = generatePassword(guestUserName);
             user = userManager.createUser(guestUserName, password, parameter.getDisplayName(),parameter.getEmail());
         } else {
             user = userManager.getUser(guestUserName);
@@ -95,7 +97,7 @@ public class GuestService extends BaseService{
 
         // find chat room by email,if not exist create chat room
         ChatRoomModel chatRoom = getOrCreateVIPChatRoom(chatRoomInfo, parameter);
-        String groupId = HdGroupRelationDao.getInstance().searchByRelationId(parameter.getZoneId());
+        String groupId = HdGroupRelationDao.getInstance().searchByRelationId(parameter.getZoneId(), GroupType.VIP.name());
         HdGroupEntity hdGroupEntity = new HdGroupEntity();
         if(StringUtils.isNoneBlank(groupId)) {
             hdGroupEntity = HdGroupDao.getInstance().searchById(groupId);
@@ -110,12 +112,12 @@ public class GuestService extends BaseService{
         chatRoomModel.setName(hdGroupEntity.getName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
         chatRoomModel.setStatus(isOnline);
-        chatRoomModel.setRoomName(chatRoom.getRoomName());
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
-        AuthModel result = new AuthModel();
-        result.setUserName(user.getUsername());
-        result.setDisplayName(user.getName());
-        result.setEmail(user.getEmail());
+        GuestInfoModel result = new GuestInfoModel();
+        result.setUid(user.getUsername());
+        result.setName(user.getName());
+        result.setToken(encodePassword(password));
+        result.setDomain(getDomain());
         result.setChatRoom(chatRoomModel);
         return result;
     }
@@ -158,8 +160,9 @@ public class GuestService extends BaseService{
         // find chat room by email,if not exist create chat room
         UserManager userManager = UserManager.getInstance();
         User user;
+        String password = md5EncodePassword(guestUserName);
         if (!userManager.isRegisteredUser(guestUserName)) {
-            String password = generatePassword(guestUserName);
+
             user = userManager.createUser(guestUserName, password, parameter.getDisplayName(),guestUserName+EMAIL_SUFFIX);
         } else {
             user = userManager.getUser(guestUserName);
@@ -172,7 +175,7 @@ public class GuestService extends BaseService{
                               guestUserName;
 
         ChatRoomModel chatRoom = getOrCreateHotelChatRoom(chatRoomInfo, parameter);
-        String groupId = HdGroupRelationDao.getInstance().searchByRelationId(parameter.getHotelId());
+        String groupId = HdGroupRelationDao.getInstance().searchByRelationId(parameter.getHotelId(),GroupType.HOTEL.name());
         HdGroupEntity hdGroupEntity = new HdGroupEntity();
         if(StringUtils.isNoneBlank(groupId)) {
             hdGroupEntity = HdGroupDao.getInstance().searchById(groupId);
@@ -186,12 +189,12 @@ public class GuestService extends BaseService{
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
         chatRoomModel.setStatus(isOnline);
         chatRoomModel.setRoomType(ChatRoomModel.RoomType.HOTEL);
-        chatRoomModel.setRoomName(chatRoom.getRoomName());
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
-        AuthModel result = new AuthModel();
-        result.setUserName(user.getUsername());
-        result.setDisplayName(user.getName());
-        result.setEmail(user.getEmail());
+        GuestInfoModel result = new GuestInfoModel();
+        result.setUid(user.getUID());
+        result.setName(user.getName());
+        result.setToken(encodePassword(password));
+        result.setDomain(getDomain());
         result.setChatRoom(chatRoomModel);
         return result;
     }
@@ -282,8 +285,8 @@ public class GuestService extends BaseService{
             return null;
         }
         ChatRoomModel chatRoomModel = new ChatRoomModel();
-        chatRoomModel.setRoomName(agentChatRoom.getName());
         chatRoomModel.setRoomType(roomType);
+        chatRoomModel.setRoomJID(agentChatRoom.getJID());
         return chatRoomModel;
     }
 }

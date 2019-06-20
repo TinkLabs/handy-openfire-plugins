@@ -7,6 +7,7 @@ public class HdGroupEntity extends BaseEntity {
     private String name;
     private String icon;
     private String type;
+    private String welcomeMessage;
     private Timestamp createDate;
 
     public String getId() {
@@ -39,6 +40,14 @@ public class HdGroupEntity extends BaseEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getWelcomeMessage() {
+        return welcomeMessage;
+    }
+
+    public void setWelcomeMessage(String welcomeMessage) {
+        this.welcomeMessage = welcomeMessage;
     }
 
     public Timestamp getCreateDate() {

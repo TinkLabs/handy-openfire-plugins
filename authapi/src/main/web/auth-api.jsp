@@ -51,7 +51,7 @@ public enum UserType {
             <td>
                 <pre>
 method:post
-url:http://127.0.0.1:9090/plugins/authapi/api
+url:http://handy-internal-openfire-dev.handytravel.tech:9090/plugins/authapi/api
 paramter:
 {
 	"authType":0,
@@ -68,15 +68,20 @@ result:
     "code": null,
     "message": null,
     "data": {
-        "userName": "4352346234523",
-        "displayName": "guest",
-        "email": "4352346234523@tinklabs.com",
+        "uid": "4352346234523",
+        "name": "guest",
+        "token": "MDNjY2Y3NDg4ZjU1OTlmMzkwYjMyMTc5NTE3MWNlOGU=",
+        "domain": "192.168.100.66",
         "chatRoom": {
-            "name": null,
+            "id": "sdfasdfadf",
+            "name": "hotel-chat-room",
             "status": false,
             "icon": null,
-            "roomName": "room-hotel#1-2-酒店2-302#4352346234523",
-            "roomJID": null,
+            "roomJID": {
+                "node": "room-hotel#1-2-酒店2-302#4352346234523",
+                "domain": "conference.192.168.100.66",
+                "resource": null
+            },
             "roomType": "HOTEL"
         }
     }
@@ -98,17 +103,17 @@ result:
             <td>
                 <pre>
 method:post
-url:http://127.0.0.1:9090/plugins/authapi/api
+url:http://handy-internal-openfire-dev.handytravel.tech:9090/plugins/authapi/api
 paramter:
 {
 	"authType":1,
-	"displayName":"dave",
-	"email":"dave@tinklabs.com",
+	"displayName":"guest",
+	"email":"guest@tinklabs.com",
 	"barcode": "999999999",
 	"hotelId":3,
 	"hotelName":"酒店3",
 	"roomNum": "303",
-	"zoneId": 3,
+	"zoneId": 1,
 	"zoneName": "新加坡"
 }
 result:
@@ -117,15 +122,20 @@ result:
     "code": null,
     "message": null,
     "data": {
-        "userName": "dave-tinklabs.com",
-        "displayName": "dave",
-        "email": "dave@tinklabs.com",
+        "uid": "guest-tinklabs.com",
+        "name": "guest",
+        "token": "MTQwNTAyNmJjMmVkMzRmMWM2ZWRmOTAzYjZjYmRhYTQ=",
+        "domain": "192.168.100.66",
         "chatRoom": {
-            "name": null,
+            "id": "rqwereqer345afdf",
+            "name": "vip-chat-room",
             "status": false,
             "icon": null,
-            "roomName": "room-vip#3-3-酒店3-303#dave-tinklabs.com",
-            "roomJID": null,
+            "roomJID": {
+                "node": "room-vip#1-3-酒店3-303#guest-tinklabs.com",
+                "domain": "conference.192.168.100.66",
+                "resource": null
+            },
             "roomType": "VIP"
         }
     }
@@ -147,7 +157,7 @@ result:
             <td>
                 <pre>
 method:post
-url:http://127.0.0.1:9090/plugins/authapi/api
+url:http://handy-internal-openfire-dev.handytravel.tech:9090/plugins/authapi/api
 paramter:
 {
 	"authType":2,
@@ -160,10 +170,13 @@ result:
     "code": null,
     "message": null,
     "data": {
-        "userName": "agent-tinklabs.com",
-        "displayName": "",
-        "email": "agent@tinklabs.com",
-        "chatRoom": null
+        "uid": "agent-tinklabs.com",
+        "name": "",
+        "token": "MjVkNTVhZDI4M2FhNDAwYWY0NjRjNzZkNzEzYzA3YWQ=",
+        "domain": "192.168.100.66",
+        "groupIcon": null,
+        "groupName": "vip-chat-room",
+        "welcomeMessage": null
     }
 }
                 </pre>

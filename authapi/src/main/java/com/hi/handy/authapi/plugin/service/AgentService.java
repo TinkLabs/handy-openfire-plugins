@@ -1,15 +1,19 @@
 package com.hi.handy.authapi.plugin.service;
 
 import com.hi.handy.authapi.plugin.dao.HdGroupAgentDao;
+import com.hi.handy.authapi.plugin.dao.HdGroupDao;
+import com.hi.handy.authapi.plugin.dao.HdGroupRelationDao;
 import com.hi.handy.authapi.plugin.dao.HdUserPropertyDao;
 import com.hi.handy.authapi.plugin.entity.AgentStatus;
+import com.hi.handy.authapi.plugin.entity.GroupType;
+import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.entity.HdUserPropertyEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
+import com.hi.handy.authapi.plugin.model.AgentInfoModel;
 import com.hi.handy.authapi.plugin.model.AuthModel;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import com.hi.handy.authapi.plugin.parameter.BaseParameter;
-import com.hi.handy.authapi.plugin.utils.MD5Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.openfire.XMPPServer;
 import org.jivesoftware.openfire.user.User;
@@ -34,7 +38,7 @@ public class AgentService extends BaseService{
 
     public static final AgentService INSTANCE = new AgentService();
 
-    public AuthModel agentLogin(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
+    public AgentInfoModel agentLogin(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
         LOGGER.info("agentLogin");
         LOGGER.info("parameter",parameter);
         if (parameter.getAuthType() != BaseParameter.AuthType.AGENT_LOGIN) {
@@ -53,8 +57,8 @@ public class AgentService extends BaseService{
         String agentUserName = parameter.getEmail().replace(AT_SYMBOL, LINE_THROUGH);
         HdUserPropertyEntity hdUserPropertyEntity = HdUserPropertyDao.getInstance().searchByUserName(agentUserName);
         if(hdUserPropertyEntity == null) throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "email or password is wrong");
-        String passwordGenerate = MD5Utils.MD5Encode(parameter.getPassword(),"utf8");
-        if(!passwordGenerate.equals(hdUserPropertyEntity.getPassword())) throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "password is wrong");
+        String password = md5EncodePassword(parameter.getPassword());
+        if(!password.equals(hdUserPropertyEntity.getPassword())) throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "password is wrong");
         if(!(StringUtils.isNoneBlank(hdUserPropertyEntity.getStatus())&&hdUserPropertyEntity.getStatus().equals(AgentStatus.LOGGED.name()))){
             // update status
             HdUserPropertyDao.getInstance().updateStatus(agentUserName, AgentStatus.LOGGED.name());
@@ -66,16 +70,21 @@ public class AgentService extends BaseService{
         UserManager userManager = UserManager.getInstance();
         User user;
         if (!userManager.isRegisteredUser(agentUserName)) {
-            String password = generatePassword(agentUserName);
             user = userManager.createUser(agentUserName, password, parameter.getDisplayName(),parameter.getEmail());
         } else {
             user = userManager.getUser(agentUserName);
         }
 
-        AuthModel result = new AuthModel();
-        result.setUserName(user.getUsername());
-        result.setDisplayName(user.getName());
-        result.setEmail(user.getEmail());
+        String groupId = HdGroupRelationDao.getInstance().searchByRelationId(hdUserPropertyEntity.getZoneId(), GroupType.VIP.name());
+        HdGroupEntity hdGroupEntity = HdGroupDao.getInstance().searchById(groupId);
+        AgentInfoModel result = new AgentInfoModel();
+        result.setGroupIcon(hdGroupEntity.getIcon());
+        result.setGroupName(hdGroupEntity.getName());
+        result.setWelcomeMessage(hdGroupEntity.getWelcomeMessage());
+        result.setUid(user.getUsername());
+        result.setName(user.getName());
+        result.setToken(encodePassword(password));
+        result.setDomain(getDomain());
         return result;
     }
 

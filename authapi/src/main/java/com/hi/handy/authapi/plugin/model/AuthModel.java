@@ -2,40 +2,40 @@ package com.hi.handy.authapi.plugin.model;
 
 public class AuthModel {
 
-  public String getEmail() {
-    return email;
+  private String uid;
+  private String name;
+  private String token;
+  private String domain;
+
+  public String getUid() {
+    return uid;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setUid(String uid) {
+    this.uid = uid;
   }
 
-  public ChatRoomModel getChatRoom() {
-    return chatRoom;
+  public String getName() {
+    return name;
   }
 
-  public void setChatRoom(ChatRoomModel chatRoom) {
-    this.chatRoom = chatRoom;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public String getUserName() {
-    return userName;
+  public String getToken() {
+    return token;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setToken(String token) {
+    this.token = token;
   }
 
-  public String getDisplayName() {
-    return displayName;
+  public String getDomain() {
+    return domain;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setDomain(String domain) {
+    this.domain = domain;
   }
-
-  private String userName;
-  private String displayName;
-  private String email;
-  private ChatRoomModel chatRoom;
 }

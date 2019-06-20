@@ -1,6 +1,8 @@
 package com.hi.handy.message.plugin.service;
 
 import com.hi.handy.message.plugin.domain.hdagentmessagerecord.AgentMessageRecordDao;
+import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordDao;
+import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordEntity;
 import com.hi.handy.message.plugin.domain.hduserproperty.HdUserPropertyDao;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.openfire.XMPPServer;
@@ -31,7 +33,9 @@ public class AgentJoinChatRoomService {
         }
         try {
             String roomType = getRoomeType(packet.getFrom().getNode());
+            LOGGER.info("setRoomAllMessageIsRead roomType:"+roomType);
             String userName= packet.getTo().getNode();
+            LOGGER.info("setRoomAllMessageIsRead userName:"+userName);
             if(StringUtils.isNoneBlank(roomType) && ("room-vip".equals(roomType)||"room-hotel".equals(roomType)) && userisExist(userName)) {
                 String roomName = packet.getFrom().getNode();
                 updateAgentMessageRecord(userName,roomName);
@@ -43,8 +47,12 @@ public class AgentJoinChatRoomService {
 
     private void updateAgentMessageRecord(String userName, String roomName ) {
         LOGGER.info("updateAgentMessageRecord");
-        AgentMessageRecordDao.getInstance().updateByUserNameAndRoomName(userName,roomName);
+        HdRoomMessageRecordEntity hdRoomMessageRecordEntity = HdRoomMessageRecordDao.getInstance().findByRoomName(roomName);
+        if(hdRoomMessageRecordEntity!=null) {
+            AgentMessageRecordDao.getInstance().updateByUserNameAndRoomName(userName, roomName,hdRoomMessageRecordEntity.getAmount());
+        }
     }
+
 
     private String getRoomeType(String fromUser){
         try {

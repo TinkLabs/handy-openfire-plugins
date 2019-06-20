@@ -7,6 +7,6 @@ public class MD5UtilsTest {
     @Test
     public void guestLogin_Test() {
         System.out.println(MD5Utils.MD5Encode("12345678","utf8"));
-        System.out.println(MD5Utils.MD5Encode("q","utf8"));
+        System.out.println(MD5Utils.MD5Encode("4352346234523","utf8"));
     }
 }

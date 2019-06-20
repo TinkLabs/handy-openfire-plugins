@@ -1,5 +1,7 @@
 package com.hi.handy.authapi.plugin.model;
 
+import org.xmpp.packet.JID;
+
 public class ChatRoomModel {
 
   public enum RoomType {
@@ -11,8 +13,7 @@ public class ChatRoomModel {
   private String name;
   private Boolean status;
   private String icon;
-  private String roomName;
-  private String roomJID;
+  private JID roomJID;
   private RoomType roomType = RoomType.VIP;
 
   public String getId() {
@@ -55,19 +56,11 @@ public class ChatRoomModel {
     this.icon = icon;
   }
 
-  public String getRoomName() {
-    return roomName;
-  }
-
-  public void setRoomName(String roomName) {
-    this.roomName = roomName;
-  }
-
-  public String getRoomJID() {
+  public JID getRoomJID() {
     return roomJID;
   }
 
-  public void setRoomJID(String roomJID) {
+  public void setRoomJID(JID roomJID) {
     this.roomJID = roomJID;
   }
 }

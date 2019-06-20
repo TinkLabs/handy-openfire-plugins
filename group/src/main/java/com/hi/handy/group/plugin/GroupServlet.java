@@ -1,12 +1,10 @@
-package com.hi.handy.authapi.plugin;
+package com.hi.handy.group.plugin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hi.handy.authapi.plugin.exception.BusinessException;
-import com.hi.handy.authapi.plugin.exception.ExceptionConst;
-import com.hi.handy.authapi.plugin.model.BaseResultModel;
-import com.hi.handy.authapi.plugin.parameter.AuthParameter;
-import com.hi.handy.authapi.plugin.service.AuthService;
+import com.hi.handy.group.plugin.model.BaseResultModel;
 import org.jivesoftware.admin.AuthCheckFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,14 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class AuthApiServlet extends HttpServlet {
-
-  private static final String SERVICE_URL = "authapi/api";
+public class GroupServlet extends HttpServlet {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupServlet.class);
+  private static final String SERVICE_URL = "group";
 
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
-    // 去掉登录验证
     AuthCheckFilter.addExclude(SERVICE_URL);
   }
 
@@ -36,21 +33,21 @@ public class AuthApiServlet extends HttpServlet {
     resp.setContentType("application/json; charset=utf-8");
     BaseResultModel resultModel = new BaseResultModel();
     ObjectMapper mapper = new ObjectMapper();
-    try {
-      AuthParameter parameter = mapper.readValue(req.getInputStream(), AuthParameter.class);
-      Object result = AuthService.getInstance().auth(parameter);
-      resultModel.setData(result);
-    } catch (BusinessException be) {
-      be.printStackTrace();
-      resultModel.setSuccess(false);
-      resultModel.setCode(be.getCode());
-      resultModel.setMessage(be.getMessage());
-    } catch (Exception e) {
-      e.printStackTrace();
-      resultModel.setSuccess(false);
-      resultModel.setCode(ExceptionConst.SYSTEM_ERROR);
-      resultModel.setMessage(e.getMessage());
-    }
+//    try {
+//      GroupParameter parameter = mapper.readValue(req.getInputStream(), GroupParameter.class);
+//      Object result = MessageService.getInstance().list(parameter);
+//      resultModel.setData(result);
+//    } catch (BusinessException be) {
+//      be.printStackTrace();
+//      resultModel.setSuccess(false);
+//      resultModel.setCode(be.getCode());
+//      resultModel.setMessage(be.getMessage());
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//      resultModel.setSuccess(false);
+//      resultModel.setCode(ExceptionConst.SYSTEM_ERROR);
+//      resultModel.setMessage(e.getMessage());
+//    }
     outputResult(resultModel, resp.getWriter(), mapper);
   }
 

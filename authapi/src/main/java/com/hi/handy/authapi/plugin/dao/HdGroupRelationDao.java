@@ -19,17 +19,18 @@ public class HdGroupRelationDao extends BaseDao {
     return INSTANCE;
   }
 
-  private static final String SEARCH_BY_RELACTION_ID_SQL = "SELECT groupId FROM hdGroupRelation WHERE relationId = ?";
+  private static final String SEARCH_BY_RELACTIONID_AND_TYPE_SQL = "SELECT groupId FROM hdGroupRelation WHERE relationId = ? AND type = ?";
 
-  public String searchByRelationId(Long relationId) {
+  public String searchByRelationId(Long relationId,String type) {
     String groupId = null;
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     try {
       con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(SEARCH_BY_RELACTION_ID_SQL);
+      pstmt = con.prepareStatement(SEARCH_BY_RELACTIONID_AND_TYPE_SQL);
       pstmt.setLong(1, relationId);
+      pstmt.setString(2, type);
       rs = pstmt.executeQuery();
       while (rs.next()) {
         groupId = rs.getString(1);
