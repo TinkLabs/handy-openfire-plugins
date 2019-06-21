@@ -126,7 +126,6 @@ public class AgentService extends BaseService{
     }
 
     private void sendMessage(String groupId,boolean groupStatus){
-
         String serverName = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
         LOGGER.info("serverName:"+serverName);
         String body="{type:groupType,id:"+groupId+",isonline:"+groupStatus+"}";

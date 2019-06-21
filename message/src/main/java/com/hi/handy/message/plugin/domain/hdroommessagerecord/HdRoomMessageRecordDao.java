@@ -84,7 +84,7 @@ public class HdRoomMessageRecordDao extends BaseDao {
       pstmt.executeUpdate();
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("updateById error", ex);
+      LOGGER.error("updateAmountAndUpdateDateById error", ex);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
     }

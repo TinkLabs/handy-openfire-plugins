@@ -1,7 +1,6 @@
 package com.hi.handy.message.plugin.domain.hdmessage;
 
 import com.hi.handy.message.plugin.domain.BaseDao;
-import com.hi.handy.message.plugin.domain.hdroommessagerecord.HdRoomMessageRecordEntity;
 import org.jivesoftware.database.DbConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,9 +75,8 @@ public class HdMessageDao extends BaseDao {
     }
   }
 
-  public String findBytoJID(String toJID){
+  public String findByToJID(String toJID){
     String messageId=null;
-    HdRoomMessageRecordEntity result = null;
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;

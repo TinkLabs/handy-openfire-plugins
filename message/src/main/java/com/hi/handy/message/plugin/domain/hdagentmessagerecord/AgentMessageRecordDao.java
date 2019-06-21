@@ -22,11 +22,11 @@ public class AgentMessageRecordDao extends BaseDao {
     return INSTANCE;
   }
 
-  private static final String UPDATE_SQL = "UPDATE hdAgentMessageRecord t SET readCount = ?,updateDate = ? WHERE userName = ? AND roomName = ? ";
+  private static final String UPDATE_SQL = "UPDATE hdAgentMessageRecord t SET readCount = ?,updateDate = ? WHERE id = ?";
   private static final String CREATE_SQL = "INSERT INTO hdAgentMessageRecord (id, userName, roomName, readCount, updateDate) VALUES (?, ?, ?, ?, ?)";
   private static final String SEARCH_BY_ROOMNAME_SQL = "SELECT * FROM hdAgentMessageRecord WHERE userName = ? AND roomName = ? ";
 
-  public void updateByUserNameAndRoomName(String userName, String roomName,Long readCount){
+  public void updateByUserNameAndRoomName(String id,Long readCount,Timestamp updateDate){
     Connection con = null;
     PreparedStatement pstmt = null;
     try {
@@ -34,12 +34,12 @@ public class AgentMessageRecordDao extends BaseDao {
       con = DbConnectionManager.getConnection();
       pstmt = con.prepareStatement(UPDATE_SQL);
       pstmt.setLong(i++, readCount);
-      pstmt.setString(i++, userName);
-      pstmt.setString(i++, roomName);
+      pstmt.setTimestamp(i++, updateDate);
+      pstmt.setString(i++, id);
       pstmt.executeUpdate();
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("updateById error", ex);
+      LOGGER.error("updateByUserNameAndRoomName error", ex);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
     }
@@ -60,7 +60,7 @@ public class AgentMessageRecordDao extends BaseDao {
       pstmt.executeUpdate();
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("updateById error", ex);
+      LOGGER.error("create error", ex);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
     }
@@ -74,14 +74,16 @@ public class AgentMessageRecordDao extends BaseDao {
     try {
       con = DbConnectionManager.getConnection();
       pstmt = con.prepareStatement(SEARCH_BY_ROOMNAME_SQL);
-      pstmt.setString(1, roomName);
+      pstmt.setString(1, agentName);
+      pstmt.setString(2, roomName);
       rs = pstmt.executeQuery();
       while (rs.next()) {
         result = new AgentMessageRecordEntity();
         result.setId(rs.getString(1));
-//        result.set(rs.getString(2));
-//        result.setAmount(rs.getLong(3));
-        result.setUpdateDate(rs.getTimestamp(4));
+        result.setUserName(rs.getString(2));
+        result.setRoomName(rs.getString(3));
+        result.setReadCount(rs.getLong(4));
+        result.setUpdateDate(rs.getTimestamp(5));
       }
     } catch (Exception ex) {
       ex.printStackTrace();

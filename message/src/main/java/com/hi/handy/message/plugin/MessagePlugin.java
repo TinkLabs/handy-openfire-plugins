@@ -15,7 +15,6 @@ import org.xmpp.packet.Packet;
 import org.xmpp.packet.Presence;
 
 import java.io.File;
-import java.util.concurrent.CompletableFuture;
 
 public class MessagePlugin implements Plugin, PacketInterceptor {
 
@@ -43,32 +42,34 @@ public class MessagePlugin implements Plugin, PacketInterceptor {
 
     public void initializePlugin(PluginManager manager, File pluginDirectory) {
         // 将当前插件加入到消息拦截管理器（interceptorManager ）中，当消息到来或者发送出去的时候，会触发本插件的interceptPacket方法。
-        LOGGER.info("MessagePlugin init============");
+        LOGGER.debug("MessagePlugin init============");
         interceptorManager = InterceptorManager.getInstance();
         interceptorManager.addInterceptor(this);
     }
 
     public void destroyPlugin() {
         // 当插件被卸载的时候，主要通过openfire管理控制台卸载插件时，被调用。注意interceptorManager的addInterceptor和removeInterceptor需要成对调用。
-        LOGGER.info("MessagePlugin destory============");
+        LOGGER.debug("MessagePlugin destory============");
         interceptorManager.removeInterceptor(this);
     }
 
     @Override
     public void interceptPacket(Packet packet, Session session, boolean incoming, boolean processed) {
         if (!incoming && processed && packet instanceof Presence) {
-            LOGGER.info("agent join chat room save packet" + packet);
+            LOGGER.debug("agent join chat room save packet" + packet);
+            // CompletableFuture.runAsync(() -> AgentJoinChatRoomService.getInstance().setRoomAllMessageIsRead(packet));
             AgentJoinChatRoomService.getInstance().setRoomAllMessageIsRead(packet);
         }
 
         if (serviceEnabled) {
-            LOGGER.info("message save ============");
-            if (incoming && processed == false && packet instanceof Message) {
+            LOGGER.debug("message save ============");
+            if (incoming && !processed && packet instanceof Message) {
                 LOGGER.info("message save packet" + packet);
-                CompletableFuture.runAsync(() -> MessageService.getInstance().recordMessage(packet));
+                // CompletableFuture.runAsync(() -> MessageService.getInstance().recordMessage(packet));
+                MessageService.getInstance().recordMessage(packet);
             }
         } else {
-            LOGGER.info("message save");
+            LOGGER.debug("message save");
         }
     }
 }

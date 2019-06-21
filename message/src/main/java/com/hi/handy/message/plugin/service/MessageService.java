@@ -15,9 +15,7 @@ import org.xmpp.packet.Message;
 import org.xmpp.packet.Packet;
 import org.xmpp.packet.PacketExtension;
 
-import java.util.UUID;
-
-public class MessageService {
+public class MessageService extends BaseService{
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
     public static final MessageService INSTANCE = new MessageService();
 
@@ -33,19 +31,19 @@ public class MessageService {
         if (!shouldStoreMessage(message,packet)) {
             return;
         }
-        LOGGER.info("recordMessage:" + message);
+        LOGGER.debug("recordMessage:" + message);
         save(packet);
     }
 
     private void save(Packet packet) {
-        LOGGER.info("save");
-        LOGGER.info("packet",packet);
+        LOGGER.debug("save");
+        LOGGER.debug("packet",packet);
         try {
             Message message = (Message) packet;
-            String roomType = getRoomeType(packet.getFrom().getNode());
+            String roomType = getRoomeType(packet.getTo().getNode());
 
-            if(StringUtils.isNoneBlank(roomType) && ("room-vip".equals(roomType)||"room-hotel".equals(roomType)) && userisExist(packet.getTo().getNode())) {
-                String[] roomInfoArray = packet.getFrom().getNode().split("#");
+            if(StringUtils.isNoneBlank(roomType) && ("room-vip".equals(roomType)||"room-hotel".equals(roomType)) && userisExist(packet.getFrom().getNode())) {
+                String[] roomInfoArray = packet.getTo().getNode().split("#");
                 String[] getRoomInfoDetailArray = roomInfoArray[1].split("-");
                 Long zoneId = Long.valueOf(getRoomInfoDetailArray[0]);
                 Long hotelId = Long.valueOf(getRoomInfoDetailArray[1]);
@@ -53,7 +51,7 @@ public class MessageService {
                 String roomNum = getRoomInfoDetailArray[3];
 
                 String deviceUserId = roomInfoArray[2];
-                String roomName = packet.getFrom().getNode();
+                String roomName = packet.getTo().getNode();
 
                 createOrUpdateMessage(packet, message.getID(), message.getElement().asXML(), zoneId, hotelId, hotelName, roomNum, deviceUserId);
                 HdRoomMessageRecordEntity roomMessageRecord = HdRoomMessageRecordDao.getInstance().findByRoomName(roomName);
@@ -69,23 +67,23 @@ public class MessageService {
     }
 
     private void createOrUpdateMessage(Packet packet,String messageId,String stanza,Long zoneId,Long hotelId,String hotelName,String roomNum, String deviceUserId) {
-        LOGGER.info("createOrUpdateMessage");
-        String systemId = HdMessageDao.getInstance().findBytoJID(packet.getFrom().toBareJID());
+        LOGGER.debug("createOrUpdateMessage");
+        String systemId = HdMessageDao.getInstance().findByToJID(packet.getTo().toBareJID());
         if(StringUtils.isNoneBlank(systemId)){
             HdMessageDao.getInstance().updateStanzaById(systemId,stanza,new java.sql.Timestamp(System.currentTimeMillis()));
         }else{
             HdMessageEntity hdMessageEntity = new HdMessageEntity();
-            hdMessageEntity.setId(UUID.randomUUID().toString());
+            hdMessageEntity.setId(getId());
             hdMessageEntity.setMessageId(messageId);
             hdMessageEntity.setZoneId(zoneId);
             hdMessageEntity.setHotelId(hotelId);
             hdMessageEntity.setHotelName(hotelName);
             hdMessageEntity.setRoomNum(roomNum);
             hdMessageEntity.setDeviceUserId(deviceUserId);
-            hdMessageEntity.setFromUser(packet.getTo().getNode());
-            hdMessageEntity.setFromJID(packet.getTo().toBareJID());
-            hdMessageEntity.setToUser(packet.getFrom().getNode());
-            hdMessageEntity.setToJID(packet.getFrom().toBareJID());
+            hdMessageEntity.setFromUser(packet.getFrom().getNode());
+            hdMessageEntity.setFromJID(packet.getFrom().toBareJID());
+            hdMessageEntity.setToUser(packet.getTo().getNode());
+            hdMessageEntity.setToJID(packet.getTo().toBareJID());
             hdMessageEntity.setCreationDate(new java.sql.Timestamp(System.currentTimeMillis()));
             hdMessageEntity.setStanza(stanza);
             HdMessageDao.getInstance().create(hdMessageEntity);
@@ -94,14 +92,14 @@ public class MessageService {
     }
 
     private void updateRoomMessageRecord(HdRoomMessageRecordEntity hdRoomMessageRecordEntity) {
-        LOGGER.info("updateRoomMessageRecord");
+        LOGGER.debug("updateRoomMessageRecord");
         HdRoomMessageRecordDao.getInstance().updateAmountAndUpdateDateById(hdRoomMessageRecordEntity.getId(),hdRoomMessageRecordEntity.getAmount()+1,new java.sql.Timestamp(System.currentTimeMillis()));
     }
 
     private void createRoomMessageRecord(String roomName) {
-        LOGGER.info("createRoomMessageRecord");
+        LOGGER.debug("createRoomMessageRecord");
         HdRoomMessageRecordEntity hdRoomMessageRecordEntity = new HdRoomMessageRecordEntity();
-        hdRoomMessageRecordEntity.setId(UUID.randomUUID().toString());
+        hdRoomMessageRecordEntity.setId(getId());
         hdRoomMessageRecordEntity.setRoomName(roomName);
         hdRoomMessageRecordEntity.setAmount(1l);
         hdRoomMessageRecordEntity.setUpdateDate(new java.sql.Timestamp(System.currentTimeMillis()));
