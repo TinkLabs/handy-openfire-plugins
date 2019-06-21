@@ -28,9 +28,9 @@ public class HdMessageDao extends BaseDao {
   }
 
 
-
-  public List<HdMessageEntity> findByZoneIdsPaging(String zoneId,Integer pageIndex,Integer pageSize){
-    String SEARCH_BY_ZONEIDS_PAGING_SQL = "SELECT * FROM hdMessage WHERE zoneId in ("+zoneId+") ORDER BY creationDate DESC LIMIT "+pageIndex+","+pageSize;
+  public List<HdMessageEntity> findByZoneIdsPaging(String zoneOrHotelId,Integer pageIndex,Integer pageSize){
+    String SEARCH_BY_ZONEIDS_PAGING_SQL = "SELECT * FROM hdMessage WHERE zoneId in ("+zoneOrHotelId+") OR hotelId in ("+zoneOrHotelId+") ORDER BY creationDate DESC LIMIT "+pageIndex+","+pageSize;
+    LOGGER.debug("SEARCH_BY_ZONEIDS_PAGING_SQL:"+SEARCH_BY_ZONEIDS_PAGING_SQL);
     List<HdMessageEntity> result = new ArrayList();
     Connection con = null;
     PreparedStatement pstmt = null;

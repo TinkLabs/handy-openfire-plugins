@@ -6,7 +6,7 @@ public class MessageModel{
 
     private String hotelName;
     private String roomNum;
-    private Long count;
+    private Long unRead;
     private String content;
     private Timestamp createDate;
 
@@ -26,12 +26,12 @@ public class MessageModel{
         this.roomNum = roomNum;
     }
 
-    public Long getCount() {
-        return count;
+    public Long getUnRead() {
+        return unRead;
     }
 
-    public void setCount(Long count) {
-        this.count = count;
+    public void setUnRead(Long unRead) {
+        this.unRead = unRead;
     }
 
     public String getContent() {

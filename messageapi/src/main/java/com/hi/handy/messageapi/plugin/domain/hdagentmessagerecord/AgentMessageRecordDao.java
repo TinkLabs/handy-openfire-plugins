@@ -40,7 +40,7 @@ public class AgentMessageRecordDao extends BaseDao {
       }
     } catch (Exception ex) {
       ex.printStackTrace();
-      LOGGER.error("findByRoomName error", ex);
+      LOGGER.error("findByAgentNameAndRoomName error", ex);
       throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);

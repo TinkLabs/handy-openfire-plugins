@@ -1,9 +1,11 @@
 package com.hi.handy.messageapi.plugin.domain.hdgrouprelation;
 
+import com.hi.handy.messageapi.plugin.domain.BaseDao;
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
 import com.hi.handy.messageapi.plugin.exception.ExceptionConst;
-import com.hi.handy.messageapi.plugin.domain.BaseDao;
 import org.jivesoftware.database.DbConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HdGroupRelationDao extends BaseDao {
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(HdGroupRelationDao.class);
   private HdGroupRelationDao() {
   }
 
@@ -22,8 +24,10 @@ public class HdGroupRelationDao extends BaseDao {
     return INSTANCE;
   }
 
-  public List<Long> searchZoneIdsByGroupIds(String groupIds) {
-    String sql = "SELECT relationId FROM hdGroupRelation WHERE groupId in (" + groupIds + ")";
+  String SEARCH_SQL = "SELECT relationId FROM hdGroupRelation WHERE groupId = ?";
+
+  public List<Long> searchHotelIdOrZoneIdByGroupId(String groupId) {
+
 
     List<Long> result = new ArrayList();
     Connection con = null;
@@ -31,12 +35,15 @@ public class HdGroupRelationDao extends BaseDao {
     ResultSet rs = null;
     try {
       con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(sql);
+      pstmt = con.prepareStatement(SEARCH_SQL);
+      pstmt.setString(1, groupId);
       rs = pstmt.executeQuery();
       while (rs.next()) {
         result.add(rs.getLong(1));
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("searchHotelIdOrZoneIdByGroupId error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);

@@ -7,8 +7,6 @@ import com.hi.handy.messageapi.plugin.model.BaseResultModel;
 import com.hi.handy.messageapi.plugin.parameter.MessageParameter;
 import com.hi.handy.messageapi.plugin.service.MessageService;
 import org.jivesoftware.admin.AuthCheckFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class MessageApiServlet extends HttpServlet {
-  private static final Logger LOGGER = LoggerFactory.getLogger(MessageApiServlet.class);
   private static final String SERVICE_URL = "messageapi/api";
 
   @Override

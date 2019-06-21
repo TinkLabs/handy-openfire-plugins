@@ -11,13 +11,14 @@ import com.hi.handy.messageapi.plugin.domain.hduserproperty.HdUserPropertyEntity
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
 import com.hi.handy.messageapi.plugin.exception.ExceptionConst;
 import com.hi.handy.messageapi.plugin.model.MessageModel;
-import com.hi.handy.messageapi.plugin.parameter.BaseParameter;
 import com.hi.handy.messageapi.plugin.parameter.MessageParameter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessageChatList extends BaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageChatList.class);
@@ -32,33 +33,32 @@ public class MessageChatList extends BaseService {
     }
 
     public List<MessageModel> queryChatListByPaging(MessageParameter parameter) {
-        LOGGER.info("queryChatListByPaging");
-        LOGGER.info("parameter",parameter);
+        LOGGER.debug("queryChatListByPaging");
+        LOGGER.debug("parameter userName:"+parameter.getUserName());
         String userName = parameter.getUserName();
         HdUserPropertyEntity hdUserPropertyEntity = HdUserPropertyDao.getInstance().searchByName(userName);
         if(hdUserPropertyEntity == null) throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "user is not exit");
-        String type = hdUserPropertyEntity.getType();
-        if (type.equals(BaseParameter.UserType.AGENT.name())) {
-            return getChatListByPaging(hdUserPropertyEntity.getUserName(),parameter.getPageIndex(),parameter.getPageSize());
-        }else{
-            throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "user type is wrong");
-        }
+        return queryChatListByPaging(hdUserPropertyEntity.getUserName(),parameter.getPageIndex(),parameter.getPageSize());
     }
 
-    private List<MessageModel> getChatListByPaging(String userName,Integer pageIndex,Integer pageSize){
+    private List<MessageModel> queryChatListByPaging(String userName,Integer pageIndex,Integer pageSize){
+        LOGGER.debug("queryChatListByPaging");
         List<MessageModel> messageModels = new ArrayList();
-        List<String> groupIds = HdGroupAgentDao.getInstance().searchByUserName(userName);
-        if(groupIds!=null&&groupIds.size()>0) {
-            List<Long> zoneIds = HdGroupRelationDao.getInstance().searchZoneIdsByGroupIds(joinListForInSqlString(groupIds));
-            if(zoneIds!=null&&zoneIds.size()>0) {
-                List<HdMessageEntity> messageEntityList = queryMessages(joinListForInSqlLong(zoneIds), pageIndex, pageSize);
+        String groupId = HdGroupAgentDao.getInstance().searchByUserName(userName);
+        if(StringUtils.isNoneBlank(groupId)) {
+            List<Long> zoneAndHotelIds = HdGroupRelationDao.getInstance().searchHotelIdOrZoneIdByGroupId(groupId);
+            LOGGER.debug("zoneAndHotelIds"+zoneAndHotelIds);
+            if(zoneAndHotelIds!=null&&zoneAndHotelIds.size()>0) {
+                String zoneAndHotelIdsString = joinListForInSqlLong(zoneAndHotelIds.stream().distinct().collect(Collectors.toList()));
+                LOGGER.debug("zoneAndHotelIdsString:"+zoneAndHotelIdsString);
+                List<HdMessageEntity> messageEntityList = queryMessages(zoneAndHotelIdsString, pageIndex, pageSize);
                 for (HdMessageEntity hdMessageEntity : messageEntityList) {
                     Long amount = queryHdRoomMessageRecord(hdMessageEntity.getFromJID());
                     Long readCount = queryHdAgentMessageRecord(userName, hdMessageEntity.getToUser());
                     MessageModel messageModel = new MessageModel();
                     messageModel.setHotelName(hdMessageEntity.getHotelName());
                     messageModel.setRoomNum(hdMessageEntity.getRoomNum());
-                    messageModel.setCount(amount - readCount);
+                    messageModel.setUnRead(amount - readCount);
                     messageModel.setCreateDate(hdMessageEntity.getCreationDate());
                     messageModel.setContent(hdMessageEntity.getStanza());
                     messageModels.add(messageModel);

@@ -3,7 +3,6 @@ package com.hi.handy.messageapi.plugin.domain.hduserproperty;
 import com.hi.handy.messageapi.plugin.domain.BaseDao;
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
 import com.hi.handy.messageapi.plugin.exception.ExceptionConst;
-import com.hi.handy.messageapi.plugin.model.HotelIdAndRoomNum;
 import org.jivesoftware.database.DbConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HdUserPropertyDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(HdUserPropertyDao.class);
@@ -25,8 +22,7 @@ public class HdUserPropertyDao extends BaseDao {
     return INSTANCE;
   }
 
-  private static final String SEARCH_BY_NAME_SQL = "SELECT * FROM hdUserProperty WHERE userName = ?";
-  private static final String SEARCH_HOTELID_AND_ROOMNUM_BY_AGENTNAME_SQL = "SELECT roomNum,hotelId FROM hdUserProperty WHERE userName in (?)  GROUP BY roomNum,hotelId limit ?,?";
+  private static final String SEARCH_BY_NAME_SQL = "SELECT * FROM hdUserProperty WHERE type = 'AGENT' AND userName = ? ";
 
   @SuppressWarnings("Duplicates")
   public HdUserPropertyEntity searchByName(String userName) {
@@ -63,31 +59,4 @@ public class HdUserPropertyDao extends BaseDao {
     return result;
   }
 
-  public List<HotelIdAndRoomNum> searchHotelIdAndRoomNumByAgentName(String userNames,Integer pageIndex,Integer pageSize){
-    List<HotelIdAndRoomNum> result = new ArrayList<HotelIdAndRoomNum>();
-    Connection con = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    try {
-      con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(SEARCH_HOTELID_AND_ROOMNUM_BY_AGENTNAME_SQL);
-      pstmt.setString(1, userNames);
-      pstmt.setInt(3, pageIndex-1);
-      pstmt.setInt(4, pageSize);
-      rs = pstmt.executeQuery();
-      while (rs.next()) {
-        HotelIdAndRoomNum hotelIdAndRoomNum = new HotelIdAndRoomNum();
-        hotelIdAndRoomNum.setRoomNum(rs.getString(1));
-        hotelIdAndRoomNum.setHotelId(rs.getLong(2));
-        result.add(hotelIdAndRoomNum);
-      }
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      LOGGER.error("searchHotelIdAndRoomNumByAgentName error", ex);
-      throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
-    } finally {
-      DbConnectionManager.closeConnection(rs, pstmt, con);
-    }
-    return result;
-  }
 }
