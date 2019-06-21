@@ -1,5 +1,6 @@
 package com.hi.handy.muc.dao;
 
+import com.hi.handy.muc.entity.HdUserPropertyEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.jivesoftware.database.DbConnectionManager;
 import org.jivesoftware.openfire.muc.MUCRoom;
@@ -133,7 +134,77 @@ public class MUCDao {
                 result = resultSet.getLong(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("getUserZoneId failed ",e);
+        }finally {
+            DbConnectionManager.closeConnection(statement,dbConnection);
+        }
+        return result;
+    }
+
+    /**
+     * 根据username查找hdUser
+     * @param userName
+     * @return
+     */
+    public static HdUserPropertyEntity getHdUserByUsername(String userName){
+        HdUserPropertyEntity result = null;
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            con = DbConnectionManager.getConnection();
+            String sql = "SELECT `userName`, `displayName`, `password`, `zoneId`, `zoneName`, `hotelId`, `hotelName`, `roomNum`," +
+                    " `type`, `creationDate`, `modificationDamodificationDate`, `status` FROM hdUserProperty WHERE userName = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userName);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                result = new HdUserPropertyEntity();
+                result.setUserName(rs.getString(1));
+                result.setDisplayName(rs.getString(2));
+                result.setPassword(rs.getString(3));
+                result.setZoneId(rs.getLong(4));
+                result.setZoneName(rs.getString(5));
+                result.setHotelId(rs.getLong(6));
+                result.setHotelName(rs.getString(7));
+                result.setRoomNum(rs.getString(8));
+                result.setType(rs.getString(9));
+                result.setCreationDate(rs.getTimestamp(10));
+                result.setModificationDamodificationDate(rs.getTimestamp(11));
+                result.setStatus(rs.getString(12));
+            }
+        } catch (SQLException e) {
+            log.error("getHdUserByUsername failed",e);
+        } finally {
+            DbConnectionManager.closeConnection(rs, pstmt, con);
+        }
+        return result;
+    }
+
+    /**
+     * 获取groupName
+     * @param groupType VIP or HOTEL
+     * @param relationId zoneId or hotelId
+     * @return
+     */
+    public static String getGroupNameByTypeAndRelationId(String groupType,String relationId){
+        Connection dbConnection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String result = null;
+        try {
+            dbConnection = DbConnectionManager.getConnection();
+            //一个zone/hotel只能被一个agent group管理因此这里使用 id =(xxx) 而不是 in (xxx)
+            String sql = "select name from hdGroup where id = (select groupId from hdGroupRelation where type=? and relationId = ?)";
+            statement = dbConnection.prepareStatement(sql);
+            statement.setString(1,groupType);
+            statement.setString(2,relationId);
+            resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                result = resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            log.error("getGroupNameByTypeAndRelationId failed",e);
         }finally {
             DbConnectionManager.closeConnection(statement,dbConnection);
         }

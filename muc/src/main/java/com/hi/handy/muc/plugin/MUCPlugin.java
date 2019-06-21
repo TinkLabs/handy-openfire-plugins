@@ -1,6 +1,7 @@
 package com.hi.handy.muc.plugin;
 
 import com.hi.handy.muc.dao.MUCDao;
+import com.hi.handy.muc.entity.HdUserPropertyEntity;
 import com.hi.handy.muc.handler.MUCPersistenceHandler;
 import com.hi.handy.muc.listener.CustomMUCEventListener;
 import lombok.extern.slf4j.Slf4j;
@@ -70,8 +71,6 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
             if (null!=message.getBody()){
                 //只处理有内容的消息
                 log.info("session:"+(session!=null?session.toString():"")+" 消息类型："+message.getType()+" 消息内容："+message.toXML()+" 消息类型(文/语/图)："+message.getElement().attributeValue("messageType")+" From:"+message.getFrom().toString()+" to:"+message.getTo().toString());
-                String fromUserName = message.getFrom().getNode();
-                Long zoneId = MUCDao.getUserZoneId(fromUserName);
                 GroupManager groupManager = GroupManager.getInstance();
                 if(message.getTo().equals(message.getFrom())){
                     PacketRejectedException rejectedException =  new PacketRejectedException();
@@ -82,20 +81,42 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
                 if(null!=session&&session.getAddress().equals(message.getFrom())){
                     log.info("session address: "+session.getAddress()+" session streamId:"+session.getStreamID());
                     String domain =message.getFrom().getDomain();
+                    String fromUserName = message.getFrom().getNode();
+                    String chatRoom = null;
                     Group group = null;
 
                     if(Message.Type.groupchat ==(message.getType())){
                         message.getElement().addAttribute("chatroom",message.getTo().toString());
+                        chatRoom = message.getTo().getNode();
                     }
-
-                    if(null!=zoneId){
-                        String groupName = "zone-"+zoneId;
+                    HdUserPropertyEntity user = MUCDao.getHdUserByUsername(fromUserName);
+                    if(null!=user){
+                        String roomType = getRoomType(chatRoom);
+                        String groupName = null;
+                        boolean check = null != roomType;
+                        // 判断是 消息是来自VIP concierge or Hotel concierge
+                        if(check && "room-vip".equals(roomType)){
+                            //根据zone id找agent group
+                            Long zoneId = user.getZoneId();
+                            if(null != zoneId){
+                                log.info(">>>>>>>>> group name:"+groupName);
+                                groupName = MUCDao.getGroupNameByTypeAndRelationId("VIP",zoneId.toString());
+                            }
+                        }else if(check && "room-hotel".equals(roomType)){
+                            //根据hotel id找agent group
+                            Long hotelId = user.getHotelId();
+                            if(null != hotelId){
+                                log.info(">>>>>>>>> group name:"+groupName);
+                                groupName = MUCDao.getGroupNameByTypeAndRelationId("HOTEL",hotelId.toString());
+                            }
+                        }
                         try {
-                            //已经确认：一个agent group可能会对应多个zone，但是一个zone只会有一个agent group 管理。
-                            //TODO group 的名字
-                            group = groupManager.getGroup(groupName,true);
+                            //已经确认：一个agent group可能会管理多个zone，但是一个zone只会有一个agent group 管理。
+                            if(null != groupName){
+                                group = groupManager.getGroup(groupName,true);
+                            }
                         } catch (GroupNotFoundException e) {
-                            e.printStackTrace();
+                            // do nothing
                         }
                         if(null!=group){
                             //TODO 处理的时候如果是来自groupchat。转发的时候要自定义加一个chatroom="xxx@con.10.xxxx"
@@ -107,16 +128,21 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
                             broadCast.setBody(message.getBody());
                             if(Message.Type.groupchat ==(message.getType())){
                                 broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
-//                                broadCast.setFrom(message.getTo());
                             }
                             packetRouter.route(broadCast);
+                            log.info("有body 的消息："+ message.toXML());
                         }
-                        log.info("有body 的消息："+ message.toXML());
                     }
                 }
-//                OfflineMessageStore offlineMessageStore = new OfflineMessageStore();
-//                offlineMessageStore.addMessage(message);
             }
+        }
+    }
+    String getRoomType(String roomInfo){
+        try {
+            String[] infoArray = roomInfo.split("#");
+            return infoArray[0];
+        } catch (Exception e) {
+            return null;
         }
     }
 }
