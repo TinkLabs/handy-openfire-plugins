@@ -7,11 +7,13 @@ import com.hi.handy.authapi.plugin.exception.ExceptionConst;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.database.DbConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class HdUserPropertyDao extends BaseDao {
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(HdUserPropertyDao.class);
   private HdUserPropertyDao() {
   }
 
@@ -41,6 +43,8 @@ public class HdUserPropertyDao extends BaseDao {
         count = rs.getLong(1);
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("countByUserName error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR,"Unable to count UserProperty for userName " + userName, e);
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
@@ -99,6 +103,8 @@ public class HdUserPropertyDao extends BaseDao {
       pstmt.setTimestamp(i++, new Timestamp(System.currentTimeMillis()));
       pstmt.executeUpdate();
     } catch (SQLException e) {
+      e.printStackTrace();
+      LOGGER.error("createUserProperty error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
@@ -122,6 +128,8 @@ public class HdUserPropertyDao extends BaseDao {
       pstmt.setString(i++, userName);
       pstmt.executeUpdate();
     } catch (SQLException e) {
+      e.printStackTrace();
+      LOGGER.error("updateAllUserProperty error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
@@ -154,6 +162,8 @@ public class HdUserPropertyDao extends BaseDao {
         result.setStatus(rs.getString(12));
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("searchByUserName error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
@@ -173,6 +183,8 @@ public class HdUserPropertyDao extends BaseDao {
       pstmt.setString(i++, userName);
       pstmt.executeUpdate();
     } catch (SQLException e) {
+      e.printStackTrace();
+      LOGGER.error("updateStatus error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
@@ -194,6 +206,8 @@ public class HdUserPropertyDao extends BaseDao {
         count = rs.getLong(1);
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("searchLoginCount error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);

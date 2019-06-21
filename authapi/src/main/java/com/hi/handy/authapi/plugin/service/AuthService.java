@@ -23,8 +23,8 @@ public class AuthService {
     }
 
     public Object auth(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
-        LOGGER.info("auth");
-        LOGGER.info("parameter",parameter);
+        LOGGER.debug("auth");
+        LOGGER.debug("parameter",parameter);
         AuthModel result = null;
         AuthType type = parameter.getAuthType();
         if (type == AuthType.GUEST_LOGIN) {

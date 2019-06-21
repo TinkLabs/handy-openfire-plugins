@@ -4,13 +4,15 @@ import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
 import org.jivesoftware.database.DbConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class HdGroupDao extends BaseDao {
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(HdGroupDao.class);
   private HdGroupDao() {
   }
 
@@ -38,9 +40,12 @@ public class HdGroupDao extends BaseDao {
         hdGroupEntity.setIcon(rs.getString(3));
         hdGroupEntity.setType(rs.getString(4));
         hdGroupEntity.setWelcomeMessage(rs.getString(5));
-        hdGroupEntity.setCreateDate(rs.getTimestamp(6));
+        hdGroupEntity.setDisplayName(rs.getString(6));
+        hdGroupEntity.setCreateDate(rs.getTimestamp(7));
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("searchAgentByGroupId error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);

@@ -2,10 +2,8 @@ package com.hi.handy.authapi.plugin.service;
 
 import com.hi.handy.authapi.plugin.dao.HdGroupAgentDao;
 import com.hi.handy.authapi.plugin.dao.HdGroupDao;
-import com.hi.handy.authapi.plugin.dao.HdGroupRelationDao;
 import com.hi.handy.authapi.plugin.dao.HdUserPropertyDao;
 import com.hi.handy.authapi.plugin.entity.AgentStatus;
-import com.hi.handy.authapi.plugin.entity.GroupType;
 import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.entity.HdUserPropertyEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
@@ -24,8 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmpp.packet.Message;
 
-import java.util.List;
-
 public class AgentService extends BaseService{
     private static final Logger LOGGER = LoggerFactory.getLogger(AgentService.class);
 
@@ -39,8 +35,8 @@ public class AgentService extends BaseService{
     public static final AgentService INSTANCE = new AgentService();
 
     public AgentInfoModel agentLogin(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
-        LOGGER.info("agentLogin");
-        LOGGER.info("parameter",parameter);
+        LOGGER.debug("agentLogin");
+        LOGGER.debug("parameter",parameter);
         if (parameter.getAuthType() != BaseParameter.AuthType.AGENT_LOGIN) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
         }
@@ -65,32 +61,36 @@ public class AgentService extends BaseService{
             // notify group status
             notifyGroupStatus(agentUserName);
         }
-
+        String displayName = hdUserPropertyEntity.getDisplayName();
+        if(StringUtils.isBlank(displayName)){
+            String[] agentUserNameArray = agentUserName.split(LINE_THROUGH);
+            displayName = agentUserNameArray[0];
+        }
         // find openFire user by email,if user is not exist then create
         UserManager userManager = UserManager.getInstance();
         User user;
         if (!userManager.isRegisteredUser(agentUserName)) {
-            user = userManager.createUser(agentUserName, password, parameter.getDisplayName(),parameter.getEmail());
+            user = userManager.createUser(agentUserName, password, displayName,parameter.getEmail());
         } else {
             user = userManager.getUser(agentUserName);
         }
 
-        String groupId = HdGroupRelationDao.getInstance().searchByRelationId(hdUserPropertyEntity.getZoneId(), GroupType.VIP.name());
+        String groupId = HdGroupAgentDao.getInstance().searchByUserName(agentUserName);
         HdGroupEntity hdGroupEntity = HdGroupDao.getInstance().searchById(groupId);
         AgentInfoModel result = new AgentInfoModel();
         result.setGroupIcon(hdGroupEntity.getIcon());
-        result.setGroupName(hdGroupEntity.getName());
+        result.setGroupName(hdGroupEntity.getDisplayName());
         result.setWelcomeMessage(hdGroupEntity.getWelcomeMessage());
         result.setUid(user.getUsername());
-        result.setName(user.getName());
+        result.setName(displayName);
         result.setToken(encodePassword(password));
         result.setDomain(getDomain());
         return result;
     }
 
     public AuthModel agentLogout(AuthParameter parameter){
-        LOGGER.info("agentLogout");
-        LOGGER.info("parameter",parameter);
+        LOGGER.debug("agentLogout");
+        LOGGER.debug("parameter",parameter);
         if (parameter.getAuthType() != BaseParameter.AuthType.AGENT_LOGOUT) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
         }
@@ -103,7 +103,7 @@ public class AgentService extends BaseService{
         if(hdUserPropertyEntity == null) throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "user is not exit");
         if(StringUtils.isNoneBlank(hdUserPropertyEntity.getStatus())&&hdUserPropertyEntity.getStatus().equals(AgentStatus.LOGGED.name())){
             // update status
-            HdUserPropertyDao.getInstance().updateStatus(agentUserName, AgentStatus.LOGGED.name());
+            HdUserPropertyDao.getInstance().updateStatus(agentUserName, AgentStatus.NOTLOGGED.name());
             // notify group status
             notifyGroupStatus(agentUserName);
         }
@@ -111,23 +111,19 @@ public class AgentService extends BaseService{
     }
 
     public void notifyGroupStatus(String userName){
-        List<String> groupIds  = HdGroupAgentDao.getInstance().searchByUserName(userName);
-        if(groupIds!=null&&groupIds.size()>0) {
-            groupIds.forEach(groupId -> {
-                Long onlineAgent = groupIsOnline(groupId);
-                if(onlineAgent==0){
-                    sendMessage(groupId, false);
-                }
-                if (onlineAgent==1) {
-                    sendMessage(groupId, true);
-                }
-            });
+        String groupId  = HdGroupAgentDao.getInstance().searchByUserName(userName);
+        Long onlineAgent = groupIsOnline(groupId);
+        if(onlineAgent==0){
+            sendMessage(groupId, false);
+        }
+        if (onlineAgent==1) {
+            sendMessage(groupId, true);
         }
     }
 
     private void sendMessage(String groupId,boolean groupStatus){
         String serverName = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
-        LOGGER.info("serverName:"+serverName);
+        LOGGER.debug("serverName:"+serverName);
         String body="{type:groupType,id:"+groupId+",isonline:"+groupStatus+"}";
         Message message = new Message();
         message.setBody(body);

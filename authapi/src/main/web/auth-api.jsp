@@ -57,7 +57,7 @@ paramter:
 	"authType":0,
 	"barcode": "4352346234523",
 	"hotelId":2,
-	"hotelName":"酒店2",
+	"hotelName":"hotel2",
 	"roomNum": "302",
 	"zoneId": 1,
 	"zoneName": "香港"
@@ -71,15 +71,15 @@ result:
         "uid": "4352346234523",
         "name": "guest",
         "token": "MDNjY2Y3NDg4ZjU1OTlmMzkwYjMyMTc5NTE3MWNlOGU=",
-        "domain": "192.168.100.66",
+        "domain": "handy-internal-openfire-dev.handytravel.tech",
         "chatRoom": {
-            "id": "sdfasdfadf",
-            "name": "hotel-chat-room",
+            "id": "rqwereqer345afdf",
+            "name": "vipCharRoom",
             "status": false,
             "icon": null,
             "roomJID": {
-                "node": "room-hotel#1-2-酒店2-302#4352346234523",
-                "domain": "conference.192.168.100.66",
+                "node": "room-hotel#1-2-hotel2-302#4352346234523",
+                "domain": "conference.handy-internal-openfire-dev.handytravel.tech",
                 "resource": null
             },
             "roomType": "HOTEL"
@@ -111,7 +111,7 @@ paramter:
 	"email":"guest@tinklabs.com",
 	"barcode": "999999999",
 	"hotelId":3,
-	"hotelName":"酒店3",
+	"hotelName":"hotel3",
 	"roomNum": "303",
 	"zoneId": 1,
 	"zoneName": "新加坡"
@@ -125,15 +125,15 @@ result:
         "uid": "guest-tinklabs.com",
         "name": "guest",
         "token": "MTQwNTAyNmJjMmVkMzRmMWM2ZWRmOTAzYjZjYmRhYTQ=",
-        "domain": "192.168.100.66",
+        "domain": "handy-internal-openfire-dev.handytravel.tech",
         "chatRoom": {
             "id": "rqwereqer345afdf",
-            "name": "vip-chat-room",
+            "name": "vipCharRoom",
             "status": false,
             "icon": null,
             "roomJID": {
-                "node": "room-vip#1-3-酒店3-303#guest-tinklabs.com",
-                "domain": "conference.192.168.100.66",
+                "node": "room-vip#1-3-hotel3-303#guest-tinklabs.com",
+                "domain": "conference.handy-internal-openfire-dev.handytravel.tech",
                 "resource": null
             },
             "roomType": "VIP"
@@ -171,13 +171,43 @@ result:
     "message": null,
     "data": {
         "uid": "agent-tinklabs.com",
-        "name": "",
+        "name": "agent",
         "token": "MjVkNTVhZDI4M2FhNDAwYWY0NjRjNzZkNzEzYzA3YWQ=",
-        "domain": "192.168.100.66",
+        "domain": "handy-internal-openfire-dev.handytravel.tech",
         "groupIcon": null,
-        "groupName": "vip-chat-room",
-        "welcomeMessage": null
+        "groupName": "vipCharRoom",
+        "welcomeMessage": "welcomemessage"
     }
+}
+                </pre>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<br>
+
+<div class="jive-contentBoxHeader">4 agent logout</div>
+<div class="jive-contentBox">
+    <table cellpadding="3" cellspacing="0" border="0" width="100%">
+        <tbody>
+        <tr>
+            <td>
+                <pre>
+method:post
+url:http://handy-internal-openfire-dev.handytravel.tech:9090/plugins/authapi/api
+paramter:
+{
+	"authType":3,
+	"email":"agent@tinklabs.com"
+}
+result:
+{
+    "success": true,
+    "code": null,
+    "message": null,
+    "data": null
 }
                 </pre>
             </td>

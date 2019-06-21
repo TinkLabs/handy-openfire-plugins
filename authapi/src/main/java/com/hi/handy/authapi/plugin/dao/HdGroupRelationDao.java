@@ -3,13 +3,15 @@ package com.hi.handy.authapi.plugin.dao;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
 import org.jivesoftware.database.DbConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class HdGroupRelationDao extends BaseDao {
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(HdGroupRelationDao.class);
   private HdGroupRelationDao() {
   }
 
@@ -36,6 +38,8 @@ public class HdGroupRelationDao extends BaseDao {
         groupId = rs.getString(1);
       }
     } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.error("searchByRelationId error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);

@@ -39,8 +39,8 @@ public class GuestService extends BaseService{
     public static final GuestService INSTANCE = new GuestService();
 
     public GuestInfoModel guestLogin(AuthParameter parameter) throws UserNotFoundException, UserAlreadyExistsException {
-        LOGGER.info("guestLogin");
-        LOGGER.info("parameter",parameter);
+        LOGGER.debug("guestLogin");
+        LOGGER.debug("parameter",parameter);
         if (parameter.getAuthType() != BaseParameter.AuthType.GUEST_LOGIN) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
         }
@@ -109,7 +109,7 @@ public class GuestService extends BaseService{
         // return user info and chat room
         ChatRoomModel chatRoomModel = new ChatRoomModel();
         chatRoomModel.setId(hdGroupEntity.getId());
-        chatRoomModel.setName(hdGroupEntity.getName());
+        chatRoomModel.setName(hdGroupEntity.getDisplayName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
         chatRoomModel.setStatus(isOnline);
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
@@ -123,8 +123,8 @@ public class GuestService extends BaseService{
     }
 
     public AuthModel guestGetHotelChatRoom(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
-        LOGGER.info("guestGetHotelChatRoom");
-        LOGGER.info("parameter",parameter);
+        LOGGER.debug("guestGetHotelChatRoom");
+        LOGGER.debug("parameter",parameter);
         if (parameter.getAuthType() != BaseParameter.AuthType.GUEST_ENTRY_HOTELCHATROOM) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
         }
@@ -185,7 +185,7 @@ public class GuestService extends BaseService{
         // return user info and chat room
         ChatRoomModel chatRoomModel = new ChatRoomModel();
         chatRoomModel.setId(hdGroupEntity.getId());
-        chatRoomModel.setName(hdGroupEntity.getName());
+        chatRoomModel.setName(hdGroupEntity.getDisplayName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
         chatRoomModel.setStatus(isOnline);
         chatRoomModel.setRoomType(ChatRoomModel.RoomType.HOTEL);

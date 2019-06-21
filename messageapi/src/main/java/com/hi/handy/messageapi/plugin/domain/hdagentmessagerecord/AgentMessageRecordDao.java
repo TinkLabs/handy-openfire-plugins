@@ -1,7 +1,6 @@
 package com.hi.handy.messageapi.plugin.domain.hdagentmessagerecord;
 
 import com.hi.handy.messageapi.plugin.domain.BaseDao;
-import com.hi.handy.messageapi.plugin.domain.hdmessage.HdMessageDao;
 import com.hi.handy.messageapi.plugin.exception.BusinessException;
 import com.hi.handy.messageapi.plugin.exception.ExceptionConst;
 import org.jivesoftware.database.DbConnectionManager;
@@ -13,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class AgentMessageRecordDao extends BaseDao {
-  private static final Logger LOGGER = LoggerFactory.getLogger(HdMessageDao.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AgentMessageRecordDao.class);
   private AgentMessageRecordDao() {
   }
 
