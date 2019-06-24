@@ -95,16 +95,31 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
                         String groupName = null;
                         boolean check = null != roomType;
                         // 判断是 消息是来自VIP concierge or Hotel concierge
+                        Long zoneId = null;
+                        Long hotelId = null;
+
+
+                        try {
+                            String[] roomInfoArray = chatRoom.split("#");
+                            String[] zoneHotelInfo = roomInfoArray[1].split("-");
+                            zoneId = Long.valueOf(zoneHotelInfo[0]);
+                            hotelId = Long.valueOf(zoneHotelInfo[1]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         if(check && "room-vip".equals(roomType)){
                             //根据zone id找agent group
-                            Long zoneId = user.getZoneId();
+                            //zoneId = user.getZoneId();
+
+                            //TODO 此处通过chatRoom来获取zoneid和hotelid，这样就不会存在agent发消息组内agent收不到消息的问题
                             if(null != zoneId){
                                 log.info(">>>>>>>>> group name:"+groupName);
                                 groupName = MUCDao.getGroupNameByTypeAndRelationId("VIP",zoneId.toString());
                             }
                         }else if(check && "room-hotel".equals(roomType)){
                             //根据hotel id找agent group
-                            Long hotelId = user.getHotelId();
+                            //hotelId = user.getHotelId();
                             if(null != hotelId){
                                 log.info(">>>>>>>>> group name:"+groupName);
                                 groupName = MUCDao.getGroupNameByTypeAndRelationId("HOTEL",hotelId.toString());
