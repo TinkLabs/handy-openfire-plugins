@@ -55,7 +55,7 @@ url:http://handy-internal-openfire-dev.handytravel.tech:9090/plugins/authapi/api
 paramter:
 {
 	"authType":0,
-	"barcode": "4352346234523",
+	"deviceUserId": "4352346234523",
 	"hotelId":2,
 	"hotelName":"hotel2",
 	"roomNum": "302",
@@ -75,7 +75,7 @@ result:
         "chatRoom": {
             "id": "rqwereqer345afdf",
             "name": "vipCharRoom",
-            "status": false,
+            "isOnline": false,
             "icon": null,
             "roomJID": {
                 "node": "room-hotel#1-2-hotel2-302#4352346234523",
@@ -109,7 +109,7 @@ paramter:
 	"authType":1,
 	"displayName":"guest",
 	"email":"guest@tinklabs.com",
-	"barcode": "999999999",
+	"deviceUserId": "999999999",
 	"hotelId":3,
 	"hotelName":"hotel3",
 	"roomNum": "303",
@@ -129,7 +129,7 @@ result:
         "chatRoom": {
             "id": "rqwereqer345afdf",
             "name": "vipCharRoom",
-            "status": false,
+            "isOnline": false,
             "icon": null,
             "roomJID": {
                 "node": "room-vip#1-3-hotel3-303#guest-tinklabs.com",

@@ -44,8 +44,11 @@ public class GuestService extends BaseService{
         if (parameter.getAuthType() != BaseParameter.AuthType.GUEST_LOGIN) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
         }
-        if (StringUtils.isBlank(parameter.getBarcode())) {
-            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "barcode is needed");
+        if (StringUtils.isBlank(parameter.getDeviceUserId())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "deviceUserId is needed");
+        }
+        if (StringUtils.isBlank(parameter.getHotelName())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "hotelName is needed");
         }
         if (StringUtils.isBlank(parameter.getDisplayName())) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "displayName is needed");
@@ -91,7 +94,7 @@ public class GuestService extends BaseService{
 
         String chatRoomInfo = parameter.getZoneId()+LINE_THROUGH+
                                 parameter.getHotelId()+LINE_THROUGH+
-                                parameter.getHotelName()+LINE_THROUGH+
+                                parameter.getDeviceUserId()+LINE_THROUGH+
                                 parameter.getRoomNum()+ROOMINFO_SUFFIX+
                                 guestUserName;
 
@@ -111,7 +114,7 @@ public class GuestService extends BaseService{
         chatRoomModel.setId(hdGroupEntity.getId());
         chatRoomModel.setName(hdGroupEntity.getDisplayName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
-        chatRoomModel.setStatus(isOnline);
+        chatRoomModel.setOnline(isOnline);
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
         GuestInfoModel result = new GuestInfoModel();
         result.setUid(user.getUsername());
@@ -128,8 +131,11 @@ public class GuestService extends BaseService{
         if (parameter.getAuthType() != BaseParameter.AuthType.GUEST_ENTRY_HOTELCHATROOM) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
         }
-        if (StringUtils.isBlank(parameter.getBarcode())) {
-            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "barcode is needed");
+        if (StringUtils.isBlank(parameter.getDeviceUserId())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "deviceUserId is needed");
+        }
+        if (StringUtils.isBlank(parameter.getHotelName())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "hotelName is needed");
         }
         if (parameter.getHotelId() == null) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "hotelId is needed");
@@ -147,7 +153,7 @@ public class GuestService extends BaseService{
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "zoneName is needed");
         }
 
-        String guestUserName = parameter.getBarcode();
+        String guestUserName = parameter.getDeviceUserId();
         parameter.setDisplayName(HOTEL_CHAT_ROOM_GUEST_DEFAULT_DISPLAY_NAME);
         parameter.setUserType(BaseParameter.UserType.GUEST);
         Long count = HdUserPropertyDao.getInstance().countByUserName(guestUserName);
@@ -170,7 +176,7 @@ public class GuestService extends BaseService{
         // find chat room by email,if not exist create chat room
         String chatRoomInfo = parameter.getZoneId()+LINE_THROUGH+
                               parameter.getHotelId()+LINE_THROUGH+
-                              parameter.getHotelName()+LINE_THROUGH+
+                              parameter.getDeviceUserId()+LINE_THROUGH+
                               parameter.getRoomNum()+ROOMINFO_SUFFIX+
                               guestUserName;
 
@@ -187,7 +193,7 @@ public class GuestService extends BaseService{
         chatRoomModel.setId(hdGroupEntity.getId());
         chatRoomModel.setName(hdGroupEntity.getDisplayName());
         chatRoomModel.setIcon(hdGroupEntity.getIcon());
-        chatRoomModel.setStatus(isOnline);
+        chatRoomModel.setOnline(isOnline);
         chatRoomModel.setRoomType(ChatRoomModel.RoomType.HOTEL);
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
         GuestInfoModel result = new GuestInfoModel();

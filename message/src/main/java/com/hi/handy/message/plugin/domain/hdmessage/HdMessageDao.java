@@ -24,7 +24,7 @@ public class HdMessageDao extends BaseDao {
     return INSTANCE;
   }
 
-  private static final String CREATE_HISTORY_SQL = "INSERT INTO hdMessage (id, messageId, zoneId, hotelId, hotelName, roomNum, deviceUserId, fromUser, fromJID, toUser, toJID, creationDate, stanza) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+  private static final String CREATE_HISTORY_SQL = "INSERT INTO hdMessage (id, messageId, zoneId, hotelId, roomNum, deviceUserId, fromUser, fromJID, toUser, toJID, creationDate, stanza) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   private static final String UPDATE_SQL = "UPDATE hdMessage t SET creationDate = ? , stanza = ? WHERE id = ?";
   private static final String SEARCH_BY_TOJID_SQL = "SELECT id from hdMessage t WHERE t.toJID = ?";
 
@@ -38,15 +38,14 @@ public class HdMessageDao extends BaseDao {
       statement.setString(2,hdMessageEntity.getMessageId());
       statement.setLong(3, hdMessageEntity.getZoneId());
       statement.setLong(4, hdMessageEntity.getHotelId());
-      statement.setString(5, hdMessageEntity.getHotelName());
-      statement.setString(6, hdMessageEntity.getRoomNum());
-      statement.setString(7, hdMessageEntity.getDeviceUserId());
-      statement.setString(8, hdMessageEntity.getFromUser());
-      statement.setString(9, hdMessageEntity.getFromJID());
-      statement.setString(10, hdMessageEntity.getToUser());
-      statement.setString(11, hdMessageEntity.getToJID());
-      statement.setTimestamp(12, hdMessageEntity.getCreationDate());
-      statement.setString(13, hdMessageEntity.getStanza());
+      statement.setString(5, hdMessageEntity.getRoomNum());
+      statement.setString(6, hdMessageEntity.getDeviceUserId());
+      statement.setString(7, hdMessageEntity.getFromUser());
+      statement.setString(8, hdMessageEntity.getFromJID());
+      statement.setString(9, hdMessageEntity.getToUser());
+      statement.setString(10, hdMessageEntity.getToJID());
+      statement.setTimestamp(11, hdMessageEntity.getCreationDate());
+      statement.setString(12, hdMessageEntity.getStanza());
       statement.executeUpdate();
     } catch (Exception ex) {
       ex.printStackTrace();

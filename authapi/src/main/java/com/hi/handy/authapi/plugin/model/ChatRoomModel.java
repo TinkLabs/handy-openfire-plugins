@@ -11,7 +11,7 @@ public class ChatRoomModel {
 
   private String id;
   private String name;
-  private Boolean status;
+  private Boolean isOnline;
   private String icon;
   private JID roomJID;
   private RoomType roomType = RoomType.VIP;
@@ -40,14 +40,6 @@ public class ChatRoomModel {
     this.name = name;
   }
 
-  public Boolean getStatus() {
-    return status;
-  }
-
-  public void setStatus(Boolean status) {
-    this.status = status;
-  }
-
   public String getIcon() {
     return icon;
   }
@@ -62,5 +54,13 @@ public class ChatRoomModel {
 
   public void setRoomJID(JID roomJID) {
     this.roomJID = roomJID;
+  }
+
+  public Boolean getOnline() {
+    return isOnline;
+  }
+
+  public void setOnline(Boolean online) {
+    isOnline = online;
   }
 }

@@ -52,6 +52,7 @@ public class AgentJoinChatRoomService extends BaseService{
         HdRoomMessageRecordEntity hdRoomMessageRecordEntity = HdRoomMessageRecordDao.getInstance().findByRoomName(roomName);
         if(hdRoomMessageRecordEntity!=null) {
             LOGGER.debug("hdRoomMessageRecordEntity is exist");
+
             AgentMessageRecordEntity agentMessageRecordEntity = AgentMessageRecordDao.getInstance().findByAgentNameAndRoomName(userName,roomName);
             if(agentMessageRecordEntity!=null){
                 LOGGER.debug("agentMessageRecordEntity is exist");

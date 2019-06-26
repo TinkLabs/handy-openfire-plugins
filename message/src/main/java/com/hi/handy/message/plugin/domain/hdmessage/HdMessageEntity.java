@@ -10,7 +10,6 @@ public class HdMessageEntity extends BaseEntity {
     private String messageId;
     private Long zoneId;
     private Long hotelId;
-    private String hotelName;
     private String roomNum;
     private String deviceUserId;
     private String fromUser;
@@ -42,14 +41,6 @@ public class HdMessageEntity extends BaseEntity {
 
     public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
-    }
-
-    public String getHotelName() {
-        return hotelName;
-    }
-
-    public void setHotelName(String hotelName) {
-        this.hotelName = hotelName;
     }
 
     public String getRoomNum() {

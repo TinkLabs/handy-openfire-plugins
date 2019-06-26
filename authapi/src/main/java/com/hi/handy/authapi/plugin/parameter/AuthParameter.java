@@ -11,8 +11,7 @@ public class AuthParameter extends BaseParameter {
   private String email;
   private Long zoneId;
   private String zoneName;
-  private String barcode;
-
+  private String deviceUserId;
 
   public Long getHotelId() {
     return hotelId;
@@ -70,14 +69,6 @@ public class AuthParameter extends BaseParameter {
     this.email = email;
   }
 
-  public String getBarcode() {
-    return barcode;
-  }
-
-  public void setBarcode(String barcode) {
-    this.barcode = barcode;
-  }
-
   public Long getZoneId() {
     return zoneId;
   }
@@ -92,5 +83,13 @@ public class AuthParameter extends BaseParameter {
 
   public void setZoneName(String zoneName) {
     this.zoneName = zoneName;
+  }
+
+  public String getDeviceUserId() {
+    return deviceUserId;
+  }
+
+  public void setDeviceUserId(String deviceUserId) {
+    this.deviceUserId = deviceUserId;
   }
 }

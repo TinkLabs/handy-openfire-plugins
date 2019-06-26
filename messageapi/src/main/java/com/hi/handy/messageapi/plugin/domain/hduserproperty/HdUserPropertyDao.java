@@ -23,6 +23,7 @@ public class HdUserPropertyDao extends BaseDao {
   }
 
   private static final String SEARCH_BY_NAME_SQL = "SELECT * FROM hdUserProperty WHERE type = 'AGENT' AND userName = ? ";
+  private static final String SEARCH_HOTELNAME_BY_HOTELID_SQL = "SELECT hotelName FROM hdUserProperty WHERE hotelId = ? LIMIT 1";
 
   @SuppressWarnings("Duplicates")
   public HdUserPropertyEntity searchByName(String userName) {
@@ -57,6 +58,31 @@ public class HdUserPropertyDao extends BaseDao {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
     return result;
+  }
+
+  @SuppressWarnings("Duplicates")
+  public String searchHotelNameByHotelId(Long hotelId) {
+    LOGGER.debug("searchHotelNameByHotelId hotelId:"+hotelId);
+    String hotelName = "";
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    try {
+      con = DbConnectionManager.getConnection();
+      pstmt = con.prepareStatement(SEARCH_HOTELNAME_BY_HOTELID_SQL);
+      pstmt.setLong(1, hotelId);
+      rs = pstmt.executeQuery();
+      while (rs.next()) {
+        hotelName = rs.getString(1);
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      LOGGER.error("searchHotelNameByHotelId error", ex);
+      throw new BusinessException(ExceptionConst.DB_ERROR, ex.getMessage());
+    } finally {
+      DbConnectionManager.closeConnection(rs, pstmt, con);
+    }
+    return hotelName;
   }
 
 }

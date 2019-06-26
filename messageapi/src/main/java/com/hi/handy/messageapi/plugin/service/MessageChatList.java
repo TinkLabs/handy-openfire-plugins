@@ -1,5 +1,7 @@
 package com.hi.handy.messageapi.plugin.service;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.hi.handy.messageapi.plugin.domain.hdagentmessagerecord.AgentMessageRecordDao;
 import com.hi.handy.messageapi.plugin.domain.hdgroupagent.HdGroupAgentDao;
 import com.hi.handy.messageapi.plugin.domain.hdgrouprelation.HdGroupRelationDao;
@@ -18,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MessageChatList extends BaseService {
@@ -27,6 +31,12 @@ public class MessageChatList extends BaseService {
 
     private MessageChatList() {
     }
+
+    final static Cache<Long,String> cache = CacheBuilder.newBuilder()
+            .initialCapacity(100)
+            .concurrencyLevel(5)
+            .expireAfterWrite(3, TimeUnit.HOURS)
+            .build();
 
     public static MessageChatList getInstance() {
         return INSTANCE;
@@ -53,10 +63,10 @@ public class MessageChatList extends BaseService {
                 LOGGER.debug("zoneAndHotelIdsString:"+zoneAndHotelIdsString);
                 List<HdMessageEntity> messageEntityList = queryMessages(zoneAndHotelIdsString, pageIndex, pageSize);
                 for (HdMessageEntity hdMessageEntity : messageEntityList) {
-                    Long amount = queryHdRoomMessageRecord(hdMessageEntity.getFromJID());
+                    Long amount = queryHdRoomMessageRecord(hdMessageEntity.getToUser());
                     Long readCount = queryHdAgentMessageRecord(userName, hdMessageEntity.getToUser());
                     MessageModel messageModel = new MessageModel();
-                    messageModel.setHotelName(hdMessageEntity.getHotelName());
+                    messageModel.setHotelName(queryHotelNameByHotelId(hdMessageEntity.getHotelId()));
                     messageModel.setRoomNum(hdMessageEntity.getRoomNum());
                     messageModel.setUnRead(amount - readCount);
                     messageModel.setCreateDate(hdMessageEntity.getCreationDate());
@@ -78,5 +88,15 @@ public class MessageChatList extends BaseService {
 
     private List<HdMessageEntity> queryMessages(String zoneIds, Integer pageIndex, Integer pageSize){
         return HdMessageDao.getInstance().findByZoneIdsPaging(zoneIds,pageIndex,pageSize);
+    }
+
+    private String queryHotelNameByHotelId(Long hotelId){
+        LOGGER.debug("queryHotelNameByHotelId hotelId:"+hotelId);
+        try {
+            return cache.get(hotelId,() -> HdUserPropertyDao.getInstance().searchHotelNameByHotelId(hotelId));
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

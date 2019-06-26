@@ -13,7 +13,7 @@ public class HdMessageDaoTest extends BaseTest {
         hdMessageEntity.setId("ewr234523eqwerq");
         hdMessageEntity.setMessageId("43324");
         hdMessageEntity.setHotelId(2L);
-        hdMessageEntity.setHotelName("酒店2");
+        hdMessageEntity.setDeviceUserId("452345");
         hdMessageEntity.setRoomNum("301");
         hdMessageEntity.setFromUser("user1");
         hdMessageEntity.setFromJID("dfas");

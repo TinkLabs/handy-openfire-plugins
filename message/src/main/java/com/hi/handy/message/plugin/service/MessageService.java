@@ -47,13 +47,11 @@ public class MessageService extends BaseService{
                 String[] getRoomInfoDetailArray = roomInfoArray[1].split("-");
                 Long zoneId = Long.valueOf(getRoomInfoDetailArray[0]);
                 Long hotelId = Long.valueOf(getRoomInfoDetailArray[1]);
-                String hotelName = getRoomInfoDetailArray[2];
+                String deviceUserId = getRoomInfoDetailArray[2];
                 String roomNum = getRoomInfoDetailArray[3];
-
-                String deviceUserId = roomInfoArray[2];
                 String roomName = packet.getTo().getNode();
 
-                createOrUpdateMessage(packet, message.getID(), message.getElement().asXML(), zoneId, hotelId, hotelName, roomNum, deviceUserId);
+                createOrUpdateMessage(packet, message.getID(), message.getElement().asXML(), zoneId, hotelId, roomNum, deviceUserId);
                 HdRoomMessageRecordEntity roomMessageRecord = HdRoomMessageRecordDao.getInstance().findByRoomName(roomName);
                 if (roomMessageRecord == null) {
                     createRoomMessageRecord(roomName);
@@ -66,7 +64,7 @@ public class MessageService extends BaseService{
         }
     }
 
-    private void createOrUpdateMessage(Packet packet,String messageId,String stanza,Long zoneId,Long hotelId,String hotelName,String roomNum, String deviceUserId) {
+    private void createOrUpdateMessage(Packet packet,String messageId,String stanza,Long zoneId,Long hotelId,String roomNum, String deviceUserId) {
         LOGGER.debug("createOrUpdateMessage");
         String systemId = HdMessageDao.getInstance().findByToJID(packet.getTo().toBareJID());
         if(StringUtils.isNoneBlank(systemId)){
@@ -77,7 +75,6 @@ public class MessageService extends BaseService{
             hdMessageEntity.setMessageId(messageId);
             hdMessageEntity.setZoneId(zoneId);
             hdMessageEntity.setHotelId(hotelId);
-            hdMessageEntity.setHotelName(hotelName);
             hdMessageEntity.setRoomNum(roomNum);
             hdMessageEntity.setDeviceUserId(deviceUserId);
             hdMessageEntity.setFromUser(packet.getFrom().getNode());
