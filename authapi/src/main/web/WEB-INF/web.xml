@@ -12,4 +12,12 @@
     <servlet-name>authApiServlet</servlet-name>
     <url-pattern>/api</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>groupApiServlet</servlet-name>
+    <servlet-class>com.hi.handy.authapi.plugin.GroupApiServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>groupApiServlet</servlet-name>
+    <url-pattern>/groupapi</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -17,5 +17,29 @@
                   description="Handy Auth API" />
          </sidebar>
       </tab>
+      <tab id="tab-users">
+         <sidebar id="sidebar-groups">
+            <item id="hdGroup-operate"
+                  name="Handy Agent Group Operate"
+                  url="hdGroup.jsp"
+                  description="Handy Agent Group Operate" />
+         </sidebar>
+      </tab>
+      <tab id="tab-users">
+         <sidebar id="sidebar-users">
+            <item id="hdAgent-operate"
+                  name="Handy Agent Operate"
+                  url="hdAgent.jsp"
+                  description="Handy Agent Operate" />
+         </sidebar>
+      </tab>
+      <tab id="tab-users">
+         <sidebar id="sidebar-users">
+            <item id="hdGuest-operate"
+                  name="Handy Guest Operate"
+                  url="hdGuest.jsp"
+                  description="Handy Guest Operate" />
+         </sidebar>
+      </tab>
    </adminconsole>
 </plugin>

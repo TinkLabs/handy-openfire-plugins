@@ -35,6 +35,9 @@ public class AuthService {
             result = AgentService.getInstance().agentLogin(parameter);
         } else if (type == AuthType.AGENT_LOGOUT) {
             result = AgentService.getInstance().agentLogout(parameter);
+        }else if(type == AuthType.AGENT_REGISTER){
+            // agent注册：加入group
+            result = AgentService.getInstance().agentRegister(parameter);
         }else{
             throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "unknow authType");
         }
