@@ -75,7 +75,7 @@ public class AgentJoinChatRoomService extends BaseService{
     }
 
     private Boolean userisExist(String userName){
-        Long count = HdUserPropertyDao.getInstance().countByUserName(userName);
+        Long count = HdUserPropertyDao.getInstance().countAgentByUserName(userName);
         if(count!=null&&(count.longValue()>0)){
             return true;
         }
