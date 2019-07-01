@@ -1,5 +1,7 @@
 package com.hi.handy.authapi.plugin.parameter;
 
+import java.util.List;
+
 public class AuthParameter extends BaseParameter {
 
   private Long hotelId;
@@ -12,8 +14,17 @@ public class AuthParameter extends BaseParameter {
   private Long zoneId;
   private String zoneName;
   private String deviceUserId;
+  private String groupName;
 
-  public Long getHotelId() {
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Long getHotelId() {
     return hotelId;
   }
 

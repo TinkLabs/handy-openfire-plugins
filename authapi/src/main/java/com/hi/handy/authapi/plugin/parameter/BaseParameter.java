@@ -6,12 +6,12 @@ public class BaseParameter {
     GUEST_ENTRY_HOTELCHATROOM,
     GUEST_LOGIN,
     AGENT_LOGIN,
-    AGENT_LOGOUT
+    AGENT_LOGOUT,
+    AGENT_REGISTER
   }
 
   public enum UserType {
-    AGENT,
-    GUEST
+    GUEST,AGENT
   }
 
   private AuthType AuthType;
