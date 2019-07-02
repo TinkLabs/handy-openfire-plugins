@@ -117,6 +117,11 @@ public class GuestService extends BaseService{
         chatRoomModel.setOnline(isOnline);
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
         GuestInfoModel result = new GuestInfoModel();
+
+        result.setGroupId(hdGroupEntity.getId());
+        result.setGroupName(hdGroupEntity.getDisplayName());
+        result.setGroupIcon(hdGroupEntity.getIcon());
+
         result.setUid(user.getUsername());
         result.setName(user.getName());
         result.setToken(encodePassword(password));
@@ -197,6 +202,11 @@ public class GuestService extends BaseService{
         chatRoomModel.setRoomType(ChatRoomModel.RoomType.HOTEL);
         chatRoomModel.setRoomJID(chatRoom.getRoomJID());
         GuestInfoModel result = new GuestInfoModel();
+
+        result.setGroupId(hdGroupEntity.getId());
+        result.setGroupName(hdGroupEntity.getDisplayName());
+        result.setGroupIcon(hdGroupEntity.getIcon());
+
         result.setUid(user.getUID());
         result.setName(user.getName());
         result.setToken(encodePassword(password));
