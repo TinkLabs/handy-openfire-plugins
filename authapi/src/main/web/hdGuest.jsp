@@ -21,25 +21,65 @@
         <tr>
             <td>
                 <div id="hotel-guestInfo-id">
-                    <div>
-                        Device User ID: <input type="text" name="deviceUserId" id="hotel-deviceUserId-id">
-                    </div>
-                    <div>
-                        Hotel ID: <input type="text" name="hotelId" id="hotel-hotelId-id" >
-                    </div>
-                    <div>
-                        Hotel Name: <input type="text" name="hotelName" id="hotel-hotelName-id">
-                    </div>
-                    <div>
-                        Room Number: <input type="text" name="roomNum" id="hotel-roomNum-id">
-                    </div>
-                    <div>
-                        Zone ID: <input type="text" name="zoneId" id="hotel-zoneId-id">
-                    </div>
-                    <div>
-                        Zone Name: <input type="text" name="zoneName" id="hotel-zoneName-id">
-                    </div>
-                    <button type="button" id="save-hotel-btn-id">save hotel guest</button>
+                    <table cellspacing="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="10%">
+                                    Device User ID:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="deviceUserId" id="hotel-deviceUserId-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Hotel ID:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="hotelId" id="hotel-hotelId-id" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Hotel Name:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="hotelName" id="hotel-hotelName-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Room Number:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="roomNum" id="hotel-roomNum-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Zone ID:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="zoneId" id="hotel-zoneId-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Zone Name:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="zoneName" id="hotel-zoneName-id">
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <button type="button" id="save-hotel-btn-id">save hotel guest</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
                     <div id="hotel-msg"></div>
                 </div>
             </td>
@@ -54,31 +94,81 @@
         <tr>
             <td>
                 <div id="vip-guestInfo-id">
-                    <div>
-                        Display Name: <input type="text" name="displayName" id="vip-displayName-id">
-                    </div>
-                    <div>
-                        Email: <input type="text" name="email" id="vip-email-id">
-                    </div>
-                    <div>
-                        Device User ID: <input type="text" name="v-deviceUserId" id="vip-deviceUserId-id">
-                    </div>
-                    <div>
-                        Hotel ID: <input type="text" name="v-hotelId" id="vip-hotelId-id" >
-                    </div>
-                    <div>
-                        Hotel Name: <input type="text" name="v-hotelName" id="vip-hotelName-id">
-                    </div>
-                    <div>
-                        Room Number: <input type="text" name="v-roomNum" id="vip-roomNum-id">
-                    </div>
-                    <div>
-                        Zone ID: <input type="text" name="v-zoneId" id="vip-zoneId-id">
-                    </div>
-                    <div>
-                        Zone Name: <input type="text" name="v-zoneName" id="vip-zoneName-id">
-                    </div>
-                    <button type="button" id="save-vip-btn-id">save hotel guest</button>
+                    <table cellspacing="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="10%">
+                                    Display Name:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="displayName" id="vip-displayName-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Email:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="email" id="vip-email-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Device User ID:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="v-deviceUserId" id="vip-deviceUserId-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Hotel ID:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="v-hotelId" id="vip-hotelId-id" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Hotel Name:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="v-hotelName" id="vip-hotelName-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Room Number:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="v-roomNum" id="vip-roomNum-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Zone ID:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="v-zoneId" id="vip-zoneId-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Zone Name:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="v-zoneName" id="vip-zoneName-id">
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>
+                                <button type="button" id="save-vip-btn-id">save hotel guest</button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
                     <div id="vip-msg"></div>
                 </div>
             </td>

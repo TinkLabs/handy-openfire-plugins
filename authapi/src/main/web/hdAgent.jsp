@@ -20,16 +20,41 @@
         <tr>
             <td>
                 <div id="agentInfo-id">
-                    <div>
-                        Agent Email: <input type="text" name="email" id="email-id">
-                    </div>
-                    <div>
-                        Agent Password: <input type="password" name="password" id="password-id" >
-                    </div>
-                    <div>
-                        Agent GroupName: <input type="text" name="groupName" id="groupName-id">
-                    </div>
-                    <button type="button" id="save-btn-id">save agent</button>
+                    <table cellspacing="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="10%">
+                                    Agent Email:
+                                </td>
+                                <td width="90%">
+                                  <input type="text" name="email" id="email-id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Agent Password:
+                                </td>
+                                <td width="90%">
+                                    <input type="password" name="password" id="password-id" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Agent GroupName:
+                                </td>
+                                <td width="90%">
+                                    <input type="text" name="groupName" id="groupName-id">
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <button type="button" id="save-btn-id">save agent</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
                     <div id="msg"></div>
                 </div>
             </td>
