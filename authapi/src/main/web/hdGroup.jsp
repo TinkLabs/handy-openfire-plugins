@@ -12,6 +12,7 @@
     <title>Handy Agent Group Operate</title>
     <meta name="pageID" content="hdGroup-operate"/>
     <script src="jquery-3.4.1.min.js"></script>
+    <script src="aws-sdk-2.502.0.min.js"></script>
 </head>
 <body>
 <div class="jive-contentBox">
@@ -22,19 +23,15 @@
                 <div id="groupInfo-id">
                     <form action="groupapi" method="post" enctype="multipart/form-data">
                         <div>
-                            AgentGroup Name: <input type="text" name="displayName" id="displayName-id">
+                            Name: <input type="text" name="displayName" id="displayName-id">
                         </div>
-                        <div>AgentGroup Icon: <input type="file" name="icon" id="icon-id" accept="image/*" onchange="iconPreview(this)"><span id="avarimg"></span></div>
-                        <div>AgentGroup Type: <input type="radio" name="type" value="VIP" id="VIP-id" class="group-type" checked><label for="VIP-id">VIP
-                            AgentGroup</label>
-                            <input type="radio" name="type" value="HOTEL" id="HOTEL-id" class="group-type"><label for="HOTEL-id">HOTEL
-                                AgentGroup</label>
+                        <div>Icon: <input type="file" name="icon" id="icon-id" accept="image/*" onchange="iconPreview(this)"><span id="avarimg"></span></div>
+                        <div>Type: <input type="radio" name="type" value="VIP" id="VIP-id" class="group-type" checked><label for="VIP-id">VIP</label>
+                            <input type="radio" name="type" value="HOTEL" id="HOTEL-id" class="group-type"><label for="HOTEL-id">HOTEL</label>
                         </div>
-                        <div style="display:flex;">AgentGroup Welcome Message: <textarea name="welcomeMessage" id="welcomeMessage-id"
-                                                                                         cols="30" rows="10" style="width:350px;height:100px;"></textarea>
+                        <div style="display:flex;">Welcome Message: <textarea name="welcomeMessage" id="welcomeMessage-id" cols="30" rows="10" style="width:350px;height:100px;"></textarea>
                         </div>
-                        <div style="display:flex;">AgentGroup Retlation: <textarea name="relations" id="relations-id"
-                                                                                   cols="30" rows="10" style="width:350px;height:100px;" placeholder="zoneid:zonename;zoneid:zonename"></textarea>
+                        <div style="display:flex;">Retlation: <textarea name="relations" id="relations-id" cols="30" rows="10" style="width:350px;height:100px;" placeholder="zoneid:zonename;zoneid:zonename"></textarea>
                         </div>
                         <button type="submit" id="save-group-btn-id">save group</button>
                     </form>
@@ -48,6 +45,10 @@
 <br>
 <script type="text/javascript">
     $(document).ready(function () {
+        // fileupload
+
+
+
         $("form").submit(function(event){
             console.log();
             if(!$("input[name='displayName']").val()){
