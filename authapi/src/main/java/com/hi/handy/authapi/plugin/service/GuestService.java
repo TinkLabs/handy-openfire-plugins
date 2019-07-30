@@ -3,6 +3,7 @@ package com.hi.handy.authapi.plugin.service;
 import com.hi.handy.authapi.plugin.dao.HdGroupDao;
 import com.hi.handy.authapi.plugin.dao.HdGroupRelationDao;
 import com.hi.handy.authapi.plugin.dao.HdUserPropertyDao;
+import com.hi.handy.authapi.plugin.dao.OfMucRoomDao;
 import com.hi.handy.authapi.plugin.entity.GroupType;
 import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
@@ -10,6 +11,7 @@ import com.hi.handy.authapi.plugin.exception.ExceptionConst;
 import com.hi.handy.authapi.plugin.model.AuthModel;
 import com.hi.handy.authapi.plugin.model.ChatRoomModel;
 import com.hi.handy.authapi.plugin.model.GuestInfoModel;
+import com.hi.handy.authapi.plugin.model.ResultModel;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import com.hi.handy.authapi.plugin.parameter.BaseParameter;
 import org.apache.commons.lang3.StringUtils;
@@ -215,6 +217,20 @@ public class GuestService extends BaseService{
         return result;
     }
 
+    public Object guestLeaveChat(AuthParameter parameter) {
+        LOGGER.debug("guestLeaveChat");
+        LOGGER.debug("parameter",parameter);
+        if (parameter.getAuthType() != BaseParameter.AuthType.GUEST_LEAVECHAT) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "authType is wrong");
+        }
+        if (StringUtils.isBlank(parameter.getRoomName())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "roomName is needed");
+        }
+        String newChatRoomName = parameter.getRoomName()+DELETE_CHATROOM_SUFFIX;
+        Boolean result = OfMucRoomDao.getInstance().updateRoomNameByRoomName(newChatRoomName,parameter.getRoomName());
+        return new ResultModel(result);
+    }
+
     private ChatRoomModel getOrCreateVIPChatRoom(String roomInfo, AuthParameter parameter) {
         String roomName;
         // create chat room
@@ -249,8 +265,7 @@ public class GuestService extends BaseService{
     }
 
     private String getServiceName() {
-        // TODO
-        return DEFAULT_SERVICE_NAME;
+        return XMPPServer.getInstance().getServerInfo().getXMPPDomain();
     }
 
     private void updateHotelInfo(ChatRoomModel.RoomType roomType, MUCRoom agentChatRoom, AuthParameter parameter) {

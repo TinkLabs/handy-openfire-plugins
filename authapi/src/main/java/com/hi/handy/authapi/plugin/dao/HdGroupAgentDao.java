@@ -26,7 +26,6 @@ public class HdGroupAgentDao extends BaseDao {
 
   private static final String SEARCH_BY_USERNAME_SQL = "SELECT groupId FROM hdGroupAgent WHERE userName = ?";
   private static final String INSERT_SQL = "INSERT INTO hdGroupAgent (id, groupId, userName, createDate) VALUES(?,?,?,?)";
-
   private static final String SEARCH_BY_GROUP_SQL = "SELECT userName FROM hdGroupAgent WHERE groupId = ?";
 
   public String searchByUserName(String userName) {

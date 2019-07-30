@@ -23,7 +23,6 @@ public class AuthApiServlet extends HttpServlet {
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
-    // 去掉登录验证
     AuthCheckFilter.addExclude(SERVICE_URL);
   }
 
@@ -56,7 +55,6 @@ public class AuthApiServlet extends HttpServlet {
 
 
   private void outputResult(BaseResultModel result, PrintWriter writer, ObjectMapper mapper) {
-    // TODO
     if (mapper == null) {
       mapper = new ObjectMapper();
     }

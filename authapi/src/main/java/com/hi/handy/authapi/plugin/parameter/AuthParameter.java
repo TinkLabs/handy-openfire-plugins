@@ -1,106 +1,23 @@
 package com.hi.handy.authapi.plugin.parameter;
 
-import java.util.List;
-
 public class AuthParameter extends BaseParameter {
 
-  private Long hotelId;
-  private String hotelName;
-  private String roomId;
-  private String roomNum;
-  private String displayName;
-  private String password;
-  private String email;
-  private Long zoneId;
-  private String zoneName;
-  private String deviceUserId;
-  private String groupName;
+  private String roomName;
+  private String messageId;
 
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public Long getHotelId() {
-    return hotelId;
+  public String getRoomName() {
+    return roomName;
   }
 
-  public void setHotelId(Long hotelId) {
-    this.hotelId = hotelId;
+  public void setRoomName(String roomName) {
+    this.roomName = roomName;
   }
 
-  public String getHotelName() {
-    return hotelName;
+  public String getMessageId() {
+    return messageId;
   }
 
-  public void setHotelName(String hotelName) {
-    this.hotelName = hotelName;
-  }
-
-  public String getRoomId() {
-    return roomId;
-  }
-
-  public void setRoomId(String roomId) {
-    this.roomId = roomId;
-  }
-
-  public String getRoomNum() {
-    return roomNum;
-  }
-
-  public void setRoomNum(String roomNum) {
-    this.roomNum = roomNum;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public Long getZoneId() {
-    return zoneId;
-  }
-
-  public void setZoneId(Long zoneId) {
-    this.zoneId = zoneId;
-  }
-
-  public String getZoneName() {
-    return zoneName;
-  }
-
-  public void setZoneName(String zoneName) {
-    this.zoneName = zoneName;
-  }
-
-  public String getDeviceUserId() {
-    return deviceUserId;
-  }
-
-  public void setDeviceUserId(String deviceUserId) {
-    this.deviceUserId = deviceUserId;
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
   }
 }

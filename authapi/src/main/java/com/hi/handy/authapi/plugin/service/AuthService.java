@@ -2,7 +2,6 @@ package com.hi.handy.authapi.plugin.service;
 
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
-import com.hi.handy.authapi.plugin.model.AuthModel;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import com.hi.handy.authapi.plugin.parameter.BaseParameter.AuthType;
 import org.jivesoftware.openfire.user.UserAlreadyExistsException;
@@ -25,7 +24,7 @@ public class AuthService {
     public Object auth(AuthParameter parameter) throws UserAlreadyExistsException, UserNotFoundException {
         LOGGER.debug("auth");
         LOGGER.debug("parameter",parameter);
-        AuthModel result = null;
+        Object result;
         AuthType type = parameter.getAuthType();
         if (type == AuthType.GUEST_LOGIN) {
             result = GuestService.getInstance().guestLogin(parameter);
@@ -36,8 +35,11 @@ public class AuthService {
         } else if (type == AuthType.AGENT_LOGOUT) {
             result = AgentService.getInstance().agentLogout(parameter);
         }else if(type == AuthType.AGENT_REGISTER){
-            // agent注册：加入group
             result = AgentService.getInstance().agentRegister(parameter);
+        }else if(type == AuthType.GUEST_LEAVECHAT){
+            result = GuestService.getInstance().guestLeaveChat(parameter);
+        }else if(type == AuthType.MESSAGE_DELETE){
+            result = MessageService.getInstance().messageDelete(parameter);
         }else{
             throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "unknow authType");
         }

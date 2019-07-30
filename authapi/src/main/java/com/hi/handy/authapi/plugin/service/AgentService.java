@@ -11,13 +11,13 @@ import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
 import com.hi.handy.authapi.plugin.model.AgentInfoModel;
 import com.hi.handy.authapi.plugin.model.AuthModel;
+import com.hi.handy.authapi.plugin.model.GroupStatusNotifyModel;
+import com.hi.handy.authapi.plugin.model.NotifyType;
 import com.hi.handy.authapi.plugin.parameter.AuthParameter;
 import com.hi.handy.authapi.plugin.parameter.BaseParameter;
 import com.hi.handy.authapi.plugin.utils.Base64Utils;
 import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.openfire.XMPPServer;
 import org.jivesoftware.openfire.group.Group;
-import org.jivesoftware.openfire.group.GroupAlreadyExistsException;
 import org.jivesoftware.openfire.group.GroupManager;
 import org.jivesoftware.openfire.group.GroupNotFoundException;
 import org.jivesoftware.openfire.user.User;
@@ -27,10 +27,8 @@ import org.jivesoftware.openfire.user.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmpp.packet.JID;
-import org.xmpp.packet.Message;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.UUID;
 
 public class AgentService extends BaseService{
@@ -125,21 +123,11 @@ public class AgentService extends BaseService{
         String groupId  = HdGroupAgentDao.getInstance().searchByUserName(userName);
         Long onlineAgent = groupIsOnline(groupId);
         if(onlineAgent==0){
-            sendMessage(groupId, false);
+            notify(new GroupStatusNotifyModel(NotifyType.GROUPSTATUS,groupId,false));
         }
         if (onlineAgent==1) {
-            sendMessage(groupId, true);
+            notify(new GroupStatusNotifyModel(NotifyType.GROUPSTATUS,groupId,true));
         }
-    }
-
-    private void sendMessage(String groupId,boolean groupStatus){
-        String serverName = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
-        LOGGER.debug("serverName:"+serverName);
-        String body="{type:groupType,id:"+groupId+",isonline:"+groupStatus+"}";
-        Message message = new Message();
-        message.setBody(body);
-        message.setTo("all@broadcast." + serverName);
-        XMPPServer.getInstance().getRoutingTable().broadcastPacket(message, false);
     }
 
     /**
