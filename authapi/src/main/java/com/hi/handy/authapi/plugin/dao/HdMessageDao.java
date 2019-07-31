@@ -19,7 +19,7 @@ public class HdMessageDao extends BaseDao {
   }
 
   public Boolean deleteBymessageId(String messageId){
-    String sql = "DELETE FROM ofMessageArchive WHERE messageId = '" + messageId + "'";
+    String sql = "UPDATE ofMessageArchive SET stanza = '' WHERE messageId = '" + messageId + "'";
     Connection con = null;
     PreparedStatement pstmt = null;
     Boolean result = Boolean.FALSE;
