@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.xmpp.packet.JID;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 public class AgentService extends BaseService{
     private static final Logger LOGGER = LoggerFactory.getLogger(AgentService.class);
@@ -223,8 +222,5 @@ public class AgentService extends BaseService{
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "should join agent group");
         }
         return true;
-    }
-    String getUUID(){
-        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

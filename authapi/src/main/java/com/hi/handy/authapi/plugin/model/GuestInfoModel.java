@@ -2,8 +2,9 @@ package com.hi.handy.authapi.plugin.model;
 
 public class GuestInfoModel extends AuthModel {
     private String groupId;
-    private String groupIcon;
     private String groupName;
+    private String groupIcon;
+    private ChatRoomModel chatRoomModel;
 
     public String getGroupId() {
         return groupId;
@@ -11,14 +12,6 @@ public class GuestInfoModel extends AuthModel {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
-    }
-
-    public String getGroupIcon() {
-        return groupIcon;
-    }
-
-    public void setGroupIcon(String groupIcon) {
-        this.groupIcon = groupIcon;
     }
 
     public String getGroupName() {
@@ -29,13 +22,19 @@ public class GuestInfoModel extends AuthModel {
         this.groupName = groupName;
     }
 
-    public ChatRoomModel getChatRoom() {
-        return chatRoom;
+    public String getGroupIcon() {
+        return groupIcon;
     }
 
-    public void setChatRoom(ChatRoomModel chatRoom) {
-        this.chatRoom = chatRoom;
+    public void setGroupIcon(String groupIcon) {
+        this.groupIcon = groupIcon;
     }
 
-    private ChatRoomModel chatRoom;
+    public ChatRoomModel getChatRoomModel() {
+        return chatRoomModel;
+    }
+
+    public void setChatRoomModel(ChatRoomModel chatRoomModel) {
+        this.chatRoomModel = chatRoomModel;
+    }
 }

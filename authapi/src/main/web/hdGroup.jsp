@@ -13,95 +13,213 @@
     <meta name="pageID" content="hdGroup-operate"/>
     <script src="jquery-3.4.1.min.js"></script>
     <script src="aws-sdk-2.502.0.min.js"></script>
+    <style>
+        table tr td:first-child{
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
-<div class="jive-contentBox">
-    <table cellpadding="3" cellspacing="0" border="0" width="100%">
+<div class="jive-success" style="display: none;" id="successMsgDiv">
+    <table cellpadding="0" cellspacing="0" border="0">
         <tbody>
         <tr>
-            <td>
-                <div id="groupInfo-id">
-                    <form action="groupapi" method="post" enctype="multipart/form-data">
-                        <div>
-                            Name: <input type="text" name="displayName" id="displayName-id">
-                        </div>
-                        <div>Icon: <input type="file" name="icon" id="icon-id" accept="image/*" onchange="iconPreview(this)"><span id="avarimg"></span></div>
-                        <div>Type: <input type="radio" name="type" value="VIP" id="VIP-id" class="group-type" checked><label for="VIP-id">VIP</label>
-                            <input type="radio" name="type" value="HOTEL" id="HOTEL-id" class="group-type"><label for="HOTEL-id">HOTEL</label>
-                        </div>
-                        <div style="display:flex;">Welcome Message: <textarea name="welcomeMessage" id="welcomeMessage-id" cols="30" rows="10" style="width:350px;height:100px;"></textarea>
-                        </div>
-                        <div style="display:flex;">Retlation: <textarea name="relations" id="relations-id" cols="30" rows="10" style="width:350px;height:100px;" placeholder="zoneid:zonename;zoneid:zonename"></textarea>
-                        </div>
-                        <button type="submit" id="save-group-btn-id">save group</button>
-                    </form>
-                </div>
+            <td class="jive-icon"><img src="images/success-16x16.gif" width="16" height="16" border="0" alt=""></td>
+            <td class="jive-icon-label" id="successMsg">
+
             </td>
         </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<div class="jive-error" style="display: none;" id="failedMsgDiv">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tbody>
+        <tr>
+            <td class="jive-icon"><img src="images/error-16x16.gif" width="16" height="16" border="0" alt=""></td>
+            <td class="jive-icon-label" id="failedMsg">
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<div class="jive-contentBox">
+    <div id="message"></div>
+    <table cellpadding="3" cellspacing="0" border="0" width="100%">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="groupInfo-id">
+                        <table cellspacing="0" border="0" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td width="10%">
+                                        Icon:
+                                    </td>
+                                    <td width="90%">
+                                        <img id ="icon" style="width: 180px;height: 180px;border-radius: 50%;background: #dddddd;">
+                                        <br/>
+                                        <p id="iconpath"></p><br/>
+                                        <input type="file" id="fileChooser" accept="image/*">
+                                        <button id="upload">Upload</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="10%">
+                                        Name:
+                                    </td>
+                                    <td width="90%">
+                                        <input type="text" id="name" style="width:350px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="10%">
+                                        Type:
+                                    </td>
+                                    <td width="90%">
+                                        <input type="radio" name="type" value="VIP" id="vip" class="group-type" checked><label for="vip">VIP</label>
+                                        <input type="radio" name="type" value="HOTEL" id="hotel" class="group-type"><label for="hotel">HOTEL</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="10%">
+                                        Welcome Message:
+                                    </td>
+                                    <td width="90%">
+                                        <textarea name="welcomeMessage" id="welcomeMessage" cols="30" rows="10" style="width:350px;height:100px;"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="10%">
+                                        Retlation:
+                                    </td>
+                                    <td width="90%">
+                                        <textarea name="relations" id="relations" cols="30" rows="10" style="width:350px;height:100px;" placeholder="zoneid:zonename;zoneid:zonename"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td width="10%">
+                                </td>
+                                <td width="90%">
+                                    <button type="button" id="save">save group</button>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>
 
 <br>
 <script type="text/javascript">
-    $(document).ready(function () {
-        // fileupload
+    $(function(){
 
+        $("#save").on("click",function(){
+            var groupObject = getData();
+            if(isEmptyOrEmpty(groupObject)){
+                return;
+            }
 
-
-        $("form").submit(function(event){
-            console.log();
-            if(!$("input[name='displayName']").val()){
-                alert("please input group name");
-                $("input[name='displayName']").focus();
-                return false;
-            }
-            if(!$("input[name='type']").val()){
-                alert("please select group type");
-                $("input[name='type']").focus();
-                return false;
-            }
-            if(!$("textarea[name='welcomeMessage']").val()){
-                alert("please input welcome message");
-                $("textarea[name='welcomeMessage']").focus();
-                return false;
-            }
-            if(!$("textarea[name='relations']").val()){
-                alert("please input relations");
-                $("textarea[name='relations']").focus();
-                return false;
-            }
+            $.ajax({
+                url:"groupapi",
+                type:"POST",
+                contentType:"application/json",
+                dataType:"json",
+                data:JSON.stringify(groupObject),
+                success:function (result) {
+                    if(result.success){
+                        var message = "<span>save success</span><br/><span>name:"+result.data["groupName"]+"</span>";
+                        $("#successMsgDiv").show();
+                        $("#successMsg").html("").html(message);
+                    }else{
+                        $("#failedMsgDiv").show().html("").html("save fail!"+result.message);
+                        $("#failedMsg").html("").html("save fail!"+result.message);
+                    }
+                }
+            });
         });
-    });
 
-    if (typeof FileReader == 'undefined') {
-        document.getElementById("groupInfo-id").InnerHTML = "<h1>当前浏览器不支持FileReader接口</h1>";
-        document.getElementById("icon-id").setAttribute("disabled", "disabled");
-    }
-    function iconPreview(obj) {
-        var file = obj.files[0];
-        console.log(obj); console.log(file);
-        console.log("file.size = " + file.size);
-        var reader = new FileReader();
-        reader.onloadstart = function (e) {
-            console.log("开始读取....");
+        function getData(){
+            var groupObject = {};
+            groupObject.icon = $("#iconpath").html();
+            groupObject.name = $("#name").val();
+            groupObject.type = $("input[name='type']:checked").val();
+            groupObject.welcomeMessage = $("#welcomeMessage").val();
+            groupObject.relations  = $("#relations").val();
+
+            var hasEmpty = false;
+            for(var key in groupObject) {
+                if(isEmptyOrEmpty(groupObject[key])){
+                    hasEmpty = true;
+                    alert(key + "is empty");
+                    return;
+                }
+            }
+            return hasEmpty?null:groupObject;
         }
-        reader.onprogress = function (e) {
-            console.log("正在读取中....");
+
+        $("#upload").on("click",function(){
+            AWS_FILEUPLAOD();
+        });
+
+        function isEmptyOrEmpty(obj){
+            if(typeof obj == "undefined" || obj == null || obj == ""){
+                return true;
+            }else{
+                return false;
+            }
         }
-        reader.onabort = function (e) {
-            console.log("中断读取....");
+
+        function AWS_FILEUPLAOD() {
+            var _accessKeyId = 'AKIAS7EXJMYWUZJLRIAM';
+            var _secretAccessKey = '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';
+            var bucketRegion = 'ap-southeast-1';
+            var albumBucketName = 'handy-concierge-chat';
+
+            AWS.config.update({
+                region: bucketRegion,
+                credentials: {
+                    accessKeyId: _accessKeyId,
+                    secretAccessKey: _secretAccessKey
+                }
+            });
+
+            var bucketObject = new AWS.S3({
+                params: {Bucket: albumBucketName}
+            });
+
+            return addPhoto(bucketObject,"staging/","fileChooser");
         }
-        reader.onerror = function (e) {
-            console.log("读取异常....");
+
+        function addPhoto(bucketObject,bucketFilePath,fileInputId) {
+            var files = document.getElementById(fileInputId).files;
+            if (!files.length) {
+                return alert('Please choose a file to upload first.');
+            }
+            var file = files[0];
+            var fileName = file.name;
+
+            bucketObject.upload({
+                Key: bucketFilePath + fileName,
+                Body: file,
+            }, function(err, result) {
+                if (err) {
+                    return alert('There was an error uploading your photo: ', err.message);
+                }
+                var iconPath = result["Location"];
+                $("#icon").attr('src',iconPath);
+                $("#iconpath").html("").html(iconPath);
+            });
         }
-        reader.onload = function (e) {
-            console.log("成功读取....");
-            var img = document.getElementById("avarimg");
-            img.innerHTML = '<img src="'+e.target.result+'" alt="" width="50px" height="50px">';
-        }
-        reader.readAsDataURL(file)
-    }
+    });
 </script>
 
 </body>

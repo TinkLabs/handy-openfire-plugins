@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.xmpp.packet.Message;
 
 import java.util.List;
+import java.util.UUID;
 
 public class BaseService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseService.class);
@@ -77,5 +78,9 @@ public class BaseService {
             e.printStackTrace();
             LOGGER.error("notify error", e);
         }
+    }
+
+    protected String getUUID(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

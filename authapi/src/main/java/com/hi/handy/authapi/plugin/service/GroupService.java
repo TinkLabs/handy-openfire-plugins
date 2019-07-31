@@ -6,11 +6,9 @@ import com.hi.handy.authapi.plugin.entity.HdGroupEntity;
 import com.hi.handy.authapi.plugin.entity.HdGroupRelationEntity;
 import com.hi.handy.authapi.plugin.exception.BusinessException;
 import com.hi.handy.authapi.plugin.exception.ExceptionConst;
-import com.hi.handy.authapi.plugin.model.AuthModel;
-import com.hi.handy.authapi.plugin.parameter.AuthParameter;
-import com.hi.handy.authapi.plugin.parameter.BaseParameter;
+import com.hi.handy.authapi.plugin.model.GroupInfoModel;
+import com.hi.handy.authapi.plugin.model.RelationModel;
 import com.hi.handy.authapi.plugin.parameter.GroupParameter;
-import com.hi.handy.authapi.plugin.parameter.Relation;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.openfire.group.Group;
 import org.jivesoftware.openfire.group.GroupAlreadyExistsException;
@@ -18,113 +16,91 @@ import org.jivesoftware.openfire.group.GroupManager;
 import org.jivesoftware.openfire.group.GroupNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xmpp.packet.JID;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * @author huangxiutao
- * @mail xiutao.huang@tinklabs.com
- * @create 2019-06-27 14:53
- * @Description
- */
-public class GroupService {
+public class GroupService extends BaseService{
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
     public static GroupService getInstance() {
         return INSTANCE;
     }
     public static final GroupService INSTANCE = new GroupService();
 
-
-    public AuthModel groupRegister(GroupParameter parameter) {
-        //TODO icon上传
-        //hdGroup 插入记录
-        //openfire group创建
-        AuthModel result = new AuthModel();
-        LOGGER.info("groupRegister>>>>"+parameter.toString());
-        if(groupRegCheck(parameter)){
-            LOGGER.info("check pass>>");
-            String groupName = null;
-            HdGroupEntity hdGroupEntity = new HdGroupEntity();
-            String uuid = getUUID();
-            boolean isVIPGroup = false;
-            if("VIP".equals(parameter.getType())){
-                // name的命名: vip-chat-uuid
-                isVIPGroup = true;
-                groupName =  "vip-chat-"+uuid;
-            }else if("HOTEL".equals(parameter.getType())){
-                groupName =  "hotel-chat-"+uuid;
-            }else{
-                throw new BusinessException(ExceptionConst.PARAMETER_ERROR,"group type error");
-            }
-            hdGroupEntity.setId(uuid);
-            hdGroupEntity.setName(groupName);
-            hdGroupEntity.setDisplayName(parameter.getDisplayName());
-            hdGroupEntity.setType(parameter.getType());
-            hdGroupEntity.setWelcomeMessage(parameter.getWelcomeMessage());
-            hdGroupEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            boolean isGroupExist = HdGroupDao.getInstance().isGroupExist(uuid);
-            LOGGER.info("uuid:"+uuid+" --"+isGroupExist);
-            if(!isGroupExist){
-                LOGGER.info("create hdGroup>>>>");
-                boolean isCreateSuccess = HdGroupDao.getInstance().creatGroup(hdGroupEntity);
-                if(isCreateSuccess){
-                    //在openfire中添加group
-                    LOGGER.info("create openfire group>>>>");
-                    GroupManager groupManager = GroupManager.getInstance();
-                    if(groupManager.isSearchSupported()){
-                        Group existGroup = null;
-                        try {
-                            existGroup = groupManager.getGroup(groupName,true);
-                        } catch (GroupNotFoundException e) {
-                            e.printStackTrace();
-                            LOGGER.warn("not found group:"+groupName+", will create new group");
-                        }
-                        if(null==existGroup){
-                            //创建新的group
-                            Group newGroup = null;
-                            try {
-                                newGroup = groupManager.createGroup(groupName);
-                            } catch (GroupAlreadyExistsException e) {
-                                e.printStackTrace();
-                                LOGGER.error("create new group fail, GroupAlreadyExists group: "+groupName);
-                                throw new BusinessException(ExceptionConst.BUSINESS_ERROR,"create new group fail, GroupAlreadyExists group: "+groupName);
-                            }
-//                            newGroup.setDescription("zoneId:"+parameter.getZoneId()+"'s group");
-                            //sharedRoster.showInRoster 允许的值：onlyGroup，nobody，everybody。 onlyGroup和everybody的时候最好设置sharedRoster.displayName
-//                            newGroup.getProperties().put("sharedRoster.showInRoster", "everybody");
-                            newGroup.getProperties().put("sharedRoster.displayName", groupName);
-//                            newGroup.getProperties().put("sharedRoster.groupList", "");
-                        }
-                    }else{
-                        throw new BusinessException(ExceptionConst.BUSINESS_ERROR,"openfire not support group search");
-                    }
-                    //维护 agent group和 zone/hotel关系
-                    LOGGER.info("create hdGroupRelation>>>>");
-                    for (Relation relation : parameter.getRelations()) {
-                        HdGroupRelationEntity hdGroupRelation = new HdGroupRelationEntity();
-                        hdGroupRelation.setId(getUUID());
-                        hdGroupRelation.setGroupId(uuid);
-                        hdGroupRelation.setType(isVIPGroup?"VIP":"HOTEL");
-                        hdGroupRelation.setRelationId(relation.getId());
-                        hdGroupRelation.setRelationName(relation.getName());
-                        hdGroupRelation.setCreateDate(new Timestamp(System.currentTimeMillis()));
-                        HdGroupRelationDao.getInstance().createGroupRelation(hdGroupRelation);
-                    }
-                    result.setName(groupName);
-                    result.setUid(uuid);
-                }
-            }
+    public GroupInfoModel groupRegister(GroupParameter parameter) throws GroupNotFoundException, GroupAlreadyExistsException {
+        LOGGER.info("groupRegister:" + parameter);
+        groupRegCheck(parameter);
+        String uuid = getUUID();
+        String groupName = getGroupName(parameter.getType(), uuid);
+        LOGGER.info("groupName:" + groupName);
+        LOGGER.info("create new hdGroup in db");
+        boolean result = createGroup(parameter, uuid, groupName);
+        if(!result){
+            throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "create group failed");
         }
-        return result;
+        LOGGER.info("create new hdGroup in openfire");
+        GroupManager groupManager = GroupManager.getInstance();
+        if (groupManager.isSearchSupported()) {
+            Group group = null;
+            try {
+                group = groupManager.getGroup(groupName, true);
+            }catch (GroupNotFoundException ex){
+                if (null == group) {
+                    group = groupManager.createGroup(groupName);
+                    group.getProperties().put("sharedRoster.displayName", groupName);
+                }
+            }catch (Exception ex){
+                throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "create group in openfire failed");
+            }
+
+        } else {
+            throw new BusinessException(ExceptionConst.BUSINESS_ERROR, "openfire not support group search");
+        }
+        LOGGER.info("create hdGroupRelation ");
+        createGroupRelaction(parameter, uuid);
+        return new GroupInfoModel(uuid,groupName);
     }
 
-    Boolean groupRegCheck(GroupParameter parameter) {
-        if (StringUtils.isBlank(parameter.getDisplayName())) {
-            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "group displayname is needed");
+    private void createGroupRelaction(GroupParameter parameter, String uuid) {
+        List<RelationModel> relationModelList = getRelationArray(parameter.getRelations());
+        for (RelationModel relation : relationModelList) {
+            HdGroupRelationEntity hdGroupRelation = new HdGroupRelationEntity();
+            hdGroupRelation.setId(getUUID());
+            hdGroupRelation.setGroupId(uuid);
+            hdGroupRelation.setType(parameter.getType());
+            hdGroupRelation.setRelationId(relation.getId());
+            hdGroupRelation.setRelationName(relation.getName());
+            hdGroupRelation.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            HdGroupRelationDao.getInstance().createGroupRelation(hdGroupRelation);
+        }
+    }
+
+    private boolean createGroup(GroupParameter parameter, String uuid, String groupName) {
+        HdGroupEntity hdGroupEntity = new HdGroupEntity();
+        hdGroupEntity.setId(uuid);
+        hdGroupEntity.setIcon(parameter.getIcon());
+        hdGroupEntity.setName(groupName);
+        hdGroupEntity.setDisplayName(parameter.getName());
+        hdGroupEntity.setType(parameter.getType());
+        hdGroupEntity.setWelcomeMessage(parameter.getWelcomeMessage());
+        hdGroupEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        return HdGroupDao.getInstance().createGroup(hdGroupEntity);
+    }
+
+    private String getGroupName(String type, String uuid) {
+        if("VIP".equals(type)){
+            return "vip-chat-"+uuid;
+        }
+        if("HOTEL".equals(type)) {
+            return "hotel-chat-"+uuid;
+        }
+        return null;
+    }
+
+    private void groupRegCheck(GroupParameter parameter) {
+        if (StringUtils.isBlank(parameter.getIcon())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "group name is needed");
         }
         if (StringUtils.isBlank(parameter.getWelcomeMessage())) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "welcome message is needed");
@@ -132,21 +108,39 @@ public class GroupService {
         if (StringUtils.isBlank(parameter.getType())) {
             throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "group type is needed");
         }
-        if("VIP".equals(parameter.getType())){
-            if(null==parameter.getRelations()||parameter.getRelations().size()<=0){
-                throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "agent group manage zones is needed");
-            }
-        }else if("HOTEL".equals(parameter.getType())){
-            if(null==parameter.getRelations()||parameter.getRelations().size()<=0){
-                throw new BusinessException(ExceptionConst.PARAMETER_LOSE, "agent group manage hotel is needed");
-            }
-        }else{
+        if (StringUtils.isBlank(parameter.getRelations())) {
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE,"relations parameter is needed!");
+        }
+        List<RelationModel>  relationModelList = getRelationArray(parameter.getRelations());
+        if(!(null!=relationModelList&&relationModelList.size()>0)){
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE,"relations parameter is error");
+        }
+        if(StringUtils.isBlank(parameter.getType())){
+            throw new BusinessException(ExceptionConst.PARAMETER_LOSE,"group type is needed");
+        }
+        if(!("VIP".equals(parameter.getType()) || "HOTEL".equals(parameter.getType()))){
             throw new BusinessException(ExceptionConst.PARAMETER_ERROR,"group type error");
         }
-        return true;
     }
 
-    String getUUID(){
-        return UUID.randomUUID().toString().replaceAll("-", "");
+    private List<RelationModel> getRelationArray(String relations) {
+        List<RelationModel> relationsList = new ArrayList<>();
+        String[] relationArray = relations.split(";");
+        if (!(null!=relationArray&&relationArray.length > 0)) {
+            throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "relations parameter is error!");
+        }
+
+        for (String relationKeyValueString : relationArray) {
+            String[] relationKeyValue = relationKeyValueString.split(":");
+            if(!(null!=relationKeyValue&&relationKeyValue.length==2)){
+                throw new BusinessException(ExceptionConst.PARAMETER_ERROR, "relations parameter is error!");
+            }
+            RelationModel relationModel = new RelationModel();
+            relationModel.setId(relationKeyValue[0]);
+            relationModel.setName(relationKeyValue[1]);
+            relationsList.add(relationModel);
+        }
+        return relationsList;
     }
+
 }

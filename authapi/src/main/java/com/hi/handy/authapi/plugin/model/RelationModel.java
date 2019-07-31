@@ -1,13 +1,7 @@
-package com.hi.handy.authapi.plugin.parameter;
+package com.hi.handy.authapi.plugin.model;
 
-/**
- * @author huangxiutao
- * @mail xiutao.huang@tinklabs.com
- * @create 2019-06-27 21:03
- * @Description
- */
-public class Relation{
-    //代表这个agent 管理的zone/hotel
+public class RelationModel {
+
     private String id;
     private String name;
 

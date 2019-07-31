@@ -25,7 +25,7 @@ public class HdGroupDao extends BaseDao {
   private static final String ALL_COLUMN = "id, name, icon, type, welcomeMessage, displayName, createDate";
   private static final String SEARCH_BY_ID_SQL =  "SELECT "+ALL_COLUMN+" FROM hdGroup WHERE id = ?";
   private static final String SEARCH_BY_GROUPNAME_SQL =  "SELECT "+ALL_COLUMN+" FROM hdGroup WHERE name = ?";
-  private static final String ISEXIST_SQL =  "SELECT count(*) FROM hdGroup WHERE id = ?";
+  private static final String SEARCH_COUNT_SQL =  "SELECT count(1) FROM hdGroup WHERE id = ?";
   private static final String INSERT_SQL =  "INSERT INTO hdGroup ("+ALL_COLUMN+") VALUES(?,?,?,?,?,?,?)";
 
   public HdGroupEntity searchById(String id) {
@@ -57,22 +57,18 @@ public class HdGroupDao extends BaseDao {
     return hdGroupEntity;
   }
 
-  public Boolean isGroupExist(String id){
+  public long searchCountById(String id){
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
-    Boolean r = false;
+    long count = 0;
     try {
       con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(ISEXIST_SQL);
+      pstmt = con.prepareStatement(SEARCH_COUNT_SQL);
       pstmt.setString(1, id);
       rs = pstmt.executeQuery();
-      Long c = 0L;
       if(rs.next()){
-        c = rs.getLong(1);
-      }
-      if(c>0){
-        r=true;
+        count  = rs.getLong(1);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -81,14 +77,13 @@ public class HdGroupDao extends BaseDao {
     } finally {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
-    return r;
+    return count;
   }
 
-  public boolean creatGroup(HdGroupEntity hdGroupEntity) {
+  public boolean createGroup(HdGroupEntity hdGroupEntity) {
     Connection con = null;
     PreparedStatement pstmt = null;
-    int rs = 0;
-    boolean r = false;
+    boolean result = false;
     try {
       con = DbConnectionManager.getConnection();
       pstmt = con.prepareStatement(INSERT_SQL);
@@ -99,20 +94,17 @@ public class HdGroupDao extends BaseDao {
       pstmt.setString(5, hdGroupEntity.getWelcomeMessage());
       pstmt.setString(6, hdGroupEntity.getDisplayName());
       pstmt.setTimestamp(7, hdGroupEntity.getCreateDate());
-      rs = pstmt.executeUpdate();
-      if(rs>0){
-        r =  true;
-      }else{
-        r = false;
+      if(pstmt.executeUpdate()>0){
+        result =  true;
       }
     } catch (Exception e) {
       e.printStackTrace();
-      LOGGER.error("creatGroup error", e);
+      LOGGER.error("createGroup error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
     }
-    return r;
+    return result;
   }
 
   public HdGroupEntity searchByGroupName(String groupName) {

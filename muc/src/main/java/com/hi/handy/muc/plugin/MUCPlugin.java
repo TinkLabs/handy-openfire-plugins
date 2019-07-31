@@ -6,7 +6,6 @@ import com.hi.handy.muc.handler.MUCPersistenceHandler;
 import com.hi.handy.muc.listener.CustomMUCEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.jivesoftware.openfire.IQRouter;
-import org.jivesoftware.openfire.OfflineMessageStore;
 import org.jivesoftware.openfire.PacketRouter;
 import org.jivesoftware.openfire.XMPPServer;
 import org.jivesoftware.openfire.container.Plugin;
@@ -134,25 +133,16 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
                             // do nothing
                         }
                         if(null!=group){
-                            //TODO 处理的时候如果是来自groupchat。转发的时候要自定义加一个chatroom="xxx@con.10.xxxx"
-                            XMPPServer xmppServer = XMPPServer.getInstance();
-                            PacketRouter packetRouter = xmppServer.getPacketRouter();
-                            Message broadCast = new Message();
-                            broadCast.setFrom(fromUserName+"@"+domain);
-                            broadCast.setTo(groupName+"@broadcast."+domain);
-                            broadCast.setBody(message.getBody());
-                            if(Message.Type.groupchat ==(message.getType())){
-                                broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
-                            }
-                            packetRouter.route(broadCast);
-                            log.info("有body 的消息："+ message.toXML());
+                            notifyGroup(message, domain, fromUserName, groupName);
+                            notifyAdminGroup(message, domain, fromUserName, groupName);
                         }
                     }
                 }
             }
         }
     }
-    String getRoomType(String roomInfo){
+
+    private String getRoomType(String roomInfo){
         try {
             String[] infoArray = roomInfo.split("#");
             return infoArray[0];
@@ -160,4 +150,35 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
             return null;
         }
     }
+
+    private void notifyGroup(Message message, String domain, String fromUserName, String groupName) {
+        log.info("notifyGroup"+ message.toXML());
+        XMPPServer xmppServer = XMPPServer.getInstance();
+        PacketRouter packetRouter = xmppServer.getPacketRouter();
+        Message broadCast = new Message();
+        broadCast.setFrom(fromUserName+"@"+domain);
+        broadCast.setTo(groupName+"@broadcast."+domain);
+        broadCast.setBody(message.getBody());
+        if(Message.Type.groupchat ==(message.getType())){
+            broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
+        }
+        packetRouter.route(broadCast);
+    }
+
+    private void notifyAdminGroup(Message message, String domain, String fromUserName, String groupName) {
+        log.info("notifyAdminGroup"+ message.toXML());
+        // find admin group
+        XMPPServer xmppServer = XMPPServer.getInstance();
+        PacketRouter packetRouter = xmppServer.getPacketRouter();
+        Message broadCast = new Message();
+        broadCast.setFrom(fromUserName+"@"+domain);
+        broadCast.setTo(groupName+"@broadcast."+domain);
+        broadCast.setBody(message.getBody());
+        if(Message.Type.groupchat ==(message.getType())){
+            broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
+        }
+        packetRouter.route(broadCast);
+        log.info("有body 的消息："+ message.toXML());
+    }
+
 }

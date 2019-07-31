@@ -128,7 +128,7 @@ public class GuestService extends BaseService{
         result.setName(user.getName());
         result.setToken(encodePassword(password));
         result.setDomain(getDomain());
-        result.setChatRoom(chatRoomModel);
+        result.setChatRoomModel(chatRoomModel);
         return result;
     }
 
@@ -213,7 +213,7 @@ public class GuestService extends BaseService{
         result.setName(user.getName());
         result.setToken(encodePassword(password));
         result.setDomain(getDomain());
-        result.setChatRoom(chatRoomModel);
+        result.setChatRoomModel(chatRoomModel);
         return result;
     }
 
