@@ -4,6 +4,7 @@ import com.hi.handy.muc.dao.MUCDao;
 import com.hi.handy.muc.entity.HdUserPropertyEntity;
 import com.hi.handy.muc.handler.MUCPersistenceHandler;
 import com.hi.handy.muc.listener.CustomMUCEventListener;
+import com.hi.handy.muc.service.GroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.jivesoftware.openfire.IQRouter;
 import org.jivesoftware.openfire.PacketRouter;
@@ -23,6 +24,7 @@ import org.xmpp.packet.Message;
 import org.xmpp.packet.Packet;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author huangxiutao
@@ -134,7 +136,7 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
                         }
                         if(null!=group){
                             notifyGroup(message, domain, fromUserName, groupName);
-                            notifyAdminGroup(message, domain, fromUserName, groupName);
+                            notifyAdminGroup(message, domain, fromUserName);
                         }
                     }
                 }
@@ -152,22 +154,21 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
     }
 
     private void notifyGroup(Message message, String domain, String fromUserName, String groupName) {
-        log.info("notifyGroup"+ message.toXML());
-        XMPPServer xmppServer = XMPPServer.getInstance();
-        PacketRouter packetRouter = xmppServer.getPacketRouter();
-        Message broadCast = new Message();
-        broadCast.setFrom(fromUserName+"@"+domain);
-        broadCast.setTo(groupName+"@broadcast."+domain);
-        broadCast.setBody(message.getBody());
-        if(Message.Type.groupchat ==(message.getType())){
-            broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
-        }
-        packetRouter.route(broadCast);
+        log.info("notifyGroup");
+        notify(message, domain, fromUserName, groupName);
     }
 
-    private void notifyAdminGroup(Message message, String domain, String fromUserName, String groupName) {
-        log.info("notifyAdminGroup"+ message.toXML());
-        // find admin group
+    private void notifyAdminGroup(Message message, String domain, String fromUserName) {
+        log.info("notifyAdminGroup");
+        List<String> groupNames = GroupService.getInstance().searchGroupNameByAgentName();
+        if(!(null!=groupNames && groupNames.size()>0)) return;
+        for(String groupName:groupNames){
+            notify(message, domain, fromUserName, groupName);
+        }
+    }
+
+    private void notify(Message message, String domain, String fromUserName,String groupName) {
+        log.info("notify"+message.toXML());
         XMPPServer xmppServer = XMPPServer.getInstance();
         PacketRouter packetRouter = xmppServer.getPacketRouter();
         Message broadCast = new Message();
@@ -178,7 +179,6 @@ public class MUCPlugin implements Plugin,PacketInterceptor {
             broadCast.getElement().addAttribute("chatroom",message.getTo().toString());
         }
         packetRouter.route(broadCast);
-        log.info("有body 的消息："+ message.toXML());
     }
 
 }
