@@ -14,9 +14,9 @@ public class BaseTest {
         conProvider.setConnectionTimeout(1.0);
         conProvider.setMinConnections(5);
         conProvider.setMaxConnections(25);
-        conProvider.setServerURL("jdbc:mysql://127.0.0.1:3320/openfire?rewriteBatchedStatements=true");
-        conProvider.setUsername("root");
-        conProvider.setPassword("123456");
+        conProvider.setServerURL("jdbc:mysql://handy-dev.csojfhhlojxj.ap-southeast-1.rds.amazonaws.com:3306/openfire?rewriteBatchedStatements=true");
+        conProvider.setUsername("admin");
+        conProvider.setPassword("mango1501");
         conProvider.setTestSQL(DbConnectionManager.getTestSQL("com.mysql.jdbc.Driver"));
         DbConnectionManager.setConnectionProvider(conProvider);
     }

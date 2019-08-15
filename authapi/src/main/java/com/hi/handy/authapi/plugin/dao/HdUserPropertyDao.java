@@ -14,11 +14,9 @@ import java.sql.*;
 
 public class HdUserPropertyDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(HdUserPropertyDao.class);
-  private HdUserPropertyDao() {
-  }
 
-  public static final HdUserPropertyDao INSTANCE = new HdUserPropertyDao();
-
+  private HdUserPropertyDao() {}
+  private static final HdUserPropertyDao INSTANCE = new HdUserPropertyDao();
   public static HdUserPropertyDao getInstance() {
     return INSTANCE;
   }

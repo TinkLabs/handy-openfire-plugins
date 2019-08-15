@@ -1,4 +1,4 @@
-package com.hi.handy.authapi.plugin.model;
+package com.hi.handy.group.plugin.model;
 
 public class GroupInfoModel{
 

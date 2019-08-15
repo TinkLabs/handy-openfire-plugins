@@ -3,10 +3,8 @@ package com.hi.handy.group.plugin.parameter;
 public class BaseParameter {
 
   public enum ApiType {
-    GROUP_ADD,
-    ZONE_ADD,
-    AGENT_ADD,
-    DELETE
+    AGENT_DELETE,
+    RELATION_DELETE
   }
 
   private ApiType apiType;

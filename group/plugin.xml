@@ -2,7 +2,7 @@
 
 <plugin>
    <class>com.hi.handy.group.plugin.GroupPlugin</class>
-   <name>handy-agentgroup-plugin</name>
+   <name>handy-group-plugin</name>
    <description>set agent group</description>
    <author>Dave</author>
    <version>1.0.0</version>
@@ -13,7 +13,7 @@
    <adminconsole>
       <tab id="tab-server">
          <sidebar id="sidebar-server-settings">
-            <item id="agent-group"
+            <item id="group"
                   name="Handy Agent Group"
                   url="agent-group.jsp"
                   description="Settings for Handy Agent Group Plugin" />

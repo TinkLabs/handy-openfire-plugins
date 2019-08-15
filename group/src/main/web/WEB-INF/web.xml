@@ -3,4 +3,44 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+    <servlet>
+        <servlet-name>groupRegisterServlet</servlet-name>
+        <servlet-class>com.hi.handy.group.plugin.GroupRegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupRegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>groupListServlet</servlet-name>
+        <servlet-class>com.hi.handy.group.plugin.GroupListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupListServlet</servlet-name>
+        <url-pattern>/list</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>groupDeleteServlet</servlet-name>
+        <servlet-class>com.hi.handy.group.plugin.GroupDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupDeleteServlet</servlet-name>
+        <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>groupRelationServlet</servlet-name>
+        <servlet-class>com.hi.handy.group.plugin.GroupRelationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupRelationServlet</servlet-name>
+        <url-pattern>/addrelation</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>groupAgentServlet</servlet-name>
+        <servlet-class>com.hi.handy.group.plugin.GroupAgentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupAgentServlet</servlet-name>
+        <url-pattern>/addagent</url-pattern>
+    </servlet-mapping>
 </web-app>

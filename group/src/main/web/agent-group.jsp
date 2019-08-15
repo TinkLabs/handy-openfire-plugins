@@ -12,14 +12,39 @@
 <head>
     <title>Handy Agent Group</title>
     <meta name="pageID" content="message-props-edit-form"/>
+    <style>
+        label {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
-<p>
-    handy agent group setting
-</p>
-<p>
-    just for add and delete,not edit
-</p>
+<div class="jive-success" style="display: none;" id="successMsgDiv">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tbody>
+        <tr>
+            <td class="jive-icon"><img src="images/success-16x16.gif" width="16" height="16" border="0" alt=""></td>
+            <td class="jive-icon-label" id="successMsg">
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<div class="jive-error" style="display: none;" id="failedMsgDiv">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tbody>
+        <tr>
+            <td class="jive-icon"><img src="images/error-16x16.gif" width="16" height="16" border="0" alt=""></td>
+            <td class="jive-icon-label" id="failedMsg">
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<br>
 <div class="jive-contentBoxHeader">edit</div>
 <div class="jive-contentBox">
     <table cellspacing="0" border="0" width="100%">
@@ -33,34 +58,56 @@
                             <tbody>
                             <tr>
                                 <td width="10%">
-                                    name
+                                    Icon:
                                 </td>
                                 <td width="90%">
-                                    <input type="text" id="group_name" value="" required>
+                                    <img id ="group_icon" style="width: 180px;height: 180px;border-radius: 50%;background: #dddddd;">
+                                    <br/>
+                                    <p id="group_iconpath"></p><br/>
+                                    <input type="file" id="group_fileChooser" accept="image/*">
+                                    <button id="group_upload">Upload</button>
                                 </td>
                             </tr>
                             <tr>
                                 <td width="10%">
-                                    icon
+                                    Name:
                                 </td>
                                 <td width="90%">
-                                    <input type="text" id="group_icon" value="" required>
+                                    <input type="text" id="group_name" style="width:350px;">
                                 </td>
                             </tr>
                             <tr>
                                 <td width="10%">
-                                    type
+                                    Type:
                                 </td>
                                 <td width="90%">
-                                    <input type="radio" name="group_type" value="VIP"> <label><b>vip chat room</b></label>
-                                    <input type="radio" name="group_type" value="HOTEL"> <label><b>hotel chat room</b></label>
+                                    <input type="radio" name="group_type" value="VIP" id="vip" class="group-type" checked><label for="vip">VIP</label>
+                                    <input type="radio" name="group_type" value="HOTEL" id="hotel" class="group-type"><label for="hotel">HOTEL</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Welcome Message:
+                                </td>
+                                <td width="90%">
+                                    <textarea name="welcomeMessage" id="group_welcomeMessage" cols="30" rows="10" style="width:350px;height:100px;"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="10%">
+                                    Retlation:
+                                </td>
+                                <td width="90%">
+                                    <textarea name="relations" id="group_relations" cols="30" rows="10" style="width:350px;height:100px;" placeholder="zoneid:zonename;zoneid:zonename"></textarea>
                                 </td>
                             </tr>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td>
-                                    <input type="button" value="save" id="group_save">
+                                <td width="10%">
+                                </td>
+                                <td width="90%">
+                                    <button type="button" id="group_save">save group</button>
                                 </td>
                             </tr>
                             </tfoot>
@@ -110,42 +157,34 @@
                             <tbody>
                             <tr>
                                 <td width="30%">
-                                    user_zone_id
+                                    email
                                 </td>
                                 <td width="70%">
-                                    <input type="text" id="user_zone_id" value="" required>
+                                    <input type="text" id="agent_email" value="" required>
                                 </td>
                             </tr>
                             <tr>
                                 <td width="30%">
-                                    user_zone_name
+                                    displayname
                                 </td>
                                 <td width="70%">
-                                    <input type="text" id="user_zone_name" value="" required>
+                                    <input type="text" id="agent_displayname" value="" required>
                                 </td>
                             </tr>
                             <tr>
                                 <td width="30%">
-                                    user_email
+                                    password
                                 </td>
                                 <td width="70%">
-                                    <input type="text" id="user_email" value="" required>
+                                    <input type="text" id="agent_password" value="" required>
                                 </td>
                             </tr>
                             <tr>
-                                <td width="30%">
-                                    user_display_name
+                                <td width="10%">
+                                    type
                                 </td>
-                                <td width="70%">
-                                    <input type="text" id="user_displayname" value="" required>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="30%">
-                                    user_password
-                                </td>
-                                <td width="70%">
-                                    <input type="text" id="user_password" value="" required>
+                                <td width="90%">
+                                    <input type="radio" name="agent_type" value="ADMIN" id="agent_type_admin" class="group-type"><label for="agent_type_admin">admin</label>
                                 </td>
                             </tr>
                             </tbody>
@@ -193,51 +232,143 @@
 
 <br>
 <input type="hidden" id="h_group_id">
-<script src="jquery-3.4.1.min.js"></script>
-<script>
-    $(document).ready(function(){
-        init();
-        //group_save
+<script src="jquery-3.4.1.min.js" type="text/javascript"></script>
+<script src="aws-sdk-2.502.0.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function(){
+        getGroupList();
         $("#group_save").on("click",function(){
-            var group={};
-            group.name=$("#group_name").val();
-            group.icon=$("#group_icon").val();
-            group.type=$('input[name="group_type"]:checked').val();
-            alert(JSON.stringify(group));
-            // save(group);
+            var groupObject = {};
+            groupObject.icon = $("#group_iconpath").html();
+            groupObject.name = $("#group_name").val();
+            groupObject.type = $("input[name='group_type']:checked").val();
+            groupObject.welcomeMessage = $("#group_welcomeMessage").val();
+            groupObject.relations  = $("#group_relations").val();
+            if(inputObjectHasEmpty(groupObject)){
+                return;
+            }
+            save("register",groupObject);
         });
+
+        function inputObjectHasEmpty(inputObject){
+            var hasEmpty = false;
+            for(var key in inputObject) {
+                if(isEmptyOrEmpty(inputObject[key])){
+                    hasEmpty = true;
+                    alert(key + "is empty");
+                    return;
+                }
+            }
+            return hasEmpty;
+        }
+
+        function isEmptyOrEmpty(obj){
+            if(typeof obj == "undefined" || obj == null || obj == ""){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        function save(apiurl,dataObject){
+            $.ajax({
+                url:apiurl,
+                type:"POST",
+                contentType:"application/json",
+                dataType:"json",
+                data:JSON.stringify(dataObject),
+                success:function (result) {
+                    if(result.success){
+                        var message = "<span>save success</span><br/><span>name:"+JSON.stringify(result.data)+"</span>";
+                        $("#successMsgDiv").show();
+                        $("#successMsg").html("").html(message);
+                        getGroupList();
+                    }else{
+                        $("#failedMsgDiv").show();
+                        $("#failedMsg").html("").html("save fail!"+result.message);
+                    }
+                }
+            });
+        }
+
+        $("#group_upload").on("click",function(){
+            AWS_FILEUPLAOD();
+        });
+
+        function AWS_FILEUPLAOD() {
+            var _accessKeyId = 'AKIAS7EXJMYWUZJLRIAM';
+            var _secretAccessKey = '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';
+            var bucketRegion = 'ap-southeast-1';
+            var albumBucketName = 'handy-concierge-chat';
+
+            AWS.config.update({
+                region: bucketRegion,
+                credentials: {
+                    accessKeyId: _accessKeyId,
+                    secretAccessKey: _secretAccessKey
+                }
+            });
+
+            var bucketObject = new AWS.S3({
+                params: {Bucket: albumBucketName}
+            });
+
+            return addPhoto(bucketObject,"staging/","group_fileChooser");
+        }
+
+        function addPhoto(bucketObject,bucketFilePath,fileInputId) {
+            var files = document.getElementById(fileInputId).files;
+            if (!files.length) {
+                return alert('Please choose a file to upload first.');
+            }
+            var file = files[0];
+            var fileName = file.name;
+
+            bucketObject.upload({
+                Key: bucketFilePath + fileName,
+                Body: file,
+            }, function(err, result) {
+                if (err) {
+                    return alert('There was an error uploading your photo: ', err.message);
+                }
+                var iconPath = result["Location"];
+                $("#group_icon").attr('src',iconPath);
+                $("#group_iconpath").html("").html(iconPath);
+            });
+        }
 
         //hotel_or_zone_save
         $("#zone_or_hotel_save").on("click",function(){
-            var group_id = $("#h_group_id").val();
-            if(group_id == "" || group_id == null){
+            var groupRelationObject={};
+            groupRelationObject.id=$("#zone_or_hotel_id").val();
+            groupRelationObject.name=$("#zone_or_hotel_name").val();
+            groupRelationObject.groupId=$("#h_group_id").val();
+            if(isEmptyOrEmpty(groupRelationObject.groupId)){
                 alert("choice a group first");
                 return;
             }
-            var hotel_or_zone={};
-            hotel_or_zone.id=$("#zone_or_hotel_id").val();
-            hotel_or_zone.name=$("#zone_or_hotel_name").val();
-            hotel_or_zone.groupId=group_id;
-            alert(JSON.stringify(hotel_or_zone));
-            // save(hotel_or_zone);
+            if(inputObjectHasEmpty(groupRelationObject)){
+                return;
+            }
+            save("addrelation",groupRelationObject);
         });
 
         //agent_save
         $("#agent_save").on("click",function(){
-            var group_id = $("#h_group_id").val();
-            if(group_id == "" || group_id == null){
+            var agentObject={};
+            agentObject.name=$("#agent_email").val();
+            agentObject.displayName=$("#agent_displayname").val();
+            agentObject.password=$("#agent_password").val();
+            agentObject.groupId=$("#h_group_id").val();;
+            agentObject.type= isEmptyOrEmpty($("input[name='agent_type']:checked").val())?"AGENT":"ADMIN"
+            if(isEmptyOrEmpty(agentObject.groupId)){
                 alert("choice a group first");
                 return;
             }
-            var agent={};
-            agent.zoneId=$("#user_zone_id").val();
-            agent.zoneName=$("#user_zone_name").val();
-            agent.email=$("#user_email").val();
-            agent.displayName=$("#user_displayname").val();
-            agent.password=$("#user_password").val();
-            agent.groupId=group_id;
-            alert(JSON.stringify(agent));
-            // save(agent);
+            if(inputObjectHasEmpty(agentObject)){
+                return;
+            }
+            save("addagent",agentObject);
         });
 
         $("#list").on("click",'input[name="group_choice"]',function(){
@@ -245,88 +376,48 @@
         });
 
         $("#list").on("click","a",function(){
-            var id=$(this).data("id");
-            var type=$(this).data("type");
-            alert(id+type);
+            var deleteObject={};
+            deleteObject.id=$(this).data("id");
+            deleteObject.apiType= $(this).data("type")=="relation"?1:0;
+            if(confirm('确定要删除吗')==true){
+                save("delete",deleteObject);
+            }
         });
 
-        function init() {
-            var groups=[
-                {
-                    id:'1',
-                    type:"VIP",
-                    icon:"http://4532545324523",
-                    name:"group1",
-                    relations:[
-                        {
-                            id:"1",
-                            name:"香港"
-                        },
-                        {
-                            id:"2",
-                            name:"北京"
-                        }
-                    ],
-                    agents:[
-                        {
-                            id:"fdads",
-                            email:"h@tinks.com",
-                            displayname:"h"
-                        }
-                    ]
-                },
-                {
-                    id:'2',
-                    type:"HOTEL",
-                    icon:"http://4532545324523",
-                    name:"group2",
-                    relations:[
-                        {
-                            id:"1",
-                            name:"酒店1"
-                        },
-                        {
-                            id:"2",
-                            name:"酒店2"
-                        }
-                    ],
-                    agents:[
-                        {
-                            id:"fdads",
-                            email:"h@tinks.com",
-                            displayname:"h"
-                        }
-                    ]
-                },
-            ];
-            // $.ajax({
-            //     type: "post",
-            //     url: 'add-post-json.php',
-            //     contentType: "application/json; charset=utf-8",
-            //     dataType: "json",
-            //     data: JSON.stringify(object),
-            //     success: function(result) {
-            //         if(result.success){
-            //             var groups = result.data;
+        function getGroupList() {
+            $.ajax({
+                type: "post",
+                url: 'list',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: null,
+                success: function(result) {
+                    if(result.success){
+                        var groups = result.data;
                         var html_trs = '';
                         $.each(groups,function(i,group){
                             var html_tr = "<tr>";
                             var html_group_td =
-                            '<td width="10%">'+ '<input type="radio" name="group_choice" value="'+group.id+'"></td>'+
-                            '<td width="40%"><label><b>'+group.icon+"-"+group.name+"-"+group.type+'</b></label></td>';
+                            '<td width="10%">'+ '<input type="radio" name="group_choice" value="'+group.group.id+'"></td>'+
+                            '<td width="40%">' +
+                                '<p><label style="background:green;color:white">icon:</label>'+group.group.icon+"</p>" +
+                                "<p><label style='background:green;color:white'>name:</label>"+group.group.name+"</p>" +
+                                "<p><label style='background:green;color:white'>displayName:</label>"+group.group.displayName+"</p>" +
+                                "<p><label style='background:green;color:white'>type:</label>"+group.group.type+'</p>' +
+                                '<p><label style="background:green;color:white">welcomemessage:</label>'+group.group.welcomeMessage+'</p>' +
+                                '</td>';
 
                             var zone_or_hotel_td = '<td width="20%">';
                             $.each(group.relations,function(i,relation) {
-                                    var relationhtml = '<p>' + relation.id + "-" + relation.name +
-                                        '<a href="javascript:void()" data-id="'+relation.id+'" data-type="relation" title="删除"><img src="images/delete-16x16.gif" width="16" height="16" border="0" alt="删除 Content Filter"></a>' +
-                                        '</p>';
+                                    var relationhtml = '<p>id:' + relation.relationId + "-name:" + relation.relationName +
+                                        '<a href="javascript:void()" data-id="'+relation.id+'" data-type="relation" title="删除"><img src="images/delete-16x16.gif" width="16" height="16" border="0" alt="删除 Content Filter"></a>';
                                 zone_or_hotel_td = zone_or_hotel_td + relationhtml;
                             });
                             zone_or_hotel_td = zone_or_hotel_td + "</td>";
 
                             var agent_td='<td width="20%">';
                             $.each(group.agents,function(i,agent) {
-                                var agenthtml = '<p>' + agent.email + "-" + agent.displayname +
+                                var agenthtml = '<p>' + agent.userName +
                                     '<a href="javascript:void()" data-id="'+agent.id+'" data-type="agent" title="删除"><img src="images/delete-16x16.gif" width="16" height="16" border="0" alt="删除 Content Filter"></a>' +
                                 '</p>';
                                 agent_td = agent_td + agenthtml;
@@ -336,24 +427,11 @@
                             html_tr = html_tr+html_group_td+zone_or_hotel_td+agent_td+"</tr>";
                             html_trs=html_trs+html_tr;
                         })
-                    // }
-            //     }
-            // });
-            $("#list").html('').append($(html_trs));
-        };
-
-        function save(object) {
-            $.ajax({
-                type: "post",
-                url: 'add-post-json.php',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(object),
-                success: function(data) {
-
+                        $("#list").html('').append($(html_trs));
+                    }
                 }
             });
-        }
+        };
     });
 </script>
 </body>

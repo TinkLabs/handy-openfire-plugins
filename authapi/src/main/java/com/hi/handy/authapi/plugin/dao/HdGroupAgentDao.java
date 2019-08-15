@@ -15,11 +15,9 @@ import java.util.List;
 
 public class HdGroupAgentDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(HdGroupAgentDao.class);
-  private HdGroupAgentDao() {
-  }
 
-  public static final HdGroupAgentDao INSTANCE = new HdGroupAgentDao();
-
+  private HdGroupAgentDao() {}
+  private static final HdGroupAgentDao INSTANCE = new HdGroupAgentDao();
   public static HdGroupAgentDao getInstance() {
     return INSTANCE;
   }

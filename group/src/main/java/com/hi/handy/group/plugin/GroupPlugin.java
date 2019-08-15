@@ -3,32 +3,12 @@ package com.hi.handy.group.plugin;
 import org.jivesoftware.openfire.container.Plugin;
 import org.jivesoftware.openfire.container.PluginManager;
 import org.jivesoftware.openfire.interceptor.InterceptorManager;
-import org.jivesoftware.util.JiveGlobals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public class GroupPlugin implements Plugin {
-
-    public static final String SERVICEENABLED = "plugin.message.serviceEnabled";
-
-    private boolean serviceEnabled;
-
-    public void setServiceEnabled(boolean enabled) {
-        serviceEnabled = enabled;
-        JiveGlobals.setProperty(SERVICEENABLED, enabled ? "true" : "false");
-    }
-
-    public boolean getServiceEnabled() {
-        return serviceEnabled;
-    }
-
-    public GroupPlugin() {
-        serviceEnabled = true;
-        serviceEnabled = JiveGlobals.getBooleanProperty(SERVICEENABLED, true);
-    }
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupPlugin.class);
 
     private InterceptorManager interceptorManager;

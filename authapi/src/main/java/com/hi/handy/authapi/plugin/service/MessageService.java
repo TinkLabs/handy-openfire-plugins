@@ -36,10 +36,7 @@ public class MessageService extends BaseService{
         // delete message
         Boolean result = OfMessageArchiveDao.getInstance().deleteBymessageId(parameter.getMessageId()) &&
                          HdMessageDao.getInstance().deleteBymessageId(parameter.getMessageId());
-        // nofity
         if(result){
-            // clear chache
-            // TODO
             // send broadcast
             notify(new NotifyModel(NotifyType.DELETEMESSAGE,parameter.getMessageId()));
         }

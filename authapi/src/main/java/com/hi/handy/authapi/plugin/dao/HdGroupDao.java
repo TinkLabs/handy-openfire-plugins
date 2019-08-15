@@ -13,11 +13,9 @@ import java.sql.ResultSet;
 
 public class HdGroupDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(HdGroupDao.class);
-  private HdGroupDao() {
-  }
 
+  private HdGroupDao() {}
   public static final HdGroupDao INSTANCE = new HdGroupDao();
-
   public static HdGroupDao getInstance() {
     return INSTANCE;
   }
@@ -25,9 +23,6 @@ public class HdGroupDao extends BaseDao {
   private static final String ALL_COLUMN = "id, name, icon, type, welcomeMessage, displayName, createDate";
   private static final String SEARCH_BY_ID_SQL =  "SELECT "+ALL_COLUMN+" FROM hdGroup WHERE id = ?";
   private static final String SEARCH_BY_GROUPNAME_SQL =  "SELECT "+ALL_COLUMN+" FROM hdGroup WHERE name = ?";
-  private static final String SEARCH_COUNT_SQL =  "SELECT count(1) FROM hdGroup WHERE id = ?";
-  private static final String INSERT_SQL =  "INSERT INTO hdGroup ("+ALL_COLUMN+") VALUES(?,?,?,?,?,?,?)";
-
   public HdGroupEntity searchById(String id) {
     HdGroupEntity hdGroupEntity = new HdGroupEntity();
     Connection con = null;
@@ -55,56 +50,6 @@ public class HdGroupDao extends BaseDao {
       DbConnectionManager.closeConnection(rs, pstmt, con);
     }
     return hdGroupEntity;
-  }
-
-  public long searchCountById(String id){
-    Connection con = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    long count = 0;
-    try {
-      con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(SEARCH_COUNT_SQL);
-      pstmt.setString(1, id);
-      rs = pstmt.executeQuery();
-      if(rs.next()){
-        count  = rs.getLong(1);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOGGER.error("isGroupExist error", e);
-      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
-    } finally {
-      DbConnectionManager.closeConnection(rs, pstmt, con);
-    }
-    return count;
-  }
-
-  public boolean createGroup(HdGroupEntity hdGroupEntity) {
-    Connection con = null;
-    PreparedStatement pstmt = null;
-    boolean result = false;
-    try {
-      con = DbConnectionManager.getConnection();
-      pstmt = con.prepareStatement(INSERT_SQL);
-      pstmt.setString(1, hdGroupEntity.getId());
-      pstmt.setString(2, hdGroupEntity.getName());
-      pstmt.setString(3, hdGroupEntity.getIcon());
-      pstmt.setString(4, hdGroupEntity.getType());
-      pstmt.setString(5, hdGroupEntity.getWelcomeMessage());
-      pstmt.setString(6, hdGroupEntity.getDisplayName());
-      pstmt.setTimestamp(7, hdGroupEntity.getCreateDate());
-      if(pstmt.executeUpdate()>0){
-        result =  true;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      LOGGER.error("createGroup error", e);
-      throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage());
-    } finally {
-      DbConnectionManager.closeConnection(pstmt, con);
-    }
-    return result;
   }
 
   public HdGroupEntity searchByGroupName(String groupName) {

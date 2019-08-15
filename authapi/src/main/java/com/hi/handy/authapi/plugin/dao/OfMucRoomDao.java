@@ -14,7 +14,7 @@ public class OfMucRoomDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(OfMucRoomDao.class);
 
   private OfMucRoomDao() {}
-  public static final OfMucRoomDao INSTANCE = new OfMucRoomDao();
+  private static final OfMucRoomDao INSTANCE = new OfMucRoomDao();
   public static OfMucRoomDao getInstance() {
     return INSTANCE;
   }

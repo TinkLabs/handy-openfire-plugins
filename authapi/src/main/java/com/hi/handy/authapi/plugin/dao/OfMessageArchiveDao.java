@@ -11,11 +11,9 @@ import java.sql.PreparedStatement;
 
 public class OfMessageArchiveDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(OfMessageArchiveDao.class);
-  private OfMessageArchiveDao() {
-  }
 
-  public static final OfMessageArchiveDao INSTANCE = new OfMessageArchiveDao();
-
+  private OfMessageArchiveDao() {}
+  private static final OfMessageArchiveDao INSTANCE = new OfMessageArchiveDao();
   public static OfMessageArchiveDao getInstance() {
     return INSTANCE;
   }
@@ -33,7 +31,7 @@ public class OfMessageArchiveDao extends BaseDao {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      LOGGER.error("searchLoginCount error", e);
+      LOGGER.error("deleteBymessageId error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);

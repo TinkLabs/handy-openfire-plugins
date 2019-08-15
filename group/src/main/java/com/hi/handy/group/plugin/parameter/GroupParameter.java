@@ -1,32 +1,50 @@
 package com.hi.handy.group.plugin.parameter;
 
-public class GroupParameter extends BaseParameter {
+public class GroupParameter {
 
-    private Integer pageIndex;
-    private Integer pageSize;
-    private String userName;
+    private String icon;
+    private String name;
+    private String type;
+    private String relations;
+    private String welcomeMessage;
 
-    public Integer getPageIndex() {
-        return pageIndex;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setPageIndex(Integer pageIndex) {
-        this.pageIndex = pageIndex;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
+    public String getName() {
+        return name;
     }
 
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getType() {
+        return type;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getRelations() {
+        return relations;
+    }
+
+    public void setRelations(String relations) {
+        this.relations = relations;
+    }
+
+    public String getWelcomeMessage() {
+        return welcomeMessage;
+    }
+
+    public void setWelcomeMessage(String welcomeMessage) {
+        this.welcomeMessage = welcomeMessage;
     }
 }

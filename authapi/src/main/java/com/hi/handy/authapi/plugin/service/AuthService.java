@@ -34,9 +34,7 @@ public class AuthService {
             result = AgentService.getInstance().agentLogin(parameter);
         } else if (type == AuthType.AGENT_LOGOUT) {
             result = AgentService.getInstance().agentLogout(parameter);
-        }else if(type == AuthType.AGENT_REGISTER){
-            result = AgentService.getInstance().agentRegister(parameter);
-        }else if(type == AuthType.GUEST_LEAVECHAT){
+        } else if(type == AuthType.GUEST_LEAVECHAT){
             result = GuestService.getInstance().guestLeaveChat(parameter);
         }else if(type == AuthType.MESSAGE_DELETE){
             result = MessageService.getInstance().messageDelete(parameter);

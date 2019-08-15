@@ -13,7 +13,7 @@ public class HdMessageDao extends BaseDao {
   private static final Logger LOGGER = LoggerFactory.getLogger(HdMessageDao.class);
 
   private HdMessageDao() {}
-  public static final HdMessageDao INSTANCE = new HdMessageDao();
+  private static final HdMessageDao INSTANCE = new HdMessageDao();
   public static HdMessageDao getInstance() {
     return INSTANCE;
   }
@@ -31,7 +31,7 @@ public class HdMessageDao extends BaseDao {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      LOGGER.error("searchLoginCount error", e);
+      LOGGER.error("deleteBymessageId error", e);
       throw new BusinessException(ExceptionConst.DB_ERROR, e.getMessage(), e);
     } finally {
       DbConnectionManager.closeConnection(pstmt, con);
