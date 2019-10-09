@@ -16,6 +16,7 @@
     <module>messageapi</module>
     <module>authapi</module>
     <module>group</module>
+    <module>uploadapi</module>
   </modules>
 
   <properties>
