@@ -9,15 +9,17 @@ public class HdMessageEntity extends BaseEntity {
     private String id;
     private String messageId;
     private Long zoneId;
+    private String zoneName;
     private Long hotelId;
+    private String hotelName;
     private String roomNum;
-    private String deviceUserId;
     private String fromUser;
     private String fromJID;
     private String toUser;
     private String toJID;
     private Timestamp creationDate;
     private String stanza;
+    private String deviceUserId;
 
     public String getId() {
         return id;
@@ -113,5 +115,21 @@ public class HdMessageEntity extends BaseEntity {
 
     public void setZoneId(Long zoneId) {
         this.zoneId = zoneId;
+    }
+
+    public String getZoneName() {
+        return zoneName;
+    }
+
+    public void setZoneName(String zoneName) {
+        this.zoneName = zoneName;
+    }
+
+    public String getHotelName() {
+        return hotelName;
+    }
+
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
     }
 }

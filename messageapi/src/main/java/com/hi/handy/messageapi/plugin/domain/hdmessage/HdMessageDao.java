@@ -44,15 +44,17 @@ public class HdMessageDao extends BaseDao {
         hdMessageEntity.setId(rs.getString(1));
         hdMessageEntity.setMessageId(rs.getString(2));
         hdMessageEntity.setZoneId(rs.getLong(3));
-        hdMessageEntity.setHotelId(rs.getLong(4));
-        hdMessageEntity.setRoomNum(rs.getString(5));
-        hdMessageEntity.setDeviceUserId(rs.getString(6));
-        hdMessageEntity.setFromUser(rs.getString(7));
-        hdMessageEntity.setFromJID(rs.getString(8));
-        hdMessageEntity.setToUser(rs.getString(9));
-        hdMessageEntity.setToJID(rs.getString(10));
-        hdMessageEntity.setCreationDate(rs.getTimestamp(11));
-        hdMessageEntity.setStanza(rs.getString(12));
+        hdMessageEntity.setZoneName(rs.getString(4));
+        hdMessageEntity.setHotelId(rs.getLong(5));
+        hdMessageEntity.setHotelName(rs.getString(6));
+        hdMessageEntity.setRoomNum(rs.getString(7));
+        hdMessageEntity.setFromUser(rs.getString(8));
+        hdMessageEntity.setFromJID(rs.getString(9));
+        hdMessageEntity.setToUser(rs.getString(10));
+        hdMessageEntity.setToJID(rs.getString(11));
+        hdMessageEntity.setCreationDate(rs.getTimestamp(12));
+        hdMessageEntity.setStanza(rs.getString(13));
+        hdMessageEntity.setDeviceUserId(rs.getString(14));
         result.add(hdMessageEntity);
       }
     } catch (Exception ex) {
